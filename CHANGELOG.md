@@ -1,5 +1,28 @@
 # Changelog
 
+## 3.6.0
+
+- Simplificado o acesso local para um fluxo adaptativo em dois passos: primeiro e-mail, depois palavra-passe.
+- Removida da interface a escolha manual entre `Entrar` e `Criar perfil de teste`; a decisão continua separada internamente e passa a ser automática.
+- Ao introduzir um e-mail `@ilunion.es`, a aplicação verifica apenas no IndexedDB deste browser se já existe um perfil local.
+- Quando o perfil existe, apresenta automaticamente o modo de entrada.
+- Quando o perfil ainda não existe, apresenta automaticamente confirmação de palavra-passe e a ação `Criar acesso local e entrar`.
+- O e-mail fica bloqueado durante a segunda etapa para evitar inconsistência entre identificação e autenticação; existe ação explícita `Alterar e-mail`.
+- Reforçado o texto para distinguir claramente a palavra-passe exclusiva do protótipo da palavra-passe empresarial.
+- Mantidas as proteções V3.4/V3.5: HTTPS/Web Crypto, PBKDF2-SHA-256, domínio `@ilunion.es`, lockout local e bloqueio por inatividade.
+- Adicionado módulo `js/app-auth-adaptive.js`, incluído no cache offline.
+- Adicionado teste `adaptive-auth.test.js` e atualização integral do CI para V3.6.0.
+
+## 3.5.0
+
+- Perfis locais restringidos a endereços exatamente no domínio `@ilunion.es`.
+- Regra aplicada tanto ao login como à criação de perfil local e à restauração de sessões existentes.
+- Ecrã de acesso atualizado para `E-mail ILUNION` e placeholder `nome@ilunion.es`.
+- Adicionado aviso explícito para usar uma palavra-passe exclusiva do protótipo e nunca a palavra-passe empresarial.
+- Nenhum endereço individual ou palavra-passe corporativa foi colocado no repositório.
+- Adicionado módulo `js/app-auth-domain.js` e teste `email-domain.test.js`.
+- Cache PWA e CI atualizados para V3.5.0.
+
 ## 3.4.0
 
 - Separados os fluxos `Entrar` e `Criar perfil de teste`; o primeiro acesso deixa de criar perfil implicitamente.
