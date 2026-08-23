@@ -26,7 +26,8 @@ assert.match(index, /js\/app-equipment-default-images\.js/, 'O index deve carreg
 assert.ok(index.indexOf('app-equipment-default-images.js') < index.indexOf('app-equipment-upload-hotfix.js'), 'As imagens padrão devem carregar antes do hotfix de interação.');
 assert.match(index, /img-src 'self' data:/, 'A CSP deve permitir as ilustrações SVG locais em data URL.');
 assert.match(sw, /\.\/js\/app-equipment-default-images\.js/, 'O módulo de imagens padrão deve existir no cache PWA.');
-assert.equal(/https?:\/\//.test(js), false, 'As imagens padrão não devem depender de hosts externos.');
+const urls = [...js.matchAll(/https?:\/\/[^'"`\s>]+/g)].map(match => match[0]);
+assert.deepEqual(urls, ['http://www.w3.org/2000/svg'], 'Só o namespace técnico do SVG é permitido; não pode haver host externo de imagem.');
 assert.equal(/eval\s*\(|new\s+Function\s*\(/.test(js), false, 'O módulo não deve executar código dinâmico.');
 
 console.log(`Equipment default images tests: OK (${ids.length} ilustrações locais)`);
