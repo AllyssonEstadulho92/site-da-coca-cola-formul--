@@ -1,128 +1,85 @@
 (() => {
   'use strict';
 
+  const SOURCE = 'CokeSolutions / The Coca-Cola Company';
+  const REGIONAL_NOTE = 'Referência pública CokeSolutions, predominantemente norte-americana/histórica. Confirmar sempre placa, variante instalada e documentação CCEP/europeia aplicável antes de intervenção.';
+  const TRIAGE_NOTE = 'Sintomas e consequências são uma grelha de triagem para apoio à chamada; não substituem diagnóstico técnico oficial.';
+
   const COMMON = {
-    coolerSymptoms: ['Não liga', 'Não refrigera', 'Temperatura instável', 'Ruído ou vibração anormal', 'Condensação excessiva', 'Gelo excessivo', 'Porta não fecha/vedante danificado', 'Iluminação não funciona'],
-    coolerConsequences: ['Produto fora da temperatura de serviço', 'Possível sobrecarga do compressor/ventilação', 'Aumento do consumo energético', 'Condensação ou água no piso', 'Redução da qualidade de exposição e possível perda de stock'],
-    vendingSymptoms: ['Não liga', 'Produto não é entregue', 'Produto preso', 'Não aceita pagamento', 'Display/teclado sem resposta', 'Produto não refrigera', 'Motor/mecanismo com ruído', 'Porta, fechadura ou sensor com anomalia'],
-    vendingConsequences: ['Indisponibilidade de venda', 'Produto danificado ou retido', 'Perdas por transação não concluída', 'Sobrecarga de motor/mecanismo se a falha persistir', 'Produto fora da temperatura de serviço', 'Maior exposição a vandalismo se a porta/fecho estiver comprometido'],
-    postmixSymptoms: ['Não dispensa bebida', 'Bebida sem gás', 'Excesso de espuma', 'Sabor/ratio incorreto', 'Bebida demasiado quente', 'Fuga de água/xarope', 'Baixa pressão/indicação de CO₂', 'Dreno obstruído ou válvula presa'],
-    postmixConsequences: ['Bebida fora do padrão de qualidade', 'Desperdício de xarope/água', 'Derrame e risco de piso escorregadio', 'Interrupção parcial ou total do serviço', 'Possível contaminação se a higiene/manutenção não for cumprida'],
-    freestyleSymptoms: ['Ecrã sem resposta ou offline', 'Ingrediente indisponível', 'Erro de cartucho/RFID', 'Não dispensa', 'Problema no nozzle/injetor', 'Gelo não dispensa', 'Pressão de água/CO₂ insuficiente', 'Falha de conectividade/estado'],
-    freestyleConsequences: ['Indisponibilidade de sabores/serviço', 'Bebida fora do padrão de qualidade', 'Derrame ou desperdício de produto', 'Interrupção por falta de água, CO₂, gelo ou ingredientes', 'Risco higiénico se nozzle e zonas de contacto não forem limpos conforme o procedimento do fabricante']
+    cooler: {
+      symptoms: ['Não liga ou desliga inesperadamente','Não refrigera / produto quente','Temperatura instável','Ruído ou vibração anormal','Condensação ou água no piso','Gelo excessivo','Porta não fecha / vedante danificado','Iluminação interior não funciona'],
+      consequences: ['Produto pode ficar fora da temperatura de serviço','Avaria prolongada pode aumentar esforço do sistema de refrigeração','Pode ocorrer condensação ou água no piso','Pode aumentar o consumo energético','Pode reduzir disponibilidade, exposição e qualidade percebida do produto']
+    },
+    vending: {
+      symptoms: ['Não liga','Produto não é entregue','Produto preso','Pagamento indisponível','Display, teclado ou seleção sem resposta','Produto não refrigera','Motor/elevador/mecanismo com ruído','Porta, fechadura ou sensor com anomalia'],
+      consequences: ['Venda indisponível ou transação não concluída','Produto pode ficar retido ou danificado','Produto pode ficar fora da temperatura de serviço','Falha persistente pode agravar desgaste de motores ou mecanismos','Porta/fecho comprometidos podem aumentar risco de acesso indevido']
+    },
+    postmix: {
+      symptoms: ['Não dispensa bebida','Sai apenas água ou apenas xarope','Bebida sem gás','Excesso de espuma','Sabor / ratio incorreto','Bebida demasiado quente','Fuga de água ou xarope','Dreno obstruído / válvula presa'],
+      consequences: ['Bebida pode ficar fora do padrão esperado','Pode existir desperdício de água, xarope ou CO₂','Derrames podem criar risco de piso escorregadio','Serviço pode ficar parcial ou totalmente indisponível','Higiene inadequada em zonas de contacto pode comprometer a qualidade do serviço']
+    },
+    freestyle: {
+      symptoms: ['Ecrã congelado ou sem resposta','Máquina não dispensa','Ingrediente indisponível','Erro de cartucho / RFID','Problema no nozzle / injector ring','Gelo não dispensa','Pressão de água / CO₂ insuficiente','Falha de conectividade / estado'],
+      consequences: ['Sabores ou serviço podem ficar indisponíveis','Bebida pode ficar fora do padrão esperado','Pode ocorrer derrame ou desperdício de produto','Falta de água, CO₂, gelo ou ingredientes pode interromper o serviço','Nozzle e zonas de contacto requerem limpeza conforme procedimento aplicável']
+    }
   };
 
+  const pdf = path => `https://www.cokesolutions.com/content/dam/cokesolutions/us/documents/${path}`;
+  const pages = {
+    coolers: 'https://www.cokesolutions.com/equipment/coolers',
+    vending: 'https://www.cokesolutions.com/equipment/vending-machines.html',
+    fountains: 'https://www.cokesolutions.com/equipment/fountains/',
+    freestyle: 'https://www.cokesolutions.com/equipment/coca-cola-freestyle'
+  };
+  const doc = (label, url, kind='PDF oficial') => ({ label, url, kind });
+  const photo = (url='', source='') => ({ photo: url, photoSourceUrl: source, imageStatus: url ? 'DIRECT_OFFICIAL' : 'OFFICIAL_DOCUMENT_ONLY' });
+  const make = (group, value) => ({
+    verification: 'PUBLIC_REFERENCE', sourceLabel: SOURCE, regionalNote: REGIONAL_NOTE, symptomsNote: TRIAGE_NOTE,
+    ...photo(value.photo, value.photoSourceUrl), ...value,
+    symptoms: [...COMMON[group].symptoms, ...(value.extraSymptoms || [])],
+    consequences: [...COMMON[group].consequences]
+  });
+
   const data = [
-    {
-      id: 'cooler-countertop', category: 'Vitrines', visual: 'mini-cooler', formType: 'Equipamento de frio',
-      name: 'Mini vitrine / Cooler Countertop', model: 'Countertop — referência pública', verification: 'PUBLIC_REFERENCE',
-      description: 'Vitrine refrigerada compacta para exposição e refrigeração de bebidas, destinada a locais com pouco espaço de implantação.',
-      technicalFacts: [['Fabricantes de referência', 'True / Imbera'], ['Altura pública', '35.63–39.25 in'], ['Profundidade pública', '24.25–27.63 in'], ['Capacidade de referência', '84–112 garrafas de 20 oz'], ['Certificação indicada', 'ENERGY STAR / UL 471 (conforme modelo público)']],
-      symptoms: COMMON.coolerSymptoms, consequences: COMMON.coolerConsequences,
-      sourceLabel: 'CokeSolutions — Coolers', sourceUrl: 'https://www.cokesolutions.com/equipment/coolers',
-      regionalNote: 'Valores de referência publicados para equipamento Coca-Cola no mercado dos EUA. Confirmar sempre a placa/modelo instalado e a ficha CCEP aplicável em Portugal.', photo: ''
-    },
-    {
-      id: 'cooler-single-small', category: 'Vitrines', visual: 'single-cooler', formType: 'Equipamento de frio',
-      name: 'Vitrine 1 porta — pequena', model: 'Single Door Small', verification: 'PUBLIC_REFERENCE',
-      description: 'Vitrine vertical refrigerada de uma porta para merchandising e conservação de bebidas em exposição.',
-      technicalFacts: [['Fabricantes de referência', 'True / Imbera'], ['Dimensões públicas', 'H 53.25–53.5 × W 24.88–25 × D 23 in'], ['Capacidade de referência', '126 garrafas de 20 oz'], ['Prateleiras', '3'], ['Porta', 'Swing'], ['Corrente indicada', '3–4.2 A (referência EUA)']],
-      symptoms: COMMON.coolerSymptoms, consequences: COMMON.coolerConsequences,
-      sourceLabel: 'CokeSolutions — Coolers', sourceUrl: 'https://www.cokesolutions.com/equipment/coolers',
-      regionalNote: 'A alimentação elétrica e restantes características devem ser confirmadas na ficha do modelo efetivamente instalado em Portugal.', photo: ''
-    },
-    {
-      id: 'cooler-single-large', category: 'Vitrines', visual: 'single-cooler', formType: 'Equipamento de frio',
-      name: 'Vitrine 1 porta — grande', model: 'Single Door Large', verification: 'PUBLIC_REFERENCE',
-      description: 'Vitrine vertical de maior capacidade, usada para exposição refrigerada de uma gama alargada de bebidas.',
-      technicalFacts: [['Fabricantes de referência', 'True / Imbera'], ['Dimensões públicas', 'H 78.63–80.50 × W 29.50–30.00 × D 27.50–29.88 in'], ['Capacidade de referência', '270–360 garrafas de 20 oz'], ['Prateleiras', '5'], ['Facing por prateleira', '8'], ['Porta', 'Swing']],
-      symptoms: COMMON.coolerSymptoms, consequences: COMMON.coolerConsequences,
-      sourceLabel: 'CokeSolutions — Coolers', sourceUrl: 'https://www.cokesolutions.com/equipment/coolers',
-      regionalNote: 'Ficha pública de referência. Confirmar fabricante, número de série, refrigerante, tensão e capacidade da unidade real.', photo: ''
-    },
-    {
-      id: 'cooler-double-medium', category: 'Vitrines', visual: 'double-cooler', formType: 'Equipamento de frio',
-      name: 'Vitrine 2 portas — média', model: 'Double Door Medium', verification: 'PUBLIC_REFERENCE',
-      description: 'Vitrine refrigerada de duas portas, adequada a pontos com maior necessidade de exposição e capacidade.',
-      technicalFacts: [['Fabricantes de referência', 'True / Imbera'], ['Dimensões públicas', 'H 78.63–79 × W 47–47.13 × D 29.63–30 in'], ['Capacidade de referência', '420–490 garrafas de 20 oz'], ['Prateleiras', '5'], ['Porta', 'Swing / Slide'], ['Corrente indicada', '6.8–10 A (referência EUA)']],
-      symptoms: COMMON.coolerSymptoms, consequences: COMMON.coolerConsequences,
-      sourceLabel: 'CokeSolutions — Coolers', sourceUrl: 'https://www.cokesolutions.com/equipment/coolers',
-      regionalNote: 'Os valores variam por fabricante e modelo. Usar a placa da unidade para diagnóstico e encaminhamento.', photo: ''
-    },
-    {
-      id: 'vending-glassfront-small', category: 'Vending', visual: 'vending', formType: 'Máquina',
-      name: 'Vending — Glass Front pequena', model: 'GFV Slim', verification: 'PUBLIC_REFERENCE',
-      description: 'Máquina automática com frente em vidro, destinada à venda e exposição de várias referências de bebidas.',
-      technicalFacts: [['Fabricantes de referência', 'Dixie Narco / Royal'], ['Dimensões públicas', 'H 72 × W 37–42 × D 32–35 in'], ['Capacidade lata', '270–320'], ['Capacidade garrafa 20 oz', '240–280'], ['Marcas por máquina', '12'], ['Segurança indicada', 'UL 541; construção orientada a dissuadir vandalismo']],
-      symptoms: COMMON.vendingSymptoms, consequences: COMMON.vendingConsequences,
-      sourceLabel: 'CokeSolutions — Small Glass Front Vender', sourceUrl: 'https://www.cokesolutions.com/content/dam/cokesolutions/us/documents/cokesolutions/Equipment/Equipment-Vending-Small-Glass-Front.pdf',
-      regionalNote: 'Meios de pagamento, tensão, telemetria e configuração de seleção dependem da máquina e do mercado.', photo: ''
-    },
-    {
-      id: 'vending-glassfront-large', category: 'Vending', visual: 'vending-wide', formType: 'Máquina',
-      name: 'Vending — Glass Front grande', model: 'GFV', verification: 'PUBLIC_REFERENCE',
-      description: 'Máquina automática de maior capacidade com produtos visíveis através de frente em vidro.',
-      technicalFacts: [['Fabricante de referência', 'Dixie Narco'], ['Dimensões públicas', 'H 72 × W 47–52 × D 32–35 in'], ['Capacidade lata', '405'], ['Capacidade garrafa 20 oz', '360']],
-      symptoms: COMMON.vendingSymptoms, consequences: COMMON.vendingConsequences,
-      sourceLabel: 'CokeSolutions — Large Glass Front Vender', sourceUrl: 'https://www.cokesolutions.com/content/dam/cokesolutions/us/documents/cokesolutions/Equipment/Equipment-Vending-Large-Glass-Front.pdf',
-      regionalNote: 'Confirmar configuração de pagamento, refrigeração, elevador/motores e sensores do modelo instalado.', photo: ''
-    },
-    {
-      id: 'postmix-counter-6', category: 'Postmix', visual: 'postmix', formType: 'Dispensador',
-      name: 'Postmix — Counter Electric', model: '6 válvulas', verification: 'PUBLIC_REFERENCE',
-      description: 'Dispensador post-mix de bancada com refrigeração integrada, banho de água e válvulas de serviço para bebidas.',
-      technicalFacts: [['Válvulas', '6'], ['Dimensões públicas', 'H 25.38 × W 19.19 × D 24.00 in'], ['Peso de expedição', '150 lb'], ['Construção', 'Armário inox / banho de água / drip tray'], ['Refrigerante indicado na referência', 'R134A (documentação pública histórica)']],
-      symptoms: COMMON.postmixSymptoms, consequences: COMMON.postmixConsequences,
-      sourceLabel: 'CokeSolutions — Fountains / Counter Electric', sourceUrl: 'https://www.cokesolutions.com/equipment/fountains/',
-      regionalNote: 'Não usar a referência histórica de refrigerante ou elétrica para intervenção. Confirmar placa, manual e procedimento técnico do modelo real.', photo: ''
-    },
-    {
-      id: 'postmix-dropin-8', category: 'Postmix', visual: 'dropin', formType: 'Dispensador',
-      name: 'Postmix — Drop-In', model: '8 válvulas', verification: 'PUBLIC_REFERENCE',
-      description: 'Dispensador post-mix integrado no balcão, com reservatório de gelo/cold plate e conjunto de válvulas.',
-      technicalFacts: [['Válvulas', '8'], ['Dimensões públicas', 'H 36.25–42.25 × W 23–30 × D 23 in'], ['Capacidade de gelo', '80 ou 100 lb'], ['Peso de expedição', '240–300 lb'], ['Dreno', '3/4 in com filtro, na referência pública']],
-      symptoms: COMMON.postmixSymptoms, consequences: COMMON.postmixConsequences,
-      sourceLabel: 'CokeSolutions — Fountains / Drop In', sourceUrl: 'https://www.cokesolutions.com/equipment/fountains/',
-      regionalNote: 'Configuração de linhas, BIB, água, CO₂ e válvulas varia por instalação. Não desmontar circuitos pressurizados sem técnico habilitado.', photo: ''
-    },
-    {
-      id: 'freestyle-7100', category: 'Freestyle', visual: 'freestyle-counter', formType: 'Dispensador',
-      name: 'Coca-Cola Freestyle® 7100', model: 'Self-Serve 7100', verification: 'PUBLIC_REFERENCE',
-      description: 'Dispensador Freestyle de bancada/self-service com interface digital e sistema de ingredientes para ampla variedade de bebidas.',
-      technicalFacts: [['Dimensões públicas c/ pernas e drip pan', 'W 30.1 × D 35.8 × H 44.8 in'], ['Peso carregado', '625 lb'], ['Ecrã', '24 in HD'], ['Água', 'mín. 40 psi na referência EUA'], ['Filtro', 'NSF Standard 42 indicado'], ['Alimentação publicada', '115 V / 20 A — apenas referência EUA']],
-      symptoms: COMMON.freestyleSymptoms, consequences: COMMON.freestyleConsequences,
-      sourceLabel: 'CokeSolutions — Freestyle 7100 Spec Sheet', sourceUrl: 'https://www.cokesolutions.com/coca-cola-freestyle/pdfs/CCFS_7100_specsheet.pdf',
-      regionalNote: 'A ficha elétrica acima é dos EUA e não deve ser aplicada à instalação portuguesa. Confirmar ficha europeia/CCEP e placa de características.', photo: ''
-    },
-    {
-      id: 'freestyle-8100', category: 'Freestyle', visual: 'freestyle-tower', formType: 'Dispensador',
-      name: 'Coca-Cola Freestyle® 8100', model: 'Crew-Serve 8100', verification: 'PUBLIC_REFERENCE',
-      description: 'Sistema Freestyle orientado ao serviço pela equipa, combinando interface digital, ingredientes e operação de alto fluxo.',
-      technicalFacts: [['Tipo', 'Crew-Serve'], ['Dimensões públicas', 'H 72 × W 25 × D 33 in'], ['Peso de expedição publicado', '620 lb'], ['Capacidade de gelo publicada', '100 lb'], ['Referência de utilização publicada', '100 bebidas/dia']],
-      symptoms: COMMON.freestyleSymptoms, consequences: COMMON.freestyleConsequences,
-      sourceLabel: 'CokeSolutions — Coca-Cola Freestyle', sourceUrl: 'https://www.cokesolutions.com/equipment/coca-cola-freestyle',
-      regionalNote: 'Características publicadas podem corresponder a variantes de mercado. Confirmar modelo completo e configuração instalada.', photo: ''
-    },
-    {
-      id: 'freestyle-9100', category: 'Freestyle', visual: 'freestyle-tower', formType: 'Dispensador',
-      name: 'Coca-Cola Freestyle® 9100', model: 'Self-Serve 9100', verification: 'PUBLIC_REFERENCE',
-      description: 'Dispensador Freestyle self-service de grande capacidade com ecrã tátil, cartuchos de ingredientes, gelo e conectividade.',
-      technicalFacts: [['Dimensões públicas', 'W 25.25 × D 39.25 × H 74.75 in'], ['Peso com produto e gelo', '925 lb'], ['Ecrã', '24 in HD'], ['Gelo', '255 lb total / 220 lb utilizável'], ['Ingredientes', '36 portas microdosing + até 5 BIB'], ['Conectividade', '4G ou Wi‑Fi'], ['Alimentação publicada', '115 V / 20 A — apenas referência EUA']],
-      symptoms: COMMON.freestyleSymptoms, consequences: COMMON.freestyleConsequences,
-      sourceLabel: 'CokeSolutions — Freestyle 9100 Spec Sheet', sourceUrl: 'https://www.cokesolutions.com/coca-cola-freestyle/pdfs/CCFS_9100_specsheet.pdf',
-      regionalNote: 'Usar a documentação CCEP/europeia para qualquer intervenção. A referência pública lista também água, filtragem, dreno, CO₂ e componentes de backroom.', photo: ''
-    },
-    {
-      id: 'monster-cooler-unconfirmed', category: 'Outros', visual: 'single-cooler', formType: 'Equipamento de frio',
-      name: 'Monster / “Moster” — cooler associado', model: 'Modelo exato por confirmar', verification: 'TO_CONFIRM',
-      description: 'Entrada reservada para o equipamento referido como Monster/Moster. O nome comercial, fabricante e ficha técnica não são assumidos sem fotografia da placa ou referência oficial.',
-      technicalFacts: [['Classe provisória', 'Vitrine/cooler de bebidas'], ['Fabricante', 'Por confirmar'], ['Modelo', 'Por confirmar'], ['Nº de série / REF', 'Ler na placa do equipamento']],
-      symptoms: COMMON.coolerSymptoms, consequences: COMMON.coolerConsequences,
-      sourceLabel: 'Sem ficha pública confirmada para o termo fornecido', sourceUrl: '',
-      regionalNote: 'Enviar uma fotografia frontal e da placa técnica para substituir esta entrada por uma ficha correta.', photo: ''
-    }
+    make('cooler', {id:'cooler-gs15-neon',assetCode:'VIT-GS15',category:'Vitrines',visual:'mini-cooler',formType:'Equipamento de frio',name:'Mini vitrine — GS 1.5 Neon',officialName:'GS 1.5 Neon',model:'GS 1.5 Neon',manufacturer:'IDW',aliases:['mini vitrine','mini cooler','countertop pequeno','counter top','container top'],description:'Cooler de pequena pegada para colocação sobre balcão.',technicalFacts:[['Tipo','Specialty'],['Fabricante','IDW'],['Dimensões públicas','H 21.5 × W 14.75 × D 16.25 in'],['Peso','57 lb'],['Prateleiras','2'],['Facing por prateleira','5'],['Porta','Swing'],['Energia publicada','1.1558 kW/h']],documents:[doc('Ficha oficial GS 1.5 Neon',pdf('gameplan/GS1.5Neon_KO_Canada_Eng.pdf'))],sourceUrl:pdf('gameplan/GS1.5Neon_KO_Canada_Eng.pdf')}),
+    make('cooler', {id:'cooler-countertop',assetCode:'VIT-CT01',category:'Vitrines',visual:'mini-cooler',formType:'Equipamento de frio',name:'Mini vitrine / Cooler Countertop',officialName:'Countertop',model:'Countertop',manufacturer:'True / Imbera',aliases:['mini vitrine','countertop','counter top','container top','cooler de balcão'],description:'Cooler compacto de balcão para exposição e refrigeração de bebidas.',technicalFacts:[['Tipo','Countertop'],['Fabricantes','True / Imbera'],['Dimensões públicas','H 35.63–39.25 × W 21.25–24 × D 24.25–27.63 in'],['Capacidade','84–112 garrafas de 20 oz'],['Corrente publicada','1.5–4.5 A'],['Peso','84–190 lb'],['Prateleiras','3'],['Porta','Swing']],documents:[doc('Ficha oficial Countertop',pdf('cokesolutions/Equipment/Equipment-Cooler-Countertop.pdf')),doc('Página oficial Coolers',pages.coolers,'Página oficial')],sourceUrl:pages.coolers,photo:'https://www.cokesolutions.com/content/cokesolutions/machines/Countertop.png',photoSourceUrl:pages.coolers}),
+    make('cooler', {id:'cooler-single-small',assetCode:'VIT-1P-PEQ',category:'Vitrines',visual:'single-cooler',formType:'Equipamento de frio',name:'Vitrine 1 porta — pequena',officialName:'Single Door Small',model:'Single Door Small',manufacturer:'True / Imbera',aliases:['porta pequena','vitrine pequena','single door small'],description:'Cooler vertical de uma porta, formato pequeno.',technicalFacts:[['Tipo','Single Door Small'],['Fabricantes','True / Imbera'],['Dimensões públicas','H 53.25–53.5 × W 24.88–25 × D 23 in'],['Capacidade','126 garrafas de 20 oz'],['Corrente publicada','3–4.2 A'],['Peso','156–200 lb'],['Prateleiras','3'],['Porta','Swing']],documents:[doc('Ficha oficial Single Door Small',pdf('cokesolutions/Equipment/Equipment-Cooler-SingleDoor-Small.pdf'))],sourceUrl:pdf('cokesolutions/Equipment/Equipment-Cooler-SingleDoor-Small.pdf')}),
+    make('cooler', {id:'cooler-single-medium',assetCode:'VIT-1P-MED',category:'Vitrines',visual:'single-cooler',formType:'Equipamento de frio',name:'Vitrine 1 porta — média',officialName:'Single Door Medium',model:'Single Door Medium',manufacturer:'True / Imbera',aliases:['porta média','vitrine média','single door medium'],description:'Cooler vertical de uma porta e capacidade intermédia.',technicalFacts:[['Tipo','Single Door Medium'],['Fabricantes','True / Imbera'],['Dimensões públicas','H 62–63 × W 24.88–25 × D 23 in'],['Capacidade','168 garrafas de 20 oz'],['Corrente publicada','4–4.2 A'],['Peso','180–195 lb'],['Prateleiras','4'],['Porta','Swing']],documents:[doc('Ficha oficial Single Door Medium',pdf('cokesolutions/Equipment/Equipment-Cooler-SingleDoor-Meduim.pdf'))],sourceUrl:pdf('cokesolutions/Equipment/Equipment-Cooler-SingleDoor-Meduim.pdf')}),
+    make('cooler', {id:'cooler-single-large',assetCode:'VIT-1P-GDE',category:'Vitrines',visual:'single-cooler',formType:'Equipamento de frio',name:'Vitrine 1 porta — grande',officialName:'Single Door Large',model:'Single Door Large',manufacturer:'True / Imbera',aliases:['porta grande','vitrine grande','single door large'],description:'Cooler vertical de uma porta e maior capacidade.',technicalFacts:[['Tipo','Single Door Large'],['Fabricantes','True / Imbera'],['Dimensões públicas','H 78.63–80.50 × W 29.50–30 × D 27.50–29.88 in'],['Capacidade','270–360 garrafas de 20 oz'],['Corrente publicada','5.2 A'],['Peso','245–325 lb'],['Prateleiras','5'],['Porta','Swing']],documents:[doc('Ficha oficial Single Door Large',pdf('cokesolutions/Equipment/Equipment-Cooler-SingleDoor-Large.pdf'))],sourceUrl:pdf('cokesolutions/Equipment/Equipment-Cooler-SingleDoor-Large.pdf')}),
+    make('cooler', {id:'cooler-double-small',assetCode:'VIT-2P-PEQ',category:'Vitrines',visual:'double-cooler',formType:'Equipamento de frio',name:'Vitrine 2 portas — pequena',officialName:'Double Door Small',model:'Double Door Small',manufacturer:'True',aliases:['duas portas pequena','double door small'],description:'Cooler refrigerado de duas portas em formato compacto.',technicalFacts:[['Tipo','Double Door Small'],['Fabricante','True'],['Dimensões públicas','H 78.63 × W 39.50 × D 29.63–29.88 in'],['Capacidade','420 garrafas de 20 oz'],['Corrente publicada','6.8 A'],['Peso','400–415 lb'],['Prateleiras','5'],['Porta','Swing / Slide']],documents:[doc('Ficha oficial Double Door Small',pdf('cokesolutions/Equipment/Equipment-Cooler-DoubleDoor-Small.pdf'))],sourceUrl:pdf('cokesolutions/Equipment/Equipment-Cooler-DoubleDoor-Small.pdf')}),
+    make('cooler', {id:'cooler-double-medium',assetCode:'VIT-2P-MED',category:'Vitrines',visual:'double-cooler',formType:'Equipamento de frio',name:'Vitrine 2 portas — média',officialName:'Double Door Medium',model:'Double Door Medium',manufacturer:'True / Imbera',aliases:['duas portas média','double door medium'],description:'Cooler refrigerado de duas portas e capacidade média.',technicalFacts:[['Tipo','Double Door Medium'],['Fabricantes','True / Imbera'],['Dimensões públicas','H 78.63–79 × W 47–47.13 × D 29.63–30 in'],['Capacidade','420–490 garrafas de 20 oz'],['Corrente publicada','6.8–10 A'],['Peso','440–465 lb'],['Prateleiras','5'],['Porta','Swing / Slide']],documents:[doc('Ficha oficial Double Door Medium',pdf('cokesolutions/Equipment/Equipment-Cooler-DoubleDoor-Medium.pdf'))],sourceUrl:pdf('cokesolutions/Equipment/Equipment-Cooler-DoubleDoor-Medium.pdf')}),
+    make('cooler', {id:'cooler-double-large',assetCode:'VIT-2P-GDE',category:'Vitrines',visual:'double-cooler',formType:'Equipamento de frio',name:'Vitrine 2 portas — grande',officialName:'Double Door Large',model:'Double Door Large',manufacturer:'True / Imbera',aliases:['duas portas grande','double door large'],description:'Cooler refrigerado de duas portas e elevada capacidade.',technicalFacts:[['Tipo','Double Door Large'],['Fabricantes','True / Imbera'],['Dimensões públicas','H 78.38–78.63 × W 51.13–54.13 × D 29.63–29.88 in'],['Capacidade','560 garrafas de 20 oz'],['Corrente publicada','8.6–10.7 A'],['Peso','465–485 lb'],['Prateleiras','5'],['Porta','Swing / Slide']],documents:[doc('Ficha oficial Double Door Large',pdf('cokesolutions/Equipment/Equipment-Cooler-DoubleDoor-Large.pdf'))],sourceUrl:pdf('cokesolutions/Equipment/Equipment-Cooler-DoubleDoor-Large.pdf')}),
+    make('cooler', {id:'cooler-g10-monster',assetCode:'VIT-G10-MON',category:'Vitrines',visual:'single-cooler',formType:'Equipamento de frio',name:'Monster / Cooler G-10',officialName:'G-10',model:'G-10',manufacturer:'IDW',aliases:['monster','moster','g10','g-10'],description:'Cooler G-10 identificado em ficha pública CokeSolutions com referência Monster.',technicalFacts:[['Tipo','Single Door Small'],['Modelo','G-10'],['Fabricante','IDW'],['Dimensões públicas','H 54 × W 25.25 × D 26 in'],['Corrente publicada','4.0 A'],['Peso','176 lb'],['Prateleiras','5'],['Facing por prateleira','8'],['Porta','Swing'],['Energia publicada','1.70 kW/h']],documents:[doc('Ficha oficial G-10 Monster',pdf('gameplan/G10_Monster.pdf'))],sourceUrl:pdf('gameplan/G10_Monster.pdf')}),
+    make('cooler', {id:'cooler-fg-ret240',assetCode:'VIT-RET240',category:'Vitrines',visual:'single-cooler',formType:'Equipamento de frio',name:'Cooler Retro — FG-RET240',officialName:'Retro',model:'FG-RET240',manufacturer:'Frigoglass',aliases:['retro','fg-ret240','frigoglass retro'],description:'Cooler de especialidade com estética retro.',technicalFacts:[['Tipo','Specialty'],['Modelo','FG-RET240'],['Fabricante','Frigoglass'],['Dimensões públicas','H 74.50 × W 19.50 × D 32 in'],['Capacidade','120 garrafas de 20 oz'],['Corrente publicada','3.2 A'],['Peso','263 lb'],['Prateleiras','4'],['Porta','Swing']],documents:[doc('Ficha oficial Retro FG-RET240',pdf('gameplan/Retro_KORed.pdf'))],sourceUrl:pdf('gameplan/Retro_KORed.pdf')}),
+
+    make('vending', {id:'vending-stack-72',assetCode:'VEN-STACK-72',category:'Vending',visual:'vending',formType:'Máquina',name:'Vending Stack — 72 polegadas',officialName:'72" Stack Vending Machine',model:'Stack 72"',manufacturer:'Royal / Crane / Dixie Narco',aliases:['stack 72','vending 72'],description:'Vending vertical tipo stack com 72 polegadas de altura.',technicalFacts:[['Tipo','Stack'],['Fabricantes','Royal / Crane / Dixie Narco'],['Dimensões públicas','H 72 × W 28–37 × D 33.5–37 in'],['Capacidade lata','448–720'],['Capacidade garrafa 20 oz','196–320'],['Corrente publicada','7–10 A'],['Peso','536–787 lb'],['Marcas por vender','6–8']],documents:[doc('Ficha oficial Vending 72 Stack',pdf('cokesolutions/Equipment/Equipment-Vending-72Stack.pdf'))],sourceUrl:pdf('cokesolutions/Equipment/Equipment-Vending-72Stack.pdf')}),
+    make('vending', {id:'vending-stack-79',assetCode:'VEN-STACK-79',category:'Vending',visual:'vending',formType:'Máquina',name:'Vending Stack — 79 polegadas',officialName:'79" Stack Vending Machine',model:'Stack 79"',manufacturer:'Royal',aliases:['stack 79','vending 79'],description:'Vending vertical tipo stack com 79 polegadas de altura.',technicalFacts:[['Tipo','Stack'],['Fabricante','Royal'],['Dimensões públicas','H 79 × W 37 × D 33.5 in'],['Capacidade lata','804'],['Capacidade garrafa 20 oz','360'],['Corrente publicada','9–10 A'],['Peso','653 lb'],['Marcas por vender','8–12']],documents:[doc('Ficha oficial Vending 79 Stack',pdf('cokesolutions/Equipment/Equipment-Vending-79Stack.pdf'))],sourceUrl:pdf('cokesolutions/Equipment/Equipment-Vending-79Stack.pdf')}),
+    make('vending', {id:'vending-glassfront-small',assetCode:'VEN-GFV-SLIM',category:'Vending',visual:'vending',formType:'Máquina',name:'Vending Glass Front — pequena',officialName:'Small Glass Front Vender',model:'GFV Slim',manufacturer:'Dixie Narco / Royal',aliases:['glass front pequena','gfv slim'],description:'Vending com frente em vidro em formato slim.',technicalFacts:[['Tipo','GFV Slim'],['Fabricantes','Dixie Narco / Royal'],['Dimensões públicas','H 72 × W 37–42 × D 32–35 in'],['Capacidade lata','270–320'],['Capacidade garrafa 20 oz','240–280'],['Corrente publicada','6–10 A'],['Peso','637–760 lb'],['Facings','30–40']],documents:[doc('Ficha oficial Small Glass Front',pdf('cokesolutions/Equipment/Equipment-Vending-Small-Glass-Front.pdf'))],sourceUrl:pdf('cokesolutions/Equipment/Equipment-Vending-Small-Glass-Front.pdf')}),
+    make('vending', {id:'vending-glassfront-large',assetCode:'VEN-GFV-GDE',category:'Vending',visual:'vending-wide',formType:'Máquina',name:'Vending Glass Front — grande',officialName:'Large Glass Front Vender',model:'GFV',manufacturer:'Dixie Narco',aliases:['glass front grande','gfv'],description:'Vending de maior capacidade com frente em vidro.',technicalFacts:[['Tipo','GFV'],['Fabricante','Dixie Narco'],['Dimensões públicas','H 72 × W 47–52 × D 32–35 in'],['Capacidade lata','405'],['Capacidade garrafa 20 oz','360'],['Corrente publicada','6–10 A'],['Peso','764 lb'],['Facings','45']],documents:[doc('Ficha oficial Large Glass Front',pdf('cokesolutions/Equipment/Equipment-Vending-Large-Glass-Front.pdf'))],sourceUrl:pdf('cokesolutions/Equipment/Equipment-Vending-Large-Glass-Front.pdf')}),
+    make('vending', {id:'vending-dn5800',assetCode:'VEN-DN5800',category:'Vending',visual:'vending-wide',formType:'Máquina',name:'Vending Dixie Narco DN-5800',officialName:'DN-5800',model:'DN-5800',manufacturer:'Dixie Narco',aliases:['dn5800','dn-5800','dixie narco'],description:'Vending Glass Front de referência DN-5800.',technicalFacts:[['Tipo','GFV'],['Modelo','DN-5800'],['Fabricante','Dixie Narco'],['Dimensões públicas','H 72 × W 46.5 × D 34 in'],['Capacidade lata','405'],['Capacidade garrafa 20 oz','360'],['Corrente publicada','10 A'],['Peso','764 lb'],['Facings','45']],documents:[doc('Ficha oficial DN-5800',pdf('gameplan/Equipment/DN5800_KO.pdf'))],sourceUrl:pdf('gameplan/Equipment/DN5800_KO.pdf')}),
+
+    make('postmix', {id:'postmix-counter-6',assetCode:'PM-COUNTER-06',category:'Postmix',visual:'postmix',formType:'Dispensador',name:'Post-mix Counter Electric — 6 válvulas',officialName:'Counter Electric — 6 valve',model:'Counter Electric 6v',manufacturer:'Varia conforme unidade',aliases:['counter electric 6','postmix 6 válvulas'],description:'Dispensador post-mix de bancada com seis válvulas e refrigeração integrada.',technicalFacts:[['Família','Counter Electric'],['Válvulas','6'],['Dimensões públicas','H 25.38 × W 19.19 × D 24.00 in'],['Peso de expedição','150 lb'],['Peso no balcão','261 lb'],['Construção','Armário inox / water bath / drip tray'],['Refrigerante na referência histórica','R134A']],documents:[doc('Página oficial Fountains — Counter Electric',pages.fountains,'Página oficial')],sourceUrl:pages.fountains}),
+    make('postmix', {id:'postmix-counter-8',assetCode:'PM-COUNTER-08',category:'Postmix',visual:'postmix',formType:'Dispensador',name:'Post-mix Counter Electric — 8 válvulas',officialName:'Counter Electric — 8 valve',model:'Counter Electric 8v',manufacturer:'Varia conforme unidade',aliases:['counter electric 8','postmix 8 válvulas'],description:'Dispensador post-mix de bancada com oito válvulas e refrigeração integrada.',technicalFacts:[['Família','Counter Electric'],['Válvulas','8'],['Dimensões públicas','H 31.25 × W 26 × D 27.13 in'],['Peso de expedição','300 lb'],['Peso no balcão','479 lb'],['Construção','Armário inox / water bath / drip tray']],documents:[doc('Página oficial Fountains — Counter Electric',pages.fountains,'Página oficial')],sourceUrl:pages.fountains}),
+    make('postmix', {id:'postmix-dropin-6',assetCode:'PM-DROPIN-06',category:'Postmix',visual:'dropin',formType:'Dispensador',name:'Post-mix Drop-In — 6 válvulas',officialName:'Drop In — 6 valve',model:'Drop In 6v',manufacturer:'Varia conforme unidade',aliases:['drop in 6','drop-in 6'],description:'Dispensador post-mix integrado no balcão, com seis válvulas e cold plate.',technicalFacts:[['Família','Drop In'],['Válvulas','6'],['Dimensões públicas','H 36.25–54.50 × W 23 × D 23–23.75 in'],['Peso de expedição','240–260 lb'],['Cutout','23.25 × 23.25 in'],['Capacidade de gelo','80 ou 100 lb']],documents:[doc('Página oficial Fountains — Drop In',pages.fountains,'Página oficial')],sourceUrl:pages.fountains}),
+    make('postmix', {id:'postmix-dropin-8',assetCode:'PM-DROPIN-08',category:'Postmix',visual:'dropin',formType:'Dispensador',name:'Post-mix Drop-In — 8 válvulas',officialName:'Drop In — 8 Valve',model:'Drop In 8v',manufacturer:'Varia conforme unidade',aliases:['drop in 8','drop-in 8'],description:'Dispensador post-mix integrado no balcão, com oito válvulas e cold plate.',technicalFacts:[['Família','Drop In'],['Válvulas','8'],['Dimensões públicas','H 36.25–42.25 × W 23–30 × D 23 in'],['Peso de expedição','240–300 lb'],['Cutout','23.25 × 23.25 in'],['Capacidade de gelo','80 ou 100 lb']],documents:[doc('Ficha oficial Drop In 8v',pdf('cokesolutions/Equipment/Equipment-Fountain-DropIn-8v.pdf')),doc('Página oficial Fountains',pages.fountains,'Página oficial')],sourceUrl:pdf('cokesolutions/Equipment/Equipment-Fountain-DropIn-8v.pdf')}),
+    make('postmix', {id:'postmix-icebev-6',assetCode:'PM-ICEBEV-06',category:'Postmix',visual:'postmix',formType:'Dispensador',name:'Post-mix IceBev Combo — 6 válvulas',officialName:'IceBev Combo 6v',model:'IceBev Combo 6v',manufacturer:'Varia conforme unidade',aliases:['icebev 6','ice bev 6'],description:'Dispensador combinado de bebida e gelo com seis válvulas.',technicalFacts:[['Família','IceBev Combo'],['Válvulas','6'],['Dimensões públicas','H 34–39.62 × W 22–30 × D 30–31 in'],['Peso de expedição','255 lb'],['Capacidade de gelo','180 lb'],['Gelo dispensável','150 lb']],documents:[doc('Ficha oficial IceBev Combo 6v',pdf('cokesolutions/Equipment/Equipment-Fountain-IceBev-6v.pdf'))],sourceUrl:pdf('cokesolutions/Equipment/Equipment-Fountain-IceBev-6v.pdf'),extraSymptoms:['Gelo não dispensa']}),
+    make('postmix', {id:'postmix-icebev-8',assetCode:'PM-ICEBEV-08',category:'Postmix',visual:'postmix',formType:'Dispensador',name:'Post-mix IceBev Combo — 8 válvulas',officialName:'IceBev Combo 8v',model:'IceBev Combo 8v',manufacturer:'Varia conforme unidade',aliases:['icebev 8','ice bev 8'],description:'Dispensador combinado de bebida e gelo com oito válvulas.',technicalFacts:[['Família','IceBev Combo'],['Válvulas','8'],['Dimensões públicas','H 34–39.62 × W 30–30.50 × D 30–31 in'],['Peso de expedição','305 lb'],['Capacidade de gelo','250 lb'],['Gelo dispensável','220 lb']],documents:[doc('Ficha oficial IceBev Combo 8v',pdf('cokesolutions/Equipment/Equipment-Fountain-IceBev-8v.pdf'))],sourceUrl:pdf('cokesolutions/Equipment/Equipment-Fountain-IceBev-8v.pdf'),extraSymptoms:['Gelo não dispensa']}),
+
+    make('freestyle', {id:'freestyle-7100',assetCode:'FS-7100',category:'Freestyle',visual:'freestyle-counter',formType:'Dispensador',name:'Coca-Cola Freestyle® 7100',officialName:'Self-Serve 7100',model:'7100',manufacturer:'Coca-Cola Freestyle',aliases:['freestyle 7100','7100','self serve'],description:'Dispensador Freestyle self-service de bancada.',technicalFacts:[['Tipo','Self-Serve'],['Modelo','7100'],['Above Countertop','Sim'],['Bebidas/dia na página pública','40'],['Dimensões públicas','H 39–43 × W 30 × D 33.4–35.7 in'],['Corrente publicada','20 A'],['Peso','625 lb'],['Capacidade de gelo','220 lb']],documents:[doc('Página oficial Freestyle 7100',pages.freestyle,'Página oficial'),doc('Ficha de especificações 7100','https://www.cokesolutions.com/coca-cola-freestyle/pdfs/CCFS_7100_specsheet.pdf')],sourceUrl:pages.freestyle,photo:'https://www.cokesolutions.com/content/cokesolutions/machines/71k-RightView-Legs-Red-DP_2022web.jpg',photoSourceUrl:pages.freestyle}),
+    make('freestyle', {id:'freestyle-8100',assetCode:'FS-8100',category:'Freestyle',visual:'freestyle-tower',formType:'Dispensador',name:'Coca-Cola Freestyle® 8100',officialName:'Crew-Serve 8100',model:'8100 / Crew-Serve',manufacturer:'Coca-Cola Freestyle',aliases:['freestyle 8100','8100','crew serve'],description:'Dispensador Freestyle orientado ao serviço pela equipa.',technicalFacts:[['Tipo','Crew-Serve'],['Secção oficial','Crew-Serve 8100'],['Model Name na página','Crew-Serve'],['Bebidas/dia na página pública','100'],['Dimensões públicas','H 72 × W 25 × D 33 in'],['Peso de expedição','620 lb'],['Capacidade de gelo','100 lb']],documents:[doc('Página oficial Freestyle 8100',pages.freestyle,'Página oficial')],sourceUrl:pages.freestyle,photo:'https://www.cokesolutions.com/content/cokesolutions/machines/81k-Front-DP_2022web.jpg',photoSourceUrl:pages.freestyle}),
+    make('freestyle', {id:'freestyle-9100',assetCode:'FS-9100',category:'Freestyle',visual:'freestyle-tower',formType:'Dispensador',name:'Coca-Cola Freestyle® 9100',officialName:'Self-Serve 9100',model:'9100',manufacturer:'Coca-Cola Freestyle',aliases:['freestyle 9100','9100','self serve'],description:'Dispensador Freestyle self-service de maior capacidade.',technicalFacts:[['Tipo','Self-Serve'],['Modelo','9100'],['Bebidas/dia na página pública','100'],['Dimensões públicas','H 73.75 × W 25.5 × D 35.5 in'],['Peso de expedição','963 lb'],['Capacidade de gelo','235 lb'],['Gelo dispensável','190 lb sem ice maker / 160 lb com ice maker']],documents:[doc('Página oficial Freestyle 9100',pages.freestyle,'Página oficial'),doc('Ficha de especificações 9100','https://www.cokesolutions.com/coca-cola-freestyle/pdfs/CCFS_9100_specsheet.pdf')],sourceUrl:pages.freestyle,photo:'https://www.cokesolutions.com/content/cokesolutions/machines/91k-Quarter-Red-PB_2022web.jpg',photoSourceUrl:pages.freestyle})
   ];
 
+  const meta = {
+    version: '4.0.0',
+    total: data.length,
+    imagePolicy: 'A fotografia é apresentada diretamente apenas quando o URL do ativo oficial CokeSolutions foi verificado. Os restantes equipamentos mantêm ilustração neutra e ligação para a ficha oficial, evitando associar uma fotografia errada.',
+    regionalWarning: REGIONAL_NOTE
+  };
+
+  if (typeof window !== 'undefined') {
+    window.EquipmentCatalogMeta = meta;
+    window.EquipmentCatalogData = data;
+  }
   if (typeof module !== 'undefined' && module.exports) module.exports = data;
-  if (typeof window !== 'undefined') window.EquipmentCatalogData = data;
 })();
