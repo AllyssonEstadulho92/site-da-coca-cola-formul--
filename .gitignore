@@ -9,3 +9,10 @@ coverage/
 dist/
 .vscode/
 .idea/
+
+# Dados locais e exportações da aplicação
+registo-avarias-backup-*.json
+registo-avarias-backup-encriptado-*.json
+registos-avarias-*.csv
+backups/
+exports/
