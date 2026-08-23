@@ -6,18 +6,24 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
   <meta name="referrer" content="no-referrer" />
   <meta name="theme-color" content="#f7f7f8" />
-  <meta name="description" content="Aplicação profissional de produtividade, catálogo visual de equipamentos e registo de avarias — protótipo V3.3." />
+  <meta name="description" content="Aplicação profissional de produtividade, catálogo visual de equipamentos e registo de avarias — protótipo local V3.4." />
   <title>Sistema de Registo de Avarias</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="css/equipment-catalog.css" />
+  <link rel="stylesheet" href="css/auth-security.css" />
 </head>
 <body>
   <noscript>Esta aplicação necessita de JavaScript ativo.</noscript>
 
   <section id="loginView" class="login-view" aria-labelledby="loginTitle">
-    <div class="login-card">
-      <div class="brand-lockup" aria-label="Identidade visual do protótipo">
+    <div class="login-card login-card-secure">
+      <div class="auth-status-row" aria-label="Estado do ambiente">
+        <span class="auth-environment-badge">Protótipo local</span>
+        <span id="connectionSecurityStatus" class="security-status-pill" data-secure="unknown">A verificar ligação…</span>
+      </div>
+
+      <div class="brand-lockup secure-brand-lockup" aria-label="Identidade visual do protótipo">
         <div class="brand-mark" aria-hidden="true">RA</div>
         <div>
           <p class="eyebrow">Produtividade profissional</p>
@@ -25,9 +31,16 @@
         </div>
       </div>
 
-      <div class="prototype-note" role="note">
-        <strong>Perfil local de protótipo.</strong> No primeiro acesso, o e-mail e a palavra-passe criam um perfil apenas neste browser. A palavra-passe não é guardada em texto simples. Em produção deverá ser usada autenticação corporativa aprovada.
+      <div class="prototype-note prototype-note-compact" role="note">
+        <strong>Ambiente de teste.</strong> Os dados permanecem neste dispositivo. Não utilize dados reais de clientes, credenciais corporativas ou informação SAP neste protótipo público.
       </div>
+
+      <div class="auth-mode-switch" role="group" aria-label="Escolher modo de acesso">
+        <button id="loginModeLogin" class="auth-mode-button active" type="button" aria-pressed="true">Entrar</button>
+        <button id="loginModeCreate" class="auth-mode-button" type="button" aria-pressed="false">Criar perfil de teste</button>
+      </div>
+
+      <p id="loginModeHint" class="auth-mode-hint">Entre com um perfil local já criado neste browser.</p>
 
       <form id="loginForm" class="stack-lg" novalidate>
         <label class="field">
@@ -39,7 +52,7 @@
         <label class="field">
           <span>Palavra-passe</span>
           <div class="password-wrap">
-            <input id="loginPassword" name="password" type="password" autocomplete="current-password" minlength="8" placeholder="••••••••" required />
+            <input id="loginPassword" name="password" type="password" autocomplete="current-password" minlength="8" placeholder="••••••••••••" required />
             <button id="togglePassword" class="icon-button" type="button" aria-label="Mostrar palavra-passe">
               <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.8"/></svg>
             </button>
@@ -47,8 +60,28 @@
           <small class="field-error" data-error-for="loginPassword"></small>
         </label>
 
-        <button class="btn btn-primary btn-block" type="submit">Entrar</button>
+        <div id="createProfileFields" class="create-profile-fields is-hidden">
+          <label class="field">
+            <span>Confirmar palavra-passe</span>
+            <input id="loginConfirmPassword" name="confirmPassword" type="password" autocomplete="new-password" minlength="12" placeholder="Repita a palavra-passe" />
+            <small class="field-error" data-error-for="loginConfirmPassword"></small>
+          </label>
+          <div id="passwordStrength" class="password-strength" data-score="0" aria-live="polite">
+            <div class="password-strength-track" aria-hidden="true"><span id="passwordStrengthBar"></span></div>
+            <p id="passwordStrengthText">Use pelo menos 12 caracteres e combine diferentes tipos de caracteres.</p>
+          </div>
+        </div>
+
+        <div id="loginSecurityMessage" class="login-security-message" role="status" aria-live="polite"></div>
+
+        <button id="loginSubmit" class="btn btn-primary btn-block" type="submit">Entrar</button>
       </form>
+
+      <div class="login-security-footer" aria-label="Informação de segurança do protótipo">
+        <span>Dados locais</span>
+        <span>Sem sincronização corporativa</span>
+        <span>Bloqueio após 15 min de inatividade</span>
+      </div>
     </div>
   </section>
 
@@ -67,9 +100,9 @@
       <div class="sidebar-footer">
         <div class="sync-pill" id="sidebarSyncStatus" data-status="synced">
           <span class="status-dot" aria-hidden="true"></span>
-          <span>Dados locais protegidos</span>
+          <span>Dados locais · protótipo</span>
         </div>
-        <span class="build-label">V3.3 · Equipamentos</span>
+        <span class="build-label">V3.4 · Segurança local</span>
       </div>
     </aside>
 
