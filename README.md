@@ -1,8 +1,8 @@
-# Sistema de Registo de Avarias — V3
+# Sistema de Registo de Avarias — V3.1
 
 Aplicação web **mobile-first/PWA** para produtividade profissional, registo de ocorrências, acompanhamento de equipamentos, encaminhamentos e histórico operacional.
 
-A V3 implementa a camada funcional local e deixa as integrações corporativas isoladas para posterior ligação a serviços autorizados.
+A V3.1 implementa a camada funcional local e deixa as integrações corporativas isoladas para posterior ligação a serviços autorizados.
 
 ## Estado do projeto
 
@@ -34,6 +34,22 @@ A V3 implementa a camada funcional local e deixa as integrações corporativas i
 - PWA, Service Worker e modo offline para recursos já armazenados.
 - Design responsivo para telemóvel, tablet e desktop.
 - Acessibilidade base: labels, teclado, foco visível, contraste, sem dependência exclusiva de cor e suporte a `prefers-reduced-motion`.
+- Content Security Policy no documento principal e política `no-referrer`.
+- Modo de demonstração pública com dados exclusivamente fictícios.
+
+## Demonstração pública segura
+
+Na área **Configurações → Demonstração pública segura** podem ser carregados cinco registos fictícios para testar dashboard, pesquisa, filtros, rascunhos, estados, produtividade e histórico.
+
+Os dados de demonstração:
+
+- usam prefixo `DEMO`;
+- são marcados internamente com `demo: true`;
+- usam e-mails no domínio reservado `example.invalid`;
+- não incluem regras internas PT, destinatários reais ou dados provenientes do SAP;
+- podem ser removidos sem apagar os restantes dados locais.
+
+Isto permite publicar e testar a aplicação sem utilizar informação operacional real.
 
 ## Estrutura
 
@@ -44,22 +60,46 @@ A V3 implementa a camada funcional local e deixa as integrações corporativas i
 ├── service-worker.js
 ├── package.json
 ├── css/
-│   └── styles.css
+│   ├── styles.css
+│   ├── base.css
+│   ├── features.css
+│   └── theme.css
 ├── js/
-│   ├── app.js
 │   ├── core.js
-│   └── db.js
+│   ├── db.js
+│   ├── app-base.js
+│   ├── app-utils.js
+│   ├── app-shell.js
+│   ├── app-dashboard.js
+│   ├── app-form-view.js
+│   ├── app-form-logic.js
+│   ├── app-form-save.js
+│   ├── app-records.js
+│   ├── app-record-detail.js
+│   ├── app-record-archive.js
+│   ├── app-directories.js
+│   ├── app-routing-views.js
+│   ├── app-activity-productivity.js
+│   ├── app-settings.js
+│   ├── app-backup.js
+│   ├── app-profile-help.js
+│   ├── app-demo.js
+│   └── app.js
 ├── assets/
 │   └── app-icon.svg
 ├── tests/
-│   └── core.test.js
+│   ├── syntax.test.js
+│   ├── core.test.js
+│   └── integrity.test.js
 ├── docs/
 │   ├── ARQUITETURA.md
 │   ├── DADOS_E_SEGURANCA.md
 │   ├── GUIA_UTILIZACAO.md
 │   ├── QA_REPORT.md
 │   └── ROADMAP_PRODUCAO.md
-└── .github/workflows/ci.yml
+└── .github/workflows/
+    ├── ci.yml
+    └── pages.yml
 ```
 
 ## Executar localmente
@@ -78,11 +118,19 @@ Depois abrir `http://localhost:8000/`.
 npm run check
 ```
 
-Inclui validação sintática de JavaScript e testes unitários da lógica central.
+A verificação inclui:
+
+- sintaxe de todos os ficheiros JavaScript;
+- testes unitários da lógica central;
+- referências do `index.html`;
+- integridade dos recursos listados no Service Worker;
+- validação básica do `manifest.json`.
 
 ## Dados e segurança
 
 O repositório é público. **Não inserir dados reais de clientes, credenciais, endereços internos, tokens, regras confidenciais, informação proveniente do SAP ou e-mails corporativos não destinados a publicação.**
+
+Backups, mesmo quando gerados pela aplicação, podem conter dados operacionais e não devem ser adicionados ao repositório.
 
 Para produção devem ser adicionados, conforme autorização da organização:
 
