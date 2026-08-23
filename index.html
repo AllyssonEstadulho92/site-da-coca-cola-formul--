@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
   <meta name="referrer" content="no-referrer" />
   <meta name="theme-color" content="#f7f7f8" />
-  <meta name="description" content="Aplicação profissional de produtividade, catálogo visual de equipamentos e registo de avarias — protótipo local V3.7." />
+  <meta name="description" content="Aplicação profissional de produtividade, catálogo visual de equipamentos e registo de avarias — acesso local V3.8." />
   <title>Sistema de Registo de Avarias</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/styles.css" />
@@ -18,25 +18,25 @@
 
   <section id="loginView" class="login-view" aria-labelledby="loginTitle">
     <div class="login-card login-card-secure">
-      <div class="auth-status-row" aria-label="Estado do ambiente">
-        <span class="auth-environment-badge">Acesso local</span>
+      <div class="auth-status-row" aria-label="Estado do acesso">
+        <span class="auth-environment-badge">Acesso à aplicação</span>
         <span id="connectionSecurityStatus" class="security-status-pill" data-secure="unknown">A verificar ligação…</span>
       </div>
 
-      <div class="brand-lockup secure-brand-lockup" aria-label="Identidade visual do protótipo">
+      <div class="brand-lockup secure-brand-lockup" aria-label="Sistema de Registo de Avarias">
         <div class="brand-mark" aria-hidden="true">RA</div>
         <div>
           <p class="eyebrow">Produtividade profissional</p>
-          <h1 id="loginTitle">Entrar na aplicação</h1>
+          <h1 id="loginTitle">Entrar</h1>
           <p class="auth-subtitle">Sistema de Registo de Avarias</p>
         </div>
       </div>
 
       <div class="prototype-note prototype-note-compact" role="note">
-        Utilize o seu e-mail <strong>@ilunion.es</strong>. A palavra-passe usada aqui é exclusiva deste protótipo e não deve ser a palavra-passe da conta empresarial.
+        Utilize o seu e-mail <strong>@ilunion.es</strong>. No primeiro acesso neste dispositivo, irá definir uma palavra-passe exclusiva desta aplicação. Nos acessos seguintes, utilize essa mesma palavra-passe. <strong>Não utilize a palavra-passe empresarial.</strong>
       </div>
 
-      <p id="loginModeHint" class="auth-mode-hint">Introduza o seu e-mail e toque em <strong>Continuar</strong>.</p>
+      <p id="loginModeHint" class="auth-mode-hint">Introduza o e-mail para continuar.</p>
 
       <form id="loginForm" class="stack-lg" novalidate>
         <label class="field">
@@ -45,25 +45,25 @@
           <small class="field-error" data-error-for="loginEmail"></small>
         </label>
 
-        <div id="authFlowState" class="auth-flow-state" data-stage="email" role="status" aria-live="polite">Introduza o e-mail para continuar.</div>
+        <div id="authFlowState" class="auth-flow-state" data-stage="email" role="status" aria-live="polite">Passo 1 de 2 · Introduza o e-mail.</div>
 
         <div id="authPasswordStage" class="auth-password-stage is-hidden">
           <label class="field">
-            <span>Palavra-passe do acesso local</span>
+            <span>Palavra-passe da aplicação</span>
             <div class="password-wrap">
               <input id="loginPassword" name="password" type="password" autocomplete="current-password" minlength="8" placeholder="••••••••••••" />
               <button id="togglePassword" class="icon-button" type="button" aria-label="Mostrar palavra-passe">
                 <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.8"/></svg>
               </button>
             </div>
-            <small class="field-hint">Não utilize a palavra-passe da conta empresarial.</small>
+            <small class="field-hint">É a palavra-passe criada para esta aplicação neste dispositivo.</small>
             <small class="field-error" data-error-for="loginPassword"></small>
           </label>
 
           <div id="createProfileFields" class="create-profile-fields is-hidden">
             <label class="field">
-              <span>Confirmar palavra-passe</span>
-              <input id="loginConfirmPassword" name="confirmPassword" type="password" autocomplete="new-password" minlength="12" placeholder="Repita a palavra-passe" />
+              <span>Confirmar nova palavra-passe</span>
+              <input id="loginConfirmPassword" name="confirmPassword" type="password" autocomplete="new-password" minlength="12" placeholder="Repita a nova palavra-passe" />
               <small class="field-error" data-error-for="loginConfirmPassword"></small>
             </label>
             <div id="passwordStrength" class="password-strength" data-score="0" aria-live="polite">
@@ -76,11 +76,11 @@
         <div id="loginSecurityMessage" class="login-security-message" role="status" aria-live="polite"></div>
 
         <button id="loginSubmit" class="btn btn-primary btn-block" type="submit">Continuar</button>
-        <button id="changeLoginEmail" class="btn btn-ghost btn-block is-hidden" type="button">Usar outro e-mail</button>
+        <button id="changeLoginEmail" class="btn btn-ghost btn-block is-hidden" type="button">Alterar e-mail</button>
       </form>
 
-      <div class="login-security-footer" aria-label="Informação de segurança">
-        <span>HTTPS / Web Crypto</span>
+      <div class="login-security-footer" aria-label="Proteções do acesso">
+        <span>Ligação HTTPS</span>
         <span>Bloqueio automático após 15 min</span>
       </div>
     </div>
@@ -103,7 +103,7 @@
           <span class="status-dot" aria-hidden="true"></span>
           <span>Dados locais · protótipo</span>
         </div>
-        <span class="build-label">V3.7 · Acesso simplificado</span>
+        <span class="build-label">V3.8 · Acesso limpo</span>
       </div>
     </aside>
 
