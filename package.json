@@ -5,6 +5,6 @@
   "description": "PWA profissional para produtividade e registo de avarias, com persistência local, auditoria e encaminhamento configurável.",
   "scripts": {
     "test": "node tests/core.test.js",
-    "check": "node tests/syntax.test.js && node tests/core.test.js && node tests/integrity.test.js"
+    "check": "node tests/syntax.test.js && node tests/core.test.js && node tests/integrity.test.js && node tests/public-safety.test.js"
   }
 }
