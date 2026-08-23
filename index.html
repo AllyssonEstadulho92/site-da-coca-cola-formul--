@@ -3,15 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.cokesolutions.com; frame-src https://www.cokesolutions.com https://d110qkvvq2aow9.cloudfront.net; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
   <meta name="referrer" content="no-referrer" />
   <meta name="theme-color" content="#f7f7f8" />
-  <meta name="description" content="Aplicação de produtividade, catálogo técnico CokeSolutions e registo de avarias — protótipo sem autenticação V4.1." />
+  <meta name="description" content="Aplicação de produtividade, catálogo técnico com imagens manuais e registo de avarias — protótipo sem autenticação V4.2." />
   <title>Sistema de Registo de Avarias</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="css/equipment-catalog.css" />
   <link rel="stylesheet" href="css/equipment-images-v41.css" />
+  <link rel="stylesheet" href="css/equipment-manual-v42.css" />
 </head>
 <body>
   <noscript>Esta aplicação necessita de JavaScript ativo.</noscript>
@@ -33,7 +34,7 @@
           <span class="status-dot" aria-hidden="true"></span>
           <span>Dados locais · protótipo</span>
         </div>
-        <span class="build-label">V4.1 · Imagens oficiais</span>
+        <span class="build-label">V4.2 · Imagens manuais</span>
       </div>
     </aside>
 
@@ -101,6 +102,7 @@
   <script src="js/equipment-data.js"></script>
   <script src="js/app-equipment-catalog.js"></script>
   <script src="js/app-equipment-catalog-v4.js"></script>
+  <script src="js/app-equipment-manual.js"></script>
   <script src="js/app-routing-views.js"></script>
   <script src="js/app-activity-productivity.js"></script>
   <script src="js/app-settings.js"></script>
