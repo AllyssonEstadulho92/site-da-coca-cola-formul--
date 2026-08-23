@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.8.0
+
+- Simplificado o ecrã de entrada para apresentar apenas `Entrar`, removendo definitivamente a linguagem visual `Criar perfil de teste`.
+- Primeiro passo apresenta apenas o e-mail `@ilunion.es` e a ação `Continuar`.
+- No primeiro acesso neste dispositivo, a aplicação apresenta automaticamente a criação e confirmação da `Palavra-passe da aplicação`.
+- Nos acessos seguintes, a aplicação pede diretamente a mesma palavra-passe criada para este dispositivo.
+- A ação inicial passa a ser `Criar palavra-passe e entrar`, evitando termos técnicos como perfil local ou SSO no ecrã principal.
+- Rodapé de entrada reduzido para apenas `Ligação HTTPS` e bloqueio automático por inatividade.
+- Mantidas as proteções existentes: Web Crypto, PBKDF2-SHA-256, domínio `@ilunion.es`, lockout local e sessão com expiração.
+- Service Worker atualizado para estratégia network-first em HTML, JavaScript e CSS quando existe ligação, com fallback offline.
+- Atualização automática do Service Worker alinhada com V3.8 para reduzir permanência de interfaces antigas em cache no iPhone/PWA.
+- Adicionado teste `login-copy.test.js` para impedir regressão para a interface antiga.
+
 ## 3.7.0
 
 - Reformulado o ecrã de entrada para apresentar apenas `Entrar na aplicação`, sem a escolha visual `Entrar / Criar perfil de teste`.
