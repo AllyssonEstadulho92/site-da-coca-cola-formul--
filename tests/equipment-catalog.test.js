@@ -1,8 +1,10 @@
 'use strict';
+const fs = require('node:fs');
 const assert = require('node:assert/strict');
 const path = require('node:path');
 
-const catalog = require(path.resolve(__dirname, '../js/equipment-data.js'));
+const root = path.resolve(__dirname, '..');
+const catalog = require(path.resolve(root, 'js/equipment-data.js'));
 
 assert.equal(Array.isArray(catalog), true, 'O catálogo deve ser uma lista.');
 assert.equal(catalog.length >= 10, true, 'O catálogo deve conter uma base mínima de equipamentos.');
@@ -31,4 +33,33 @@ for (const id of ['freestyle-7100','freestyle-8100','freestyle-9100','postmix-co
   assert.equal(ids.has(id), true, `Equipamento essencial em falta: ${id}`);
 }
 
-console.log(`Equipment catalog tests: OK (${catalog.length} equipamentos)`);
+const ui = fs.readFileSync(path.resolve(root, 'js/app-equipment-catalog.js'), 'utf8');
+const css = fs.readFileSync(path.resolve(root, 'css/equipment-catalog.css'), 'utf8');
+
+for (const required of [
+  'equipment-shell-v33',
+  'equipmentInspectorHtml',
+  'equipmentInspectorTabHtml',
+  'data-equipment-tab',
+  'data-equipment-view',
+  'data-equipment-new',
+  'renderRegisteredEquipmentView',
+  'equipmentCatalogSelection',
+]) {
+  assert.equal(ui.includes(required), true, `UI do catálogo sem integração obrigatória: ${required}`);
+}
+
+for (const required of [
+  '.equipment-shell-v33',
+  '.equipment-inspector-pane',
+  '.equipment-category-grid',
+  '.equipment-inspector-tabs',
+  '@media(max-width:620px)',
+]) {
+  assert.equal(css.includes(required), true, `CSS do catálogo sem regra obrigatória: ${required}`);
+}
+
+assert.equal(/window\.open\s*\(/.test(ui), false, 'O catálogo não deve abrir janelas por JavaScript.');
+assert.equal(/innerHTML\s*=\s*[^`'\"]/.test(ui), false, 'Rever atribuições innerHTML não literais no catálogo.');
+
+console.log(`Equipment catalog tests: OK (${catalog.length} equipamentos + UI V3.3)`);
