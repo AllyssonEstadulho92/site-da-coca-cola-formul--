@@ -119,4 +119,23 @@
       else this.navigate('dashboard');
     }
   });
+
+  document.addEventListener('click', event => {
+    const button = event.target.closest('[data-action="load-demo"], [data-action="clear-demo"]');
+    if (!button || !window.App?.state?.user) return;
+    if (button.dataset.action === 'load-demo') {
+      window.App.confirm(
+        'Carregar demonstração',
+        'Serão criados cinco registos totalmente fictícios, identificados como DEMO. Nenhum dado real é incluído.',
+        () => window.App.loadDemoData()
+      );
+    }
+    if (button.dataset.action === 'clear-demo') {
+      window.App.confirm(
+        'Remover demonstração',
+        'Apenas os registos e atividades marcados como demonstração serão removidos. Os restantes dados locais não serão alterados.',
+        () => window.App.clearDemoData()
+      );
+    }
+  });
 })();
