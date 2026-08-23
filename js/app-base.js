@@ -29,7 +29,7 @@
       { id: 'archive', label: 'Arquivo', desktop: 'Arquivo', icon: '▣' },
       { id: 'settings', label: 'Definições', desktop: 'Configurações', icon: '⚙' },
       { id: 'help', label: 'Guia', desktop: 'Guia de Utilização', icon: '?' },
-      { id: 'profile', label: 'Perfil', desktop: 'Perfil', icon: '◉' },
+      { id: 'profile', label: 'Ident.', desktop: 'Identificação Local', icon: '◉' },
       { id: 'more', label: 'Mais', desktop: 'Mais', icon: '☰', mobileOnly: true },
     ],
 
@@ -52,6 +52,7 @@
     },
 
     defaultSettings: {
+      localOperatorName: 'Utilizador local',
       equipmentTypes: ['Equipamento de frio', 'Máquina', 'Expositor', 'Dispensador', 'Outro'],
       symptoms: ['Não liga', 'Não refrigera', 'Ruído anormal', 'Fuga', 'Dano visível', 'Outro'],
       faultCategories: ['Avaria técnica', 'Manutenção', 'Instalação', 'Substituição', 'Outro'],
