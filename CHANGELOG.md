@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.7.0
+
+- Reformulado o ecrã de entrada para apresentar apenas `Entrar na aplicação`, sem a escolha visual `Entrar / Criar perfil de teste`.
+- Mantido o fluxo adaptativo: e-mail primeiro; depois a aplicação decide automaticamente entre acesso existente e configuração inicial local.
+- Primeiro acesso passa a usar a expressão `Configurar acesso e entrar` em vez de `Criar perfil de teste`.
+- Simplificados os textos e o rodapé de segurança para reduzir ruído visual no telemóvel.
+- Mantida a restrição ao domínio `@ilunion.es` e o aviso para nunca reutilizar a palavra-passe empresarial.
+- Adicionado `js/app-sw-refresh.js` para procurar atualizações do Service Worker sem reutilizar cache HTTP.
+- Navegação online do Service Worker passa a procurar o HTML atual com `cache: no-store`, mantendo fallback offline.
+- Cache PWA atualizado para `registo-avarias-v3.7.0` e testes de autenticação atualizados.
+
 ## 3.6.0
 
 - Simplificado o acesso local para um fluxo adaptativo em dois passos: primeiro e-mail, depois palavra-passe.
