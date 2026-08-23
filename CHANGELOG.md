@@ -1,5 +1,21 @@
 # Changelog
 
+## 3.2.0
+
+- Criado Catálogo de Equipamentos dentro da área Equipamentos.
+- Adicionadas categorias Vitrines, Vending, Postmix, Freestyle e Outros.
+- Incluídas fichas públicas de referência para coolers, vending, postmix e Coca-Cola Freestyle 7100/8100/9100.
+- Cada ficha apresenta descrição, dados técnicos, sintomas frequentes e possíveis consequências/danos.
+- Valores regionais dos EUA são explicitamente distinguidos da documentação aplicável em Portugal/CCEP.
+- Entrada Monster/Moster mantida como modelo por confirmar, sem inventar fabricante ou ficha técnica.
+- Adicionado filtro por categoria e pesquisa textual por nome, modelo e sintomas.
+- Adicionada vista detalhada e ação “Criar registo deste equipamento”.
+- Seleção do catálogo pré-preenche o tipo de equipamento no Novo Registo quando compatível.
+- Mantida a vista anterior de equipamentos encontrados nos registos.
+- Preparada pasta `assets/equipment/` para fotografias autorizadas; enquanto não existirem, são apresentadas ilustrações neutras.
+- Catálogo incluído no cache offline da PWA.
+- Adicionado teste de integridade específico do catálogo ao CI.
+
 ## 3.1.0
 
 - Adicionado modo de demonstração pública segura com cinco registos totalmente fictícios.

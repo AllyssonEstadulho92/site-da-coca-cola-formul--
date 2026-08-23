@@ -6,10 +6,11 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
   <meta name="referrer" content="no-referrer" />
   <meta name="theme-color" content="#f7f7f8" />
-  <meta name="description" content="Aplicação profissional de produtividade e registo de avarias — protótipo V3.1." />
+  <meta name="description" content="Aplicação profissional de produtividade, catálogo de equipamentos e registo de avarias — protótipo V3.2." />
   <title>Sistema de Registo de Avarias</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/equipment-catalog.css" />
 </head>
 <body>
   <noscript>Esta aplicação necessita de JavaScript ativo.</noscript>
@@ -68,7 +69,7 @@
           <span class="status-dot" aria-hidden="true"></span>
           <span>Dados locais protegidos</span>
         </div>
-        <span class="build-label">V3.1 · Protótipo profissional</span>
+        <span class="build-label">V3.2 · Catálogo técnico</span>
       </div>
     </aside>
 
@@ -132,6 +133,8 @@
   <script src="js/app-record-detail.js"></script>
   <script src="js/app-record-archive.js"></script>
   <script src="js/app-directories.js"></script>
+  <script src="js/equipment-data.js"></script>
+  <script src="js/app-equipment-catalog.js"></script>
   <script src="js/app-routing-views.js"></script>
   <script src="js/app-activity-productivity.js"></script>
   <script src="js/app-settings.js"></script>
