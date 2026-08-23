@@ -29,7 +29,8 @@ assert.match(shell, /window\.crypto\?\.subtle/, 'A gestão de perfis deve exigir
 assert.match(shell, /clearLocalSession\(\)/, 'Deve existir limpeza explícita da sessão local transitória.');
 assert.equal(/localStorage[^\n;]*(?:password|passwordHash|passwordSalt)/i.test(shell), false, 'Credenciais não podem ser gravadas em localStorage.');
 
-assert.match(sw, /registo-avarias-v3\.4\.0/, 'O cache PWA deve ser atualizado para V3.4.0.');
+assert.match(sw, /registo-avarias-v3\.5\.0/, 'O cache PWA deve ser atualizado para V3.5.0.');
 assert.match(sw, /\.\/css\/auth-security\.css/, 'O CSS de segurança deve estar no cache offline.');
+assert.match(sw, /\.\/js\/app-auth-domain\.js/, 'A política de domínio deve estar no cache offline.');
 
 console.log('Auth security tests: OK');
