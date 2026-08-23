@@ -1,0 +1,10 @@
+{
+  "name": "registo-avarias-v3",
+  "version": "3.0.0",
+  "private": true,
+  "description": "PWA profissional para produtividade e registo de avarias, com persistência local, auditoria e encaminhamento configurável.",
+  "scripts": {
+    "test": "node tests/core.test.js",
+    "check": "node --check js/core.js && node --check js/db.js && node --check js/app.js && node --check service-worker.js && node tests/core.test.js"
+  }
+}
