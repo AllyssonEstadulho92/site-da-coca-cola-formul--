@@ -1,4 +1,4 @@
-const CACHE = 'registo-avarias-v3.6.0';
+const CACHE = 'registo-avarias-v3.7.0';
 const ASSETS = [
   './',
   './index.html',
@@ -17,6 +17,7 @@ const ASSETS = [
   './js/app-shell.js',
   './js/app-auth-domain.js',
   './js/app-auth-adaptive.js',
+  './js/app-sw-refresh.js',
   './js/app-dashboard.js',
   './js/app-form-view.js',
   './js/app-form-logic.js',
@@ -50,7 +51,7 @@ self.addEventListener('fetch', event => {
   if (url.origin !== self.location.origin) return;
 
   if (event.request.mode === 'navigate') {
-    event.respondWith(fetch(event.request).then(response => {
+    event.respondWith(fetch(event.request, { cache: 'no-store' }).then(response => {
       if (response.ok) caches.open(CACHE).then(cache => cache.put('./index.html', response.clone()));
       return response;
     }).catch(async () => (await caches.match('./index.html')) || new Response(
