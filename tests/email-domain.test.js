@@ -20,7 +20,7 @@ assert.match(domainModule, /ALLOWED_EMAIL_DOMAIN\s*=\s*'ilunion\.es'/, 'O domín
 assert.match(domainModule, /\^\[\^@\\s\]\+@ilunion\\\.es\$/, 'A validação deve exigir exatamente @ilunion.es.');
 assert.match(domainModule, /restoreSession\(\)/, 'Sessões restauradas também devem ser sujeitas à política de domínio.');
 assert.match(domainModule, /clearLocalSession\(\)/, 'Sessões incompatíveis devem ser removidas.');
-assert.match(sw, /registo-avarias-v3\.5\.0/, 'O cache PWA deve corresponder à V3.5.0.');
+assert.match(sw, /registo-avarias-v3\.6\.0/, 'O cache PWA deve corresponder à V3.6.0.');
 assert.match(sw, /\.\/js\/app-auth-domain\.js/, 'A política de domínio deve funcionar offline após cache válido.');
 
 const session = new Map();
