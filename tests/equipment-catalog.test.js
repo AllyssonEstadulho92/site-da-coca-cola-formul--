@@ -54,20 +54,35 @@ assert.ok(monster.aliases.includes('monster'));
 const ui = fs.readFileSync(path.resolve(root, 'js/app-equipment-catalog.js'), 'utf8');
 const uiV4 = fs.readFileSync(path.resolve(root, 'js/app-equipment-catalog-v4.js'), 'utf8');
 const css = fs.readFileSync(path.resolve(root, 'css/equipment-catalog.css'), 'utf8');
+const imageCss = fs.readFileSync(path.resolve(root, 'css/equipment-images-v41.css'), 'utf8');
 const index = fs.readFileSync(path.resolve(root, 'index.html'), 'utf8');
 
 for (const required of ['equipment-shell-v33','equipmentInspectorHtml','data-equipment-tab','data-equipment-view','data-equipment-new','renderRegisteredEquipmentView']) {
   assert.ok(ui.includes(required), `UI base do catálogo sem integração obrigatória: ${required}`);
 }
-for (const required of ['officialName','manufacturer','documents','imageStatus','Fotografia oficial']) {
-  assert.ok(uiV4.includes(required), `Extensão V4 sem integração obrigatória: ${required}`);
+for (const required of ['equipmentOfficialPreview','equipmentOfficialPreviewHtml','equipment-official-frame','PDF_OVERRIDES','Fotografia oficial direta','Ficha oficial com imagem do modelo']) {
+  assert.ok(uiV4.includes(required), `Extensão V4.1 sem integração visual obrigatória: ${required}`);
+}
+for (const id of ['postmix-counter-6','postmix-counter-8','postmix-dropin-6']) {
+  assert.ok(uiV4.includes(`'${id}'`), `${id}: falta URL PDF oficial de pré-visualização.`);
+}
+for (const item of catalog) {
+  const hasDirectPhoto = item.imageStatus === 'DIRECT_OFFICIAL' && Boolean(item.photo);
+  const hasPdfDocument = item.documents.some(document => /\.pdf(?:$|[?#])/i.test(document.url)) || /\.pdf(?:$|[?#])/i.test(item.sourceUrl);
+  const hasOverride = ['postmix-counter-6','postmix-counter-8','postmix-dropin-6'].includes(item.id);
+  assert.ok(hasDirectPhoto || hasPdfDocument || hasOverride, `${item.id}: equipamento sem referência visual oficial utilizável.`);
 }
 for (const required of ['.equipment-shell-v33','.equipment-inspector-pane','.equipment-category-grid','.equipment-inspector-tabs','@media(max-width:620px)']) {
   assert.ok(css.includes(required), `CSS do catálogo sem regra obrigatória: ${required}`);
 }
+for (const required of ['.equipment-official-frame','.equipment-official-preview-panel','.equipment-card-hit']) {
+  assert.ok(imageCss.includes(required), `CSS V4.1 sem regra visual obrigatória: ${required}`);
+}
 assert.match(index, /js\/app-equipment-catalog-v4\.js/, 'index.html deve carregar extensão V4.');
-assert.match(index, /img-src 'self' data: https:\/\/www\.cokesolutions\.com/, 'CSP deve autorizar apenas o host oficial das fotografias remotas.');
+assert.match(index, /css\/equipment-images-v41\.css/, 'index.html deve carregar estilos V4.1 das imagens.');
+assert.match(index, /img-src 'self' data: https:\/\/www\.cokesolutions\.com/, 'CSP deve autorizar o host oficial das fotografias remotas.');
+assert.match(index, /frame-src https:\/\/www\.cokesolutions\.com https:\/\/d110qkvvq2aow9\.cloudfront\.net/, 'CSP deve limitar as fichas incorporadas aos hosts oficiais usados pelo CokeSolutions.');
 assert.equal(/window\.open\s*\(/.test(ui + uiV4), false, 'O catálogo não deve abrir janelas por JavaScript.');
 assert.equal(/\beval\s*\(|new\s+Function\s*\(/.test(ui + uiV4), false, 'O catálogo não deve executar código dinâmico por eval/Function.');
 
-console.log(`Equipment catalog tests: OK (${catalog.length} equipamentos, ${catalog.filter(i => i.imageStatus === 'DIRECT_OFFICIAL').length} fotografias oficiais diretas)`);
+console.log(`Equipment catalog tests: OK (${catalog.length} equipamentos com referência visual oficial)`);
