@@ -93,7 +93,7 @@
     ]);
     return {
       schemaVersion: 2,
-      appVersion: '3.0.0',
+      appVersion: '3.1.0',
       exportedAt: new Date().toISOString(),
       records,
       activities,
