@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
   <meta name="referrer" content="no-referrer" />
   <meta name="theme-color" content="#f7f7f8" />
-  <meta name="description" content="Aplicação profissional de produtividade, catálogo visual de equipamentos e registo de avarias — protótipo local V3.4." />
+  <meta name="description" content="Aplicação profissional de produtividade, catálogo visual de equipamentos e registo de avarias — protótipo local V3.5." />
   <title>Sistema de Registo de Avarias</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/styles.css" />
@@ -32,7 +32,7 @@
       </div>
 
       <div class="prototype-note prototype-note-compact" role="note">
-        <strong>Ambiente de teste.</strong> Os dados permanecem neste dispositivo. Não utilize dados reais de clientes, credenciais corporativas ou informação SAP neste protótipo público.
+        <strong>Ambiente de teste.</strong> Apenas perfis locais com e-mail <strong>@ilunion.es</strong> são aceites. Use uma palavra-passe exclusiva deste protótipo. Não utilize dados reais de clientes, a palavra-passe corporativa ou informação SAP neste site público.
       </div>
 
       <div class="auth-mode-switch" role="group" aria-label="Escolher modo de acesso">
@@ -40,23 +40,25 @@
         <button id="loginModeCreate" class="auth-mode-button" type="button" aria-pressed="false">Criar perfil de teste</button>
       </div>
 
-      <p id="loginModeHint" class="auth-mode-hint">Entre com um perfil local já criado neste browser.</p>
+      <p id="loginModeHint" class="auth-mode-hint">Entre com um perfil local @ilunion.es já criado neste browser.</p>
 
       <form id="loginForm" class="stack-lg" novalidate>
         <label class="field">
-          <span>E-mail</span>
-          <input id="loginEmail" name="email" type="email" autocomplete="username" inputmode="email" placeholder="nome@empresa.pt" required />
+          <span>E-mail ILUNION</span>
+          <input id="loginEmail" name="email" type="email" autocomplete="username" inputmode="email" placeholder="nome@ilunion.es" pattern="[^@\s]+@ilunion\.es" title="Utilize um endereço @ilunion.es" required />
+          <small class="field-hint">Aceita apenas o domínio @ilunion.es.</small>
           <small class="field-error" data-error-for="loginEmail"></small>
         </label>
 
         <label class="field">
-          <span>Palavra-passe</span>
+          <span>Palavra-passe do protótipo</span>
           <div class="password-wrap">
             <input id="loginPassword" name="password" type="password" autocomplete="current-password" minlength="8" placeholder="••••••••••••" required />
             <button id="togglePassword" class="icon-button" type="button" aria-label="Mostrar palavra-passe">
               <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.8"/></svg>
             </button>
           </div>
+          <small class="field-hint">Não utilize a palavra-passe da conta empresarial.</small>
           <small class="field-error" data-error-for="loginPassword"></small>
         </label>
 
@@ -78,8 +80,9 @@
       </form>
 
       <div class="login-security-footer" aria-label="Informação de segurança do protótipo">
-        <span>Dados locais</span>
-        <span>Sem sincronização corporativa</span>
+        <span>HTTPS / Web Crypto</span>
+        <span>Perfil local @ilunion.es</span>
+        <span>Sem SSO corporativo</span>
         <span>Bloqueio após 15 min de inatividade</span>
       </div>
     </div>
@@ -102,7 +105,7 @@
           <span class="status-dot" aria-hidden="true"></span>
           <span>Dados locais · protótipo</span>
         </div>
-        <span class="build-label">V3.4 · Segurança local</span>
+        <span class="build-label">V3.5 · Domínio ILUNION</span>
       </div>
     </aside>
 
@@ -158,6 +161,7 @@
   <script src="js/app-base.js"></script>
   <script src="js/app-utils.js"></script>
   <script src="js/app-shell.js"></script>
+  <script src="js/app-auth-domain.js"></script>
   <script src="js/app-dashboard.js"></script>
   <script src="js/app-form-view.js"></script>
   <script src="js/app-form-logic.js"></script>
