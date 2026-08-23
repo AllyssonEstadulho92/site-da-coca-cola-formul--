@@ -1,4 +1,4 @@
-const CACHE = 'registo-avarias-v3.1.0';
+const CACHE = 'registo-avarias-v3.2.0';
 const ASSETS = [
   './',
   './index.html',
@@ -8,6 +8,7 @@ const ASSETS = [
   './css/base.css',
   './css/features.css',
   './css/theme.css',
+  './css/equipment-catalog.css',
   './js/core.js',
   './js/db.js',
   './js/app-base.js',
@@ -21,6 +22,8 @@ const ASSETS = [
   './js/app-record-detail.js',
   './js/app-record-archive.js',
   './js/app-directories.js',
+  './js/equipment-data.js',
+  './js/app-equipment-catalog.js',
   './js/app-routing-views.js',
   './js/app-activity-productivity.js',
   './js/app-settings.js',
