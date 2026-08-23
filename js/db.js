@@ -107,22 +107,37 @@
     for (const key of ['records', 'activities', 'settings', 'profiles']) {
       if (payload[key] != null && !Array.isArray(payload[key])) throw new Error(`Estrutura inválida: ${key}.`);
     }
+
     const ids = new Set();
+    const displayIds = new Set();
     for (const record of payload.records || []) {
       if (!record?.id) throw new Error('Existe um registo sem identificador técnico.');
-      if (ids.has(record.id)) throw new Error('O backup contém identificadores de registo duplicados.');
+      if (ids.has(record.id)) throw new Error('O backup contém identificadores técnicos duplicados.');
       ids.add(record.id);
+      if (record.displayId) {
+        if (displayIds.has(record.displayId)) throw new Error('O backup contém IDs de registo apresentados em duplicado.');
+        displayIds.add(record.displayId);
+      }
     }
     return true;
   }
 
   async function importAll(payload) {
     validateBackup(payload);
-    for (const store of ['records', 'activities', 'settings', 'profiles']) await clear(store);
-    for (const record of payload.records || []) await put('records', record);
-    for (const activity of payload.activities || []) await put('activities', activity);
-    for (const setting of payload.settings || []) await put('settings', setting);
-    for (const profile of payload.profiles || []) await put('profiles', profile);
+    const db = await open();
+    const stores = ['records', 'activities', 'settings', 'profiles'];
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(stores, 'readwrite');
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error || new Error('Falha ao importar o backup.'));
+      tx.onabort = () => reject(tx.error || new Error('O restauro foi cancelado pela base de dados.'));
+
+      for (const storeName of stores) tx.objectStore(storeName).clear();
+      for (const record of payload.records || []) tx.objectStore('records').put(record);
+      for (const activity of payload.activities || []) tx.objectStore('activities').put(activity);
+      for (const setting of payload.settings || []) tx.objectStore('settings').put(setting);
+      for (const profile of payload.profiles || []) tx.objectStore('profiles').put(profile);
+    });
   }
 
   async function createSnapshot(label = 'Snapshot local') {
