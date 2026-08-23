@@ -13,8 +13,8 @@ for (const id of ['loginModeLogin','loginModeCreate','loginConfirmPassword','pas
   assert.match(index, new RegExp(`id=["']${id}["']`), `Controlo de autenticação em falta: ${id}`);
 }
 
-assert.match(index, /Acesso local/i, 'O ambiente deve ser identificado como acesso local.');
-assert.match(index, /Não utilize a palavra-passe da conta empresarial/i, 'O ecrã deve impedir reutilização da palavra-passe empresarial.');
+assert.match(index, /Acesso à aplicação/i, 'O ambiente deve ser identificado como acesso à aplicação.');
+assert.match(index, /Não utilize a palavra-passe empresarial/i, 'O ecrã deve impedir reutilização da palavra-passe empresarial.');
 assert.match(index, /Bloqueio automático após 15 min/i, 'O ecrã deve informar o bloqueio por inatividade.');
 assert.match(index, /css\/auth-security\.css/, 'O CSS de segurança do login deve ser carregado.');
 
@@ -30,13 +30,16 @@ assert.match(shell, /window\.crypto\?\.subtle/, 'A gestão de perfis deve exigir
 assert.match(shell, /clearLocalSession\(\)/, 'Deve existir limpeza explícita da sessão local transitória.');
 assert.equal(/localStorage[^\n;]*(?:password|passwordHash|passwordSalt)/i.test(shell), false, 'Credenciais não podem ser gravadas em localStorage.');
 
-assert.match(sw, /registo-avarias-v3\.7\.0/, 'O cache PWA deve ser atualizado para V3.7.0.');
+assert.match(sw, /registo-avarias-v3\.8\.0/, 'O cache PWA deve ser atualizado para V3.8.0.');
 assert.match(sw, /\.\/css\/auth-security\.css/, 'O CSS de segurança deve estar no cache offline.');
 assert.match(sw, /\.\/js\/app-auth-domain\.js/, 'A política de domínio deve estar no cache offline.');
 assert.match(sw, /\.\/js\/app-auth-adaptive\.js/, 'O fluxo adaptativo deve estar no cache offline.');
 assert.match(sw, /\.\/js\/app-sw-refresh\.js/, 'A atualização do PWA deve estar no cache offline.');
 assert.match(refresh, /updateViaCache:\s*'none'/, 'O Service Worker deve ignorar cache HTTP ao procurar atualizações.');
 assert.match(refresh, /controllerchange/, 'Uma nova versão do Service Worker deve poder assumir o controlo da página.');
-assert.match(sw, /cache:\s*'no-store'/, 'A navegação online deve procurar a versão atual do HTML.');
+assert.match(refresh, /registoAvariasSwReloadedV38/, 'A recarga automática deve usar a chave da versão atual.');
+assert.match(sw, /cache:\s*'no-store'/, 'Recursos críticos online devem procurar a versão atual.');
+assert.match(sw, /event\.request\.destination === 'script'/, 'Scripts devem usar estratégia de atualização prioritária pela rede.');
+assert.match(sw, /event\.request\.destination === 'style'/, 'CSS deve usar estratégia de atualização prioritária pela rede.');
 
 console.log('Auth security tests: OK');
