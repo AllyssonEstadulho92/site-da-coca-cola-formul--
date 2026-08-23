@@ -22,11 +22,12 @@
       };
 
       document.querySelectorAll('.equipment-manual-placeholder, .equipment-manual-image-wrap.is-card').forEach(node => {
+        const isDefaultImage = node.dataset.defaultImage === 'true';
         node.setAttribute('role', 'button');
         node.setAttribute('tabindex', '0');
-        node.setAttribute('aria-label', node.classList.contains('equipment-manual-placeholder')
-          ? 'Adicionar fotografia deste equipamento'
-          : 'Alterar fotografia deste equipamento');
+        node.setAttribute('aria-label', isDefaultImage
+          ? 'Adicionar fotografia real deste equipamento'
+          : (node.classList.contains('equipment-manual-placeholder') ? 'Adicionar fotografia deste equipamento' : 'Alterar fotografia deste equipamento'));
         node.classList.add('equipment-image-direct-action');
 
         node.addEventListener('click', event => activateImagePicker(node, event));
@@ -40,12 +41,20 @@
         const imageArea = card.querySelector('.equipment-manual-placeholder, .equipment-manual-image-wrap.is-card');
         const status = card.querySelector('.equipment-card-copy-v33 small');
         if (!status || !imageArea) return;
-        const hasImage = imageArea.classList.contains('equipment-manual-image-wrap');
-        status.textContent = hasImage ? 'Toque na fotografia para alterar' : 'Toque na imagem para adicionar fotografia';
+        const isDefaultImage = imageArea.dataset.defaultImage === 'true';
+        const hasManualImage = imageArea.classList.contains('equipment-manual-image-wrap') && !isDefaultImage;
+        status.textContent = hasManualImage
+          ? 'Fotografia manual · toque para alterar'
+          : (isDefaultImage ? 'Ilustração local · toque para adicionar fotografia real' : 'Toque na imagem para adicionar fotografia');
       });
 
-      const note = document.querySelector('.equipment-manual-info p');
-      if (note) note.textContent = 'Toque diretamente na área da imagem (+) para escolher uma fotografia da galeria ou da câmara. A fotografia fica guardada neste dispositivo e entra no backup.';
+      const info = document.querySelector('.equipment-manual-info');
+      if (info) {
+        const count = info.querySelector('div span');
+        if (count) count.textContent = `${count.textContent} · 24 ilustrações locais disponíveis.`;
+        const note = info.querySelector('p');
+        if (note) note.textContent = 'O catálogo apresenta ilustrações locais por defeito. Toque na imagem para escolher uma fotografia real da galeria ou da câmara; a fotografia manual passa a ter prioridade e entra no backup.';
+      }
     },
   });
 })();
