@@ -26,5 +26,12 @@
 .login-security-footer{display:flex;gap:7px 12px;flex-wrap:wrap;margin-top:18px;padding-top:15px;border-top:1px solid var(--border);color:#727b85;font-size:.68rem}
 .login-security-footer span{display:inline-flex;align-items:center;gap:5px}
 .login-security-footer span::before{content:"";width:5px;height:5px;border-radius:50%;background:#9aa3ad}
-@media(max-width:520px){.login-view{padding:18px}.login-card-secure{padding:24px 20px}.auth-status-row{align-items:flex-start}.secure-brand-lockup{align-items:flex-start}.auth-mode-switch{grid-template-columns:1fr}.login-security-footer{display:grid;gap:7px}}
+.auth-flow-state{display:flex;align-items:center;min-height:40px;padding:9px 11px;border:1px solid var(--border);border-radius:9px;background:#f8fafc;color:#59636e;font-size:.75rem;font-weight:700;line-height:1.35}
+.auth-flow-state[data-stage="create"]{background:#fff9ed;border-color:#ead8af;color:#745612}
+.auth-flow-state[data-stage="login"]{background:#f1f7fb;border-color:#d4e4ef;color:#49677e}
+.auth-password-stage{display:grid;gap:14px}
+.auth-password-stage .field-hint strong{color:#8f2b2b}
+#loginEmail[readonly]{background:#f5f6f8;color:#59616b;cursor:default}
+#changeLoginEmail{margin-top:-7px}
+@media(max-width:520px){.login-view{padding:18px}.login-card-secure{padding:24px 20px}.auth-status-row{align-items:flex-start}.secure-brand-lockup{align-items:flex-start}.auth-mode-switch{grid-template-columns:1fr}.login-security-footer{display:grid;gap:7px}.auth-flow-state{font-size:.73rem}}
 @media(max-width:360px){.login-view{padding:12px}.login-card-secure{padding:20px 16px}.brand-lockup h1{font-size:1.45rem}.brand-mark{width:48px;height:48px}}
