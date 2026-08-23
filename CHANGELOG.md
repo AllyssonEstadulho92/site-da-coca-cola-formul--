@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.9.0
+
+- Removido integralmente o ecrã de login; a aplicação abre diretamente no Dashboard.
+- Removidos os módulos `app-auth-domain.js` e `app-auth-adaptive.js` e o CSS exclusivo de autenticação.
+- Removidas validação de e-mail, palavras-passe, PBKDF2 de login, lockout, expiração de sessão, logout e alteração de palavra-passe.
+- A área Perfil passa a `Identificação Local`, opcional e sem controlo de acesso.
+- A identificação local usa apenas um nome guardado nas definições para novos registos/atividades.
+- IndexedDB atualizado para versão 3; a store antiga `profiles` é eliminada durante a migração.
+- Backups novos passam para schema 3 e deixam de exportar/importar perfis de autenticação; backups antigos continuam compatíveis, ignorando `profiles` legado.
+- Interface e documentação passam a avisar explicitamente que o protótipo público não tem autenticação e não deve receber dados reais/SAP.
+- Cache PWA atualizado para `registo-avarias-v3.9.0`, mantendo network-first para HTML/JavaScript/CSS.
+- Testes antigos de autenticação foram removidos e substituídos por `no-auth.test.js`.
+
 ## 3.8.0
 
 - Simplificado o ecrã de entrada para apresentar apenas `Entrar`, removendo definitivamente a linguagem visual `Criar perfil de teste`.

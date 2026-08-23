@@ -15,6 +15,31 @@ Não publicar:
 - backups da aplicação com informação operacional;
 - ficheiros `.env` reais.
 
+## V3.9 — sem autenticação
+
+A V3.9 remove a autenticação local do protótipo. A aplicação abre diretamente no Dashboard e não solicita e-mail nem palavra-passe.
+
+Foram removidos do frontend:
+
+- formulário de login;
+- validação de domínio de e-mail;
+- criação/verificação de palavras-passe;
+- hashes PBKDF2 usados para login;
+- bloqueio por tentativas falhadas;
+- expiração de sessão associada a autenticação;
+- ações de logout e alteração de palavra-passe;
+- módulos e CSS exclusivos de autenticação.
+
+A migração IndexedDB V3 elimina também a store antiga `profiles`. Backups novos já não exportam perfis de autenticação. Backups antigos continuam a poder ser validados/restaurados, mas o campo legado `profiles`, quando presente, é ignorado.
+
+A aplicação mantém apenas um nome de operador local opcional para identificar novos registos e atividades. Esse nome **não é autenticação nem autorização**.
+
+## Consequência de segurança
+
+Qualquer pessoa que consiga abrir o endereço público consegue abrir a aplicação. HTTPS protege o transporte, mas não controla quem pode aceder ao conteúdo da aplicação.
+
+Por isso, esta versão destina-se exclusivamente a prototipagem e demonstração com dados fictícios. **Não introduzir NIF, nomes reais, contactos, moradas, dados SAP, referências operacionais, e-mails internos ou outra informação corporativa real.**
+
 ## Dados de demonstração
 
 A aplicação inclui um modo DEMO destinado a validação pública. Esses registos:
@@ -24,55 +49,25 @@ A aplicação inclui um modo DEMO destinado a validação pública. Esses regist
 - utilizam o domínio reservado `example.invalid`;
 - não representam clientes, estabelecimentos, equipamentos ou regras empresariais reais.
 
-Dados reais nunca devem ser convertidos em “demo” apenas alterando o nome. Para demonstração pública devem ser usados registos inteiramente fictícios.
-
-## Perfil local do protótipo
-
-O perfil local serve apenas para controlar o acesso aos dados guardados neste browser durante a validação do protótipo. Não é uma conta corporativa nem um mecanismo de autorização de servidor.
-
-Na V3.6, a interface usa um fluxo adaptativo em dois passos:
-
-1. o utilizador introduz um e-mail `@ilunion.es`;
-2. a aplicação verifica apenas no IndexedDB deste browser se já existe um perfil local para esse endereço;
-3. se existir, solicita a palavra-passe local do protótipo;
-4. se não existir, apresenta automaticamente a criação do acesso local, com confirmação de palavra-passe.
-
-A distinção entre autenticar e criar perfil continua a existir internamente; apenas deixou de exigir uma escolha manual no ecrã.
-
-As proteções locais incluem:
-
-- novos perfis exigem confirmação da palavra-passe e política mínima de 12 caracteres com pelo menos 3 tipos de caracteres;
-- o hash local é derivado com PBKDF2-SHA-256, salt aleatório e 210 000 iterações para novos perfis;
-- perfis com um número inferior de iterações são rederivados após autenticação válida;
-- cinco tentativas falhadas consecutivas provocam um bloqueio local temporário de cinco minutos;
-- a sessão é bloqueada após 15 minutos de inatividade;
-- logout/bloqueio removem a sessão e buffers transitórios do `sessionStorage`;
-- a gestão do perfil exige contexto seguro (`HTTPS` ou contexto equivalente de desenvolvimento) e Web Crypto;
-- a interface aceita apenas endereços exatamente no domínio `@ilunion.es`.
-
-A restrição `@ilunion.es` é apenas validação client-side e **não comprova que a pessoa controla uma conta empresarial**. Um utilizador com controlo do browser/dispositivo pode eliminar armazenamento, modificar JavaScript ou contornar proteções exclusivamente client-side. Por isso, estes mecanismos **não devem ser usados para proteger dados corporativos reais**.
-
-Nunca reutilizar neste protótipo uma palavra-passe utilizada em Microsoft 365, SAP, e-mail, VPN ou qualquer outro serviço corporativo/pessoal. A palavra-passe do perfil local deve ser criada exclusivamente para este protótipo.
+Dados reais nunca devem ser convertidos em “demo” apenas alterando o nome.
 
 ## Backups
 
-Os backups JSON e os snapshots podem conter dados pessoais, dados operacionais e informação de autenticação local do protótipo. Não devem ser adicionados ao GitHub, enviados para canais públicos ou usados como dados de demonstração.
+Os backups JSON e snapshots podem conter informação introduzida pelo utilizador. Não devem ser adicionados ao GitHub ou enviados para canais públicos.
 
-Quando o conteúdo for sensível, preferir o backup encriptado disponibilizado pela aplicação e manter a palavra-passe fora do ficheiro.
+O backup encriptado protege o ficheiro exportado com uma palavra-passe própria do backup; isto é independente de autenticação da aplicação e não cria controlo de acesso ao site.
 
 ## Frontend
 
-O `index.html` aplica uma Content Security Policy restritiva e política `no-referrer`. Estas medidas reduzem superfície de ataque, mas não substituem controlos do servidor.
+O `index.html` mantém Content Security Policy e política `no-referrer`. O Service Worker usa atualização network-first para HTML, JavaScript e CSS quando existe ligação e fallback offline para recursos previamente armazenados.
 
-O GitHub Pages fornece transporte HTTPS quando a publicação está corretamente configurada. HTTPS protege o transporte entre browser e site, mas não transforma o frontend estático num sistema de autenticação corporativa.
+Estas medidas reduzem superfície de ataque e problemas de cache, mas não substituem controlos de servidor.
 
-## Protótipo vs. produção
+## Produção
 
-O login local é exclusivamente de protótipo. Em produção, autenticação e autorização devem ser executadas por um serviço de identidade/backend aprovado, por exemplo Microsoft Entra ID quando aplicável, com autorização por função no servidor.
+Antes de permitir dados reais, a arquitetura deve incluir identidade corporativa aprovada, backend autorizado, RBAC server-side, base de dados central, logging/auditoria protegida, backups, retenção e revisão de segurança/privacidade.
 
-IndexedDB melhora continuidade local, mas não substitui uma base de dados central, controlo de acesso no servidor, auditoria protegida, política de retenção ou backup corporativo.
-
-Antes de permitir NIF, contactos, moradas, dados SAP ou outros dados reais, a arquitetura deve incluir pelo menos identidade corporativa, backend autorizado, RBAC server-side, base de dados central, logging/auditoria protegida e política formal de retenção.
+Quando aplicável e autorizado, a autenticação de produção poderá usar Microsoft Entra ID/SSO ou outro IdP corporativo. Não deve ser simulada no frontend público.
 
 ## Reporte
 

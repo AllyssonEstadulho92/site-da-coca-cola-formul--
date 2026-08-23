@@ -1,106 +1,62 @@
-# Sistema de Registo de Avarias — V3.1
+# Sistema de Registo de Avarias — V3.9
 
-Aplicação web **mobile-first/PWA** para produtividade profissional, registo de ocorrências, acompanhamento de equipamentos, encaminhamentos e histórico operacional.
-
-A V3.1 implementa a camada funcional local e deixa as integrações corporativas isoladas para posterior ligação a serviços autorizados.
+Aplicação web **mobile-first/PWA** para produtividade profissional, registo de ocorrências, catálogo de equipamentos, encaminhamentos e histórico operacional.
 
 ## Estado do projeto
 
-**Protótipo funcional profissional.** Pode ser usado para validação de UX, regras, estrutura de dados e fluxo de trabalho. Ainda não deve ser tratado como sistema corporativo de produção enquanto não existir backend autorizado, identidade corporativa, política formal de retenção e validação das regras internas.
+**Protótipo funcional público sem autenticação.** A aplicação abre diretamente no Dashboard. Deve ser usada apenas para validação de UX, estrutura, regras e fluxos com dados fictícios.
 
-## Funcionalidades implementadas
+Não utilizar como sistema corporativo de produção enquanto não existir backend autorizado, identidade corporativa, controlo de acesso no servidor, política formal de retenção e validação das regras internas.
 
-- Login/perfil local de protótipo com derivação PBKDF2; a palavra-passe não é guardada em texto simples.
+## Alteração principal da V3.9
+
+A autenticação local foi removida integralmente:
+
+- não existe ecrã de login;
+- não é solicitado e-mail ou palavra-passe;
+- não existe criação/verificação de password;
+- módulos de autenticação foram removidos;
+- a store IndexedDB `profiles` é eliminada na migração da base local;
+- backups novos deixam de incluir perfis de autenticação;
+- a aplicação entra diretamente no Dashboard.
+
+Existe apenas uma **Identificação Local** opcional para definir o nome usado em novos registos e atividades. Essa identificação não controla acesso.
+
+## Funcionalidades principais
+
 - Dashboard com indicadores diários, estados e atividade recente.
-- Fluxo visual: Registado → Em andamento → Enviado → Em tratamento → Aguarda resposta → Encerrado.
-- Novo registo e edição protegida por buffer local.
-- Campos de Data, Agente, Nº Contribuinte, Cliente, Nome do contacto, Contacto, Estabelecimento, Morada/Local, Horário, REF Equipamento, Tipo de equipamento, Categoria, Sintoma, Avaria, Prioridade, PT, Departamento, E-mail, Nº Nota, Tratado e Observações.
-- Autosave com IndexedDB e recuperação de rascunhos.
-- IDs legíveis `REG-AAAA-000001` e UUID técnico.
-- Deteção de possíveis duplicados por REF e janela temporal configurável.
+- Fluxo: Registado → Em andamento → Enviado → Em tratamento → Aguarda resposta → Encerrado.
+- Novo registo, edição e autosave com IndexedDB.
+- Deteção de possíveis duplicados por REF.
 - PT 32 / PT 60 / PT 70 configuráveis, sem inventar regras empresariais.
-- Matriz de encaminhamento por equipamento, sintoma e categoria.
-- Tratamento de regras ambíguas sem decisão silenciosa.
-- Assistente de e-mail: destinatário, assunto, corpo, copiar e abrir cliente de correio.
-- Pesquisa global e filtros combinados.
+- Assistente de e-mail manual.
+- Pesquisa e filtros combinados.
 - Diretórios de clientes e equipamentos com histórico.
+- Catálogo visual de vitrines, vending, postmix, Freestyle e outros equipamentos.
 - Timeline/auditoria das ações e alterações.
-- Arquivo lógico e reabertura controlada.
-- Produtividade com evolução de 7 dias e distribuição operacional.
+- Arquivo e reabertura.
+- Produtividade.
 - Exportação CSV compatível com Excel.
-- Backup JSON e backup encriptado AES-GCM com chave derivada por PBKDF2.
+- Backup JSON e backup encriptado AES-GCM.
 - Snapshots locais automáticos e pré-restauro.
-- Validação do backup antes do restauro.
-- PWA, Service Worker e modo offline para recursos já armazenados.
+- PWA e modo offline.
 - Design responsivo para telemóvel, tablet e desktop.
-- Acessibilidade base: labels, teclado, foco visível, contraste, sem dependência exclusiva de cor e suporte a `prefers-reduced-motion`.
-- Content Security Policy no documento principal e política `no-referrer`.
-- Modo de demonstração pública com dados exclusivamente fictícios.
+- Content Security Policy e política `no-referrer`.
+- Modo de demonstração pública com dados fictícios.
 
 ## Demonstração pública segura
 
-Na área **Configurações → Demonstração pública segura** podem ser carregados cinco registos fictícios para testar dashboard, pesquisa, filtros, rascunhos, estados, produtividade e histórico.
+Na área **Configurações → Demonstração pública segura** podem ser carregados registos fictícios para testar a aplicação.
 
-Os dados de demonstração:
+Os dados DEMO usam prefixo `DEMO`, são marcados com `demo: true` e utilizam e-mails no domínio reservado `example.invalid`.
 
-- usam prefixo `DEMO`;
-- são marcados internamente com `demo: true`;
-- usam e-mails no domínio reservado `example.invalid`;
-- não incluem regras internas PT, destinatários reais ou dados provenientes do SAP;
-- podem ser removidos sem apagar os restantes dados locais.
+## Segurança
 
-Isto permite publicar e testar a aplicação sem utilizar informação operacional real.
+O repositório e a aplicação publicada são públicos. Como não existe autenticação, qualquer pessoa com acesso ao endereço pode abrir a interface.
 
-## Estrutura
+**Não inserir dados reais de clientes, credenciais, NIF, contactos, moradas, referências operacionais, informação SAP, e-mails internos ou regras confidenciais.**
 
-```text
-.
-├── index.html
-├── manifest.json
-├── service-worker.js
-├── package.json
-├── css/
-│   ├── styles.css
-│   ├── base.css
-│   ├── features.css
-│   └── theme.css
-├── js/
-│   ├── core.js
-│   ├── db.js
-│   ├── app-base.js
-│   ├── app-utils.js
-│   ├── app-shell.js
-│   ├── app-dashboard.js
-│   ├── app-form-view.js
-│   ├── app-form-logic.js
-│   ├── app-form-save.js
-│   ├── app-records.js
-│   ├── app-record-detail.js
-│   ├── app-record-archive.js
-│   ├── app-directories.js
-│   ├── app-routing-views.js
-│   ├── app-activity-productivity.js
-│   ├── app-settings.js
-│   ├── app-backup.js
-│   ├── app-profile-help.js
-│   ├── app-demo.js
-│   └── app.js
-├── assets/
-│   └── app-icon.svg
-├── tests/
-│   ├── syntax.test.js
-│   ├── core.test.js
-│   └── integrity.test.js
-├── docs/
-│   ├── ARQUITETURA.md
-│   ├── DADOS_E_SEGURANCA.md
-│   ├── GUIA_UTILIZACAO.md
-│   ├── QA_REPORT.md
-│   └── ROADMAP_PRODUCAO.md
-└── .github/workflows/
-    ├── ci.yml
-    └── pages.yml
-```
+HTTPS protege a comunicação com o site, mas não substitui autenticação ou autorização.
 
 ## Executar localmente
 
@@ -118,21 +74,11 @@ Depois abrir `http://localhost:8000/`.
 npm run check
 ```
 
-A verificação inclui:
+A validação inclui sintaxe JavaScript, lógica central, catálogo de equipamentos, remoção de autenticação, atualização PWA, integridade de referências e segurança do repositório público.
 
-- sintaxe de todos os ficheiros JavaScript;
-- testes unitários da lógica central;
-- referências do `index.html`;
-- integridade dos recursos listados no Service Worker;
-- validação básica do `manifest.json`.
+## Produção
 
-## Dados e segurança
-
-O repositório é público. **Não inserir dados reais de clientes, credenciais, endereços internos, tokens, regras confidenciais, informação proveniente do SAP ou e-mails corporativos não destinados a publicação.**
-
-Backups, mesmo quando gerados pela aplicação, podem conter dados operacionais e não devem ser adicionados ao repositório.
-
-Para produção devem ser adicionados, conforme autorização da organização:
+Antes de permitir dados reais devem ser adicionados, conforme autorização da organização:
 
 - Microsoft Entra ID/SSO ou outro IdP aprovado;
 - backend/API autorizada;
@@ -141,21 +87,11 @@ Para produção devem ser adicionados, conforme autorização da organização:
 - logs de auditoria protegidos;
 - backups independentes do dispositivo;
 - política de retenção e eliminação;
-- integração Microsoft Lists/SharePoint/Power Automate, se aprovada;
-- integração SAP apenas através de mecanismo oficial/autorizado.
+- integrações Microsoft/SAP apenas através de mecanismos oficiais e autorizados.
 
 ## Regras empresariais por confirmar
 
-Antes de uso operacional é necessário confirmar:
-
-- significado e critérios oficiais de PT 32, PT 60 e PT 70;
-- destinatários e e-mails autorizados;
-- catálogo oficial de equipamentos;
-- sintomas e categorias oficiais;
-- regras de encaminhamento e exceções;
-- formato oficial do Nº Nota;
-- campos obrigatórios internos;
-- política de retenção, perfis e permissões.
+Continuam por confirmar o significado e critérios oficiais de PT 32/60/70, destinatários autorizados, catálogo oficial de equipamentos, sintomas/categorias, formato do Nº Nota, campos obrigatórios, retenção e permissões.
 
 ## Princípio de desenvolvimento
 
