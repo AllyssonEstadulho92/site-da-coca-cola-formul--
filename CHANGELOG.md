@@ -1,5 +1,21 @@
 # Changelog
 
+## 3.4.0
+
+- Separados os fluxos `Entrar` e `Criar perfil de teste`; o primeiro acesso deixa de criar perfil implicitamente.
+- Ecrã de acesso identifica explicitamente o ambiente como `Protótipo local` e proíbe o uso de dados reais/credenciais corporativas.
+- Adicionado indicador de contexto seguro HTTPS/Web Crypto.
+- Novos perfis exigem palavra-passe com pelo menos 12 caracteres e combinação de pelo menos 3 tipos de caracteres.
+- Adicionada confirmação de palavra-passe e indicador de robustez na criação do perfil.
+- Novos hashes PBKDF2-SHA-256 usam 210 000 iterações; perfis existentes são rederivados após login válido quando usam iteração inferior.
+- Adicionado bloqueio local de 5 minutos após 5 tentativas falhadas consecutivas.
+- Mensagens de autenticação inválida passam a ser neutras para reduzir enumeração do perfil.
+- Sessão local bloqueia após 15 minutos de inatividade e exige nova autenticação.
+- Logout e bloqueio removem estado transitório de sessão, buffers temporários e seleção transitória do catálogo.
+- Adicionado CSS dedicado para o ecrã de segurança e cache PWA atualizado para V3.4.0.
+- Adicionado teste automático `auth-security.test.js` ao `npm run check`.
+- Mantido explicitamente o limite arquitetural: estas proteções são locais e não substituem SSO, backend, RBAC ou auditoria de produção.
+
 ## 3.3.0
 
 - Redesenhada a área Equipamentos para corresponder ao protótipo visual aprovado.
