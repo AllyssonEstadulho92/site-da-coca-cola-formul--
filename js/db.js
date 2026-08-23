@@ -2,7 +2,7 @@
   'use strict';
 
   const DB_NAME = 'registoAvariasDB';
-  const DB_VERSION = 3;
+  const DB_VERSION = 4;
   const SNAPSHOT_LIMIT = 5;
   let dbPromise;
 
@@ -29,6 +29,10 @@
         if (!db.objectStoreNames.contains('snapshots')) {
           const store = db.createObjectStore('snapshots', { keyPath: 'id' });
           store.createIndex('createdAt', 'createdAt', { unique: false });
+        }
+        if (!db.objectStoreNames.contains('equipmentImages')) {
+          const store = db.createObjectStore('equipmentImages', { keyPath: 'equipmentId' });
+          store.createIndex('updatedAt', 'updatedAt', { unique: false });
         }
       };
       request.onsuccess = () => resolve(request.result);
@@ -88,22 +92,23 @@
   }
 
   async function exportAll() {
-    const [records, activities, settings] = await Promise.all([
-      getAll('records'), getAll('activities'), getAll('settings')
+    const [records, activities, settings, equipmentImages] = await Promise.all([
+      getAll('records'), getAll('activities'), getAll('settings'), getAll('equipmentImages')
     ]);
     return {
-      schemaVersion: 3,
-      appVersion: '3.9.0',
+      schemaVersion: 4,
+      appVersion: '4.2.0',
       exportedAt: new Date().toISOString(),
       records,
       activities,
       settings,
+      equipmentImages,
     };
   }
 
   function validateBackup(payload) {
-    if (!payload || ![1, 2, 3].includes(Number(payload.schemaVersion))) throw new Error('Formato de backup incompatível.');
-    for (const key of ['records', 'activities', 'settings']) {
+    if (!payload || ![1, 2, 3, 4].includes(Number(payload.schemaVersion))) throw new Error('Formato de backup incompatível.');
+    for (const key of ['records', 'activities', 'settings', 'equipmentImages']) {
       if (payload[key] != null && !Array.isArray(payload[key])) throw new Error(`Estrutura inválida: ${key}.`);
     }
     if (payload.profiles != null && !Array.isArray(payload.profiles)) throw new Error('Estrutura inválida: profiles.');
@@ -119,13 +124,22 @@
         displayIds.add(record.displayId);
       }
     }
+
+    const equipmentImageIds = new Set();
+    for (const image of payload.equipmentImages || []) {
+      if (!image?.equipmentId || typeof image.dataUrl !== 'string' || !image.dataUrl.startsWith('data:image/')) {
+        throw new Error('O backup contém uma imagem de equipamento inválida.');
+      }
+      if (equipmentImageIds.has(image.equipmentId)) throw new Error('O backup contém imagens duplicadas para o mesmo equipamento.');
+      equipmentImageIds.add(image.equipmentId);
+    }
     return true;
   }
 
   async function importAll(payload) {
     validateBackup(payload);
     const db = await open();
-    const stores = ['records', 'activities', 'settings'];
+    const stores = ['records', 'activities', 'settings', 'equipmentImages'];
     return new Promise((resolve, reject) => {
       const tx = db.transaction(stores, 'readwrite');
       tx.oncomplete = () => resolve(true);
@@ -136,6 +150,7 @@
       for (const record of payload.records || []) tx.objectStore('records').put(record);
       for (const activity of payload.activities || []) tx.objectStore('activities').put(activity);
       for (const setting of payload.settings || []) tx.objectStore('settings').put(setting);
+      for (const image of payload.equipmentImages || []) tx.objectStore('equipmentImages').put(image);
     });
   }
 
