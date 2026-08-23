@@ -1,13 +1,17 @@
-# Fotografias de equipamentos
+# Diretório de equipamentos
 
-Colocar aqui apenas imagens cuja publicação no repositório público esteja autorizada.
+Estrutura reservada às imagens e documentos específicos de cada modelo do catálogo de equipamentos.
 
-Regras:
+Cada modelo tem a sua própria pasta. Quando existirem ficheiros autorizados, usar preferencialmente:
 
-- remover dados de clientes e localização;
-- não mostrar números de série, QR codes, códigos internos ou etiquetas de inventário;
-- preferir WebP/JPEG otimizados;
-- usar nomes estáveis correspondentes ao ID do catálogo, por exemplo `freestyle-9100.webp`;
-- depois indicar o caminho em `js/equipment-data.js`, propriedade `photo`.
+- `front.jpg` — fotografia frontal;
+- `side.jpg` — fotografia lateral;
+- `plate.jpg` — placa técnica/modelo;
+- `technical-sheet.json` — dados técnicos normalizados;
+- `symptoms.json` — sintomas de triagem;
+- `consequences.json` — possíveis consequências;
+- `documents/` — documentação autorizada.
 
-Enquanto não existir fotografia autorizada, a aplicação apresenta uma ilustração neutra do tipo de equipamento.
+Não adicionar dados de clientes, informação SAP, credenciais ou documentos internos/confidenciais a este repositório público.
+
+A lista canónica de modelos está em `catalog-manifest.json`.

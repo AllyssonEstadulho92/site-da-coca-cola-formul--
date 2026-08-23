@@ -4,7 +4,7 @@
   "private": true,
   "description": "PWA profissional para produtividade, catálogo técnico com imagens manuais de equipamentos e registo de avarias, com persistência local, auditoria e encaminhamento configurável.",
   "scripts": {
-    "test": "node tests/core.test.js && node tests/equipment-catalog.test.js && node tests/equipment-images.test.js && node tests/equipment-upload-mobile.test.js && node tests/no-auth.test.js && node tests/pwa-refresh.test.js",
-    "check": "node tests/syntax.test.js && node tests/core.test.js && node tests/equipment-catalog.test.js && node tests/equipment-images.test.js && node tests/equipment-upload-mobile.test.js && node tests/no-auth.test.js && node tests/pwa-refresh.test.js && node tests/integrity.test.js && node tests/public-safety.test.js"
+    "test": "node tests/core.test.js && node tests/equipment-catalog.test.js && node tests/equipment-images.test.js && node tests/equipment-upload-mobile.test.js && node tests/equipment-directories.test.js && node tests/no-auth.test.js && node tests/pwa-refresh.test.js",
+    "check": "node tests/syntax.test.js && node tests/core.test.js && node tests/equipment-catalog.test.js && node tests/equipment-images.test.js && node tests/equipment-upload-mobile.test.js && node tests/equipment-directories.test.js && node tests/no-auth.test.js && node tests/pwa-refresh.test.js && node tests/integrity.test.js && node tests/public-safety.test.js"
   }
 }
