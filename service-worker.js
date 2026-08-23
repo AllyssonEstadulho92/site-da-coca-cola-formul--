@@ -1,13 +1,32 @@
-const CACHE = 'registo-avarias-v3.0.0';
+const CACHE = 'registo-avarias-v3.0.1';
 const ASSETS = [
   './',
   './index.html',
+  './manifest.json',
+  './assets/app-icon.svg',
   './css/styles.css',
+  './css/base.css',
+  './css/features.css',
+  './css/theme.css',
   './js/core.js',
   './js/db.js',
-  './js/app.js',
-  './manifest.json',
-  './assets/app-icon.svg'
+  './js/app-base.js',
+  './js/app-utils.js',
+  './js/app-shell.js',
+  './js/app-dashboard.js',
+  './js/app-form-view.js',
+  './js/app-form-logic.js',
+  './js/app-form-save.js',
+  './js/app-records.js',
+  './js/app-record-detail.js',
+  './js/app-record-archive.js',
+  './js/app-directories.js',
+  './js/app-routing-views.js',
+  './js/app-activity-productivity.js',
+  './js/app-settings.js',
+  './js/app-backup.js',
+  './js/app-profile-help.js',
+  './js/app.js'
 ];
 
 self.addEventListener('install', event => {
