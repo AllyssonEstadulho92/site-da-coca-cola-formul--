@@ -1,8 +1,8 @@
 {
-  "name": "registo-avarias-v3",
-  "version": "3.9.0",
+  "name": "registo-avarias-v4",
+  "version": "4.0.0",
   "private": true,
-  "description": "PWA profissional para produtividade, catálogo de equipamentos e registo de avarias, com persistência local, auditoria e encaminhamento configurável.",
+  "description": "PWA profissional para produtividade, catálogo técnico de equipamentos e registo de avarias, com persistência local, auditoria e encaminhamento configurável.",
   "scripts": {
     "test": "node tests/core.test.js && node tests/equipment-catalog.test.js && node tests/no-auth.test.js && node tests/pwa-refresh.test.js",
     "check": "node tests/syntax.test.js && node tests/core.test.js && node tests/equipment-catalog.test.js && node tests/no-auth.test.js && node tests/pwa-refresh.test.js && node tests/integrity.test.js && node tests/public-safety.test.js"
