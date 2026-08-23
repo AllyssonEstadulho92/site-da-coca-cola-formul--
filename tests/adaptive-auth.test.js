@@ -12,12 +12,12 @@ for (const id of ['authFlowState','authPasswordStage','changeLoginEmail']) {
   assert.match(index, new RegExp(`id=["']${id}["']`), `Elemento do fluxo adaptativo em falta: ${id}`);
 }
 
-assert.match(index, /<h1 id="loginTitle">Entrar na aplicação<\/h1>/i, 'O ecrã deve apresentar uma ação de entrada clara.');
-assert.match(index, /id="loginSubmit"[^>]*>Continuar</i, 'O primeiro passo deve apresentar Continuar.');
-assert.match(index, /Palavra-passe do acesso local/i, 'A palavra-passe deve ser identificada como acesso local.');
-assert.match(index, /Não utilize a palavra-passe da conta empresarial/i, 'O ecrã deve desaconselhar explicitamente a palavra-passe empresarial.');
-assert.equal(/class="auth-mode-switch/.test(index), false, 'A escolha visual Entrar/Criar perfil deve ser removida do ecrã.');
-assert.match(index, /id="changeLoginEmail"[^>]*>Usar outro e-mail</i, 'O fluxo deve permitir regressar e alterar o e-mail.');
+assert.match(index, /<h1 id="loginTitle">Entrar<\/h1>/i, 'O ecrã deve apresentar uma ação de entrada clara.');
+assert.match(index, /id="loginSubmit"[^>]*>Continuar/i, 'O primeiro passo deve apresentar Continuar.');
+assert.match(index, /Palavra-passe da aplicação/i, 'A palavra-passe deve ser identificada como pertencente à aplicação.');
+assert.match(index, /Não utilize a palavra-passe empresarial/i, 'O ecrã deve desaconselhar explicitamente a palavra-passe empresarial.');
+assert.equal(/class="auth-mode-switch/.test(index), false, 'A escolha visual Entrar/Criar perfil deve permanecer removida do ecrã.');
+assert.match(index, /id="changeLoginEmail"[^>]*>Alterar e-mail/i, 'O fluxo deve permitir regressar e alterar o e-mail.');
 assert.match(index, /js\/app-auth-adaptive\.js/, 'O módulo adaptativo deve ser carregado.');
 assert.match(index, /js\/app-sw-refresh\.js/, 'O módulo de atualização do PWA deve ser carregado.');
 assert.ok(index.indexOf('js/app-auth-domain.js') < index.indexOf('js/app-auth-adaptive.js'), 'O módulo adaptativo deve carregar depois da política de domínio.');
@@ -30,10 +30,10 @@ assert.match(adaptive, /originalSetLoginMode\.call\(this, creating \? 'create' :
 assert.match(adaptive, /this\.state\.authFlowStage = 'email'/, 'O fluxo deve começar na etapa de e-mail.');
 assert.match(adaptive, /this\.state\.authFlowStage = 'password'/, 'O fluxo deve avançar para a etapa de palavra-passe.');
 assert.match(adaptive, /loginEmail\.readOnly = true/, 'O e-mail deve ficar bloqueado durante a segunda etapa.');
-assert.match(adaptive, /Configurar acesso e entrar/, 'O primeiro acesso deve usar uma ação clara e não a expressão perfil de teste.');
-assert.match(adaptive, /Acesso encontrado neste dispositivo/, 'O retorno ao sistema deve indicar que existe acesso local.');
+assert.match(adaptive, /Criar palavra-passe e entrar/, 'O primeiro acesso deve usar uma ação clara.');
+assert.match(adaptive, /Introduza a palavra-passe desta aplicação para entrar/, 'O retorno ao sistema deve pedir a palavra-passe de forma direta.');
 
-assert.match(sw, /registo-avarias-v3\.7\.0/, 'O cache PWA deve corresponder à V3.7.0.');
+assert.match(sw, /registo-avarias-v3\.8\.0/, 'O cache PWA deve corresponder à V3.8.0.');
 assert.match(sw, /\.\/js\/app-auth-adaptive\.js/, 'O módulo adaptativo deve estar disponível offline após cache válido.');
 assert.match(sw, /\.\/js\/app-sw-refresh\.js/, 'O módulo de atualização deve estar disponível offline após cache válido.');
 

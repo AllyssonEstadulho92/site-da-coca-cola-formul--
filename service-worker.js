@@ -1,4 +1,4 @@
-const CACHE = 'registo-avarias-v3.7.0';
+const CACHE = 'registo-avarias-v3.8.0';
 const ASSETS = [
   './',
   './index.html',
@@ -42,35 +42,55 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
-  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim()));
+  event.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))
+      .then(() => self.clients.claim())
+  );
 });
+
+async function networkFirst(request, fallbackKey = request) {
+  try {
+    const response = await fetch(request, { cache: 'no-store' });
+    if (response.ok) {
+      const cache = await caches.open(CACHE);
+      await cache.put(fallbackKey, response.clone());
+    }
+    return response;
+  } catch {
+    return (await caches.match(fallbackKey)) || (await caches.match(request));
+  }
+}
 
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin) return;
 
-  if (event.request.mode === 'navigate') {
-    event.respondWith(fetch(event.request, { cache: 'no-store' }).then(response => {
-      if (response.ok) caches.open(CACHE).then(cache => cache.put('./index.html', response.clone()));
-      return response;
-    }).catch(async () => (await caches.match('./index.html')) || new Response(
-      '<!doctype html><meta charset="utf-8"><title>Offline</title><p>A aplicação está offline e a página inicial ainda não foi armazenada neste dispositivo.</p>',
-      { status: 503, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
-    )));
+  const isNavigation = event.request.mode === 'navigate';
+  const isCriticalAsset = event.request.destination === 'script' || event.request.destination === 'style';
+
+  if (isNavigation) {
+    event.respondWith((async () => {
+      const response = await networkFirst(event.request, './index.html');
+      return response || new Response(
+        '<!doctype html><meta charset="utf-8"><title>Offline</title><p>A aplicação está offline e a página inicial ainda não foi armazenada neste dispositivo.</p>',
+        { status: 503, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
+      );
+    })());
     return;
   }
 
-  event.respondWith(caches.match(event.request).then(cached => {
-    if (cached) {
-      event.waitUntil(fetch(event.request).then(response => {
-        if (response.ok) return caches.open(CACHE).then(cache => cache.put(event.request, response.clone()));
-      }).catch(() => undefined));
-      return cached;
-    }
-    return fetch(event.request).then(response => {
-      if (response.ok) caches.open(CACHE).then(cache => cache.put(event.request, response.clone()));
-      return response;
-    }).catch(() => new Response('Recurso indisponível offline.', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } }));
-  }));
+  if (isCriticalAsset) {
+    event.respondWith((async () => {
+      const response = await networkFirst(event.request);
+      return response || new Response('Recurso indisponível offline.', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+    })());
+    return;
+  }
+
+  event.respondWith(caches.match(event.request).then(cached => cached || fetch(event.request).then(response => {
+    if (response.ok) caches.open(CACHE).then(cache => cache.put(event.request, response.clone()));
+    return response;
+  }).catch(() => new Response('Recurso indisponível offline.', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } }))));
 });

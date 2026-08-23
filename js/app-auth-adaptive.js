@@ -51,12 +51,10 @@
       this.els.authPasswordStage?.classList.add('is-hidden');
       this.els.changeLoginEmail?.classList.add('is-hidden');
       if (this.els.loginSubmit) this.els.loginSubmit.textContent = 'Continuar';
-      if (this.els.loginModeHint) {
-        this.els.loginModeHint.textContent = 'Introduza o seu e-mail e toque em Continuar.';
-      }
+      if (this.els.loginModeHint) this.els.loginModeHint.textContent = 'Introduza o e-mail para continuar.';
       if (this.els.authFlowState) {
         this.els.authFlowState.dataset.stage = 'email';
-        this.els.authFlowState.textContent = 'Introduza o e-mail para continuar.';
+        this.els.authFlowState.textContent = 'Passo 1 de 2 · Introduza o e-mail.';
       }
       this.clearLoginErrors();
       this.setLoginSecurityMessage('', 'info');
@@ -87,17 +85,17 @@
 
       if (this.els.loginModeHint) {
         this.els.loginModeHint.textContent = creating
-          ? 'Primeiro acesso neste dispositivo. Defina uma palavra-passe para este protótipo e confirme-a abaixo.'
-          : 'Acesso encontrado neste dispositivo. Introduza a palavra-passe do protótipo para entrar.';
+          ? 'Primeiro acesso neste dispositivo. Crie agora a palavra-passe desta aplicação e confirme-a.'
+          : 'Introduza a palavra-passe desta aplicação para entrar.';
       }
       if (this.els.authFlowState) {
         this.els.authFlowState.dataset.stage = creating ? 'create' : 'login';
         this.els.authFlowState.textContent = creating
-          ? 'Primeiro acesso · Definir palavra-passe local.'
-          : 'Acesso existente · Introduzir palavra-passe.';
+          ? 'Passo 2 de 2 · Definir palavra-passe da aplicação.'
+          : 'Passo 2 de 2 · Introduzir palavra-passe.';
       }
       if (this.els.loginSubmit) {
-        this.els.loginSubmit.textContent = creating ? 'Configurar acesso e entrar' : 'Entrar';
+        this.els.loginSubmit.textContent = creating ? 'Criar palavra-passe e entrar' : 'Entrar';
       }
 
       requestAnimationFrame(() => this.els.loginPassword?.focus());
@@ -117,7 +115,7 @@
       const result = originalLogout.call(this, reason);
       this.resetAdaptiveAuthFlow();
       if (reason === 'idle') {
-        this.setLoginSecurityMessage('Sessão bloqueada por inatividade. Introduza novamente o e-mail e a palavra-passe do protótipo.', 'info');
+        this.setLoginSecurityMessage('Sessão bloqueada por inatividade. Introduza novamente o e-mail e a palavra-passe da aplicação.', 'info');
       }
       return result;
     },

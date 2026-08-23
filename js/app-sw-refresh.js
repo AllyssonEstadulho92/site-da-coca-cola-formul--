@@ -8,7 +8,7 @@
       if (!('serviceWorker' in navigator) || !/^https?:$/.test(location.protocol)) return;
 
       navigator.serviceWorker.addEventListener('controllerchange', () => {
-        const key = 'registoAvariasSwReloadedV37';
+        const key = 'registoAvariasSwReloadedV38';
         if (sessionStorage.getItem(key) === '1') return;
         sessionStorage.setItem(key, '1');
         location.reload();

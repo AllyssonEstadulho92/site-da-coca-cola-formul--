@@ -11,7 +11,7 @@ const sw = fs.readFileSync(path.join(root, 'service-worker.js'), 'utf8');
 
 assert.match(index, /placeholder="nome@ilunion\.es"/i, 'O login deve indicar o domínio permitido.');
 assert.match(index, /E-mail ILUNION/i, 'O campo deve identificar o e-mail ILUNION.');
-assert.match(index, /Não utilize a palavra-passe da conta empresarial/i, 'O ecrã deve desencorajar a reutilização da palavra-passe corporativa.');
+assert.match(index, /Não utilize a palavra-passe empresarial/i, 'O ecrã deve desencorajar a reutilização da palavra-passe corporativa.');
 assert.match(index, /js\/app-auth-domain\.js/, 'O módulo de domínio deve ser carregado no frontend.');
 assert.ok(index.indexOf('js/app-shell.js') < index.indexOf('js/app-auth-domain.js'), 'O módulo de domínio deve carregar depois do shell base.');
 assert.ok(index.indexOf('js/app-auth-domain.js') < index.indexOf('js/app.js'), 'O módulo de domínio deve carregar antes do arranque da aplicação.');
@@ -20,7 +20,7 @@ assert.match(domainModule, /ALLOWED_EMAIL_DOMAIN\s*=\s*'ilunion\.es'/, 'O domín
 assert.match(domainModule, /\^\[\^@\\s\]\+@ilunion\\\.es\$/, 'A validação deve exigir exatamente @ilunion.es.');
 assert.match(domainModule, /restoreSession\(\)/, 'Sessões restauradas também devem ser sujeitas à política de domínio.');
 assert.match(domainModule, /clearLocalSession\(\)/, 'Sessões incompatíveis devem ser removidas.');
-assert.match(sw, /registo-avarias-v3\.7\.0/, 'O cache PWA deve corresponder à V3.7.0.');
+assert.match(sw, /registo-avarias-v3\.8\.0/, 'O cache PWA deve corresponder à V3.8.0.');
 assert.match(sw, /\.\/js\/app-auth-domain\.js/, 'A política de domínio deve funcionar offline após cache válido.');
 
 const session = new Map();
