@@ -82,9 +82,7 @@
             <input id="globalSearch" type="search" placeholder="Pesquisar registo, cliente, REF, nota…" />
           </label>
           <button id="quickAddButton" class="btn btn-primary" type="button">+ Novo registo</button>
-          <button id="profileButton" class="avatar-button" type="button" aria-label="Abrir perfil">
-            <span id="avatarInitials">US</span>
-          </button>
+          <button id="profileButton" class="avatar-button" type="button" aria-label="Abrir perfil"><span id="avatarInitials">US</span></button>
         </div>
       </header>
 
@@ -105,24 +103,15 @@
 
   <dialog id="confirmDialog" class="modal">
     <form method="dialog" class="modal-card">
-      <div>
-        <p class="eyebrow">Confirmar ação</p>
-        <h3 id="confirmTitle">Tem a certeza?</h3>
-        <p id="confirmText" class="muted"></p>
-      </div>
-      <div class="modal-actions">
-        <button class="btn btn-secondary" value="cancel">Cancelar</button>
-        <button id="confirmActionButton" class="btn btn-danger" value="confirm">Confirmar</button>
-      </div>
+      <div><p class="eyebrow">Confirmar ação</p><h3 id="confirmTitle">Tem a certeza?</h3><p id="confirmText" class="muted"></p></div>
+      <div class="modal-actions"><button class="btn btn-secondary" value="cancel">Cancelar</button><button id="confirmActionButton" class="btn btn-danger" value="confirm">Confirmar</button></div>
     </form>
   </dialog>
 
   <dialog id="recordDialog" class="modal modal-wide">
     <form method="dialog" class="modal-card">
       <div id="recordDialogBody"></div>
-      <div class="modal-actions">
-        <button class="btn btn-secondary" value="close">Fechar</button>
-      </div>
+      <div class="modal-actions"><button class="btn btn-secondary" value="close">Fechar</button></div>
     </form>
   </dialog>
 
@@ -130,6 +119,22 @@
 
   <script src="js/core.js"></script>
   <script src="js/db.js"></script>
+  <script src="js/app-base.js"></script>
+  <script src="js/app-utils.js"></script>
+  <script src="js/app-shell.js"></script>
+  <script src="js/app-dashboard.js"></script>
+  <script src="js/app-form-view.js"></script>
+  <script src="js/app-form-logic.js"></script>
+  <script src="js/app-form-save.js"></script>
+  <script src="js/app-records.js"></script>
+  <script src="js/app-record-detail.js"></script>
+  <script src="js/app-record-archive.js"></script>
+  <script src="js/app-directories.js"></script>
+  <script src="js/app-routing-views.js"></script>
+  <script src="js/app-activity-productivity.js"></script>
+  <script src="js/app-settings.js"></script>
+  <script src="js/app-backup.js"></script>
+  <script src="js/app-profile-help.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
