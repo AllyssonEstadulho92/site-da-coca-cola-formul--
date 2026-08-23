@@ -32,7 +32,7 @@ assert.match(db, /deleteObjectStore\('profiles'\)/, 'A migração deve continuar
 assert.equal(/getAll\('profiles'\)/.test(db), false, 'Backups novos não podem exportar perfis de autenticação.');
 assert.equal(/objectStore\('profiles'\)\.put/.test(db), false, 'Restauros não podem recriar perfis de autenticação.');
 
-assert.match(sw, /registo-avarias-v4\.2\.0/, 'O cache PWA deve corresponder à V4.2.0.');
+assert.match(sw, /registo-avarias-v4\.2\.1/, 'O cache PWA deve corresponder à V4.2.1.');
 assert.equal(/app-auth-(?:domain|adaptive)\.js/.test(sw), false, 'O cache PWA não pode conter módulos de autenticação.');
 assert.equal(/auth-security\.css/.test(sw), false, 'O cache PWA não pode conter CSS de autenticação.');
 
