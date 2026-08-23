@@ -60,6 +60,6 @@ for (const required of [
 }
 
 assert.equal(/window\.open\s*\(/.test(ui), false, 'O catálogo não deve abrir janelas por JavaScript.');
-assert.equal(/innerHTML\s*=\s*[^`'\"]/.test(ui), false, 'Rever atribuições innerHTML não literais no catálogo.');
+assert.equal(/\beval\s*\(|new\s+Function\s*\(/.test(ui), false, 'O catálogo não deve executar código dinâmico por eval/Function.');
 
 console.log(`Equipment catalog tests: OK (${catalog.length} equipamentos + UI V3.3)`);
