@@ -93,6 +93,17 @@
       this.state.activities = (await AppDB.getAll('activities')).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     },
 
+    setConnectionBanner(online) {
+      const title = this.els.systemBannerTitle;
+      const text = this.els.systemBannerText;
+      const dot = document.querySelector('#systemBanner .status-dot');
+      title.textContent = online ? 'Protótipo sem autenticação' : 'Offline · sem autenticação';
+      text.textContent = online
+        ? 'Acesso direto neste dispositivo. Não utilize dados reais ou informação SAP neste site público.'
+        : 'Pode continuar offline com dados locais fictícios. Não utilize dados reais neste protótipo público.';
+      if (dot) dot.style.background = online ? 'var(--warning)' : 'var(--warning)';
+    },
+
     renderNavigation() {
       this.els.desktopNav.innerHTML = this.navItems.filter(item => !item.mobileOnly).map(item => `
         <button class="nav-item" type="button" data-route="${item.id}">
