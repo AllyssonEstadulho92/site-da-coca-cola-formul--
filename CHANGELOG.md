@@ -1,5 +1,19 @@
 # Changelog
 
+## 3.3.0
+
+- Redesenhada a área Equipamentos para corresponder ao protótipo visual aprovado.
+- Catálogo e ficha do equipamento passam a coexistir numa área de trabalho em duas colunas no desktop.
+- Equipamentos agrupados por Vitrines, Postmix, Vending, Freestyle e Outros.
+- Adicionadas referências visuais legíveis como `VIT-2P01`, `PM-DROPIN-08`, `VEN-GF-GDE` e `FS-9100`.
+- Adicionados separadores Visão Geral, Ficha Técnica, Sintomas, Consequências e Documentos.
+- Pesquisa, filtro por categoria e alternância grelha/lista funcionais.
+- Mantida a vista Meus Equipamentos com os equipamentos provenientes dos registos operacionais.
+- A ação Criar Registo continua a transportar a seleção do catálogo para o formulário de avaria.
+- Melhorada a adaptação a tablet e telemóvel sem remover informação técnica.
+- Reforçado o teste automático do catálogo para validar integrações e classes essenciais da V3.3.
+- Atualizado o cache da PWA para `registo-avarias-v3.3.0`.
+
 ## 3.2.0
 
 - Criado Catálogo de Equipamentos dentro da área Equipamentos.

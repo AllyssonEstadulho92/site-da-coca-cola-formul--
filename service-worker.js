@@ -1,4 +1,4 @@
-const CACHE = 'registo-avarias-v3.2.0';
+const CACHE = 'registo-avarias-v3.3.0';
 const ASSETS = [
   './',
   './index.html',
