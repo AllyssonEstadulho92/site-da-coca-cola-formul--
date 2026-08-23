@@ -1,6 +1,6 @@
 {
   "name": "registo-avarias-v3",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "private": true,
   "description": "PWA profissional para produtividade, catálogo de equipamentos e registo de avarias, com persistência local, auditoria e encaminhamento configurável.",
   "scripts": {
