@@ -30,20 +30,29 @@ Dados reais nunca devem ser convertidos em “demo” apenas alterando o nome. P
 
 O perfil local serve apenas para controlar o acesso aos dados guardados neste browser durante a validação do protótipo. Não é uma conta corporativa nem um mecanismo de autorização de servidor.
 
-Na V3.4:
+Na V3.6, a interface usa um fluxo adaptativo em dois passos:
 
-- `Entrar` e `Criar perfil de teste` são fluxos separados;
+1. o utilizador introduz um e-mail `@ilunion.es`;
+2. a aplicação verifica apenas no IndexedDB deste browser se já existe um perfil local para esse endereço;
+3. se existir, solicita a palavra-passe local do protótipo;
+4. se não existir, apresenta automaticamente a criação do acesso local, com confirmação de palavra-passe.
+
+A distinção entre autenticar e criar perfil continua a existir internamente; apenas deixou de exigir uma escolha manual no ecrã.
+
+As proteções locais incluem:
+
 - novos perfis exigem confirmação da palavra-passe e política mínima de 12 caracteres com pelo menos 3 tipos de caracteres;
 - o hash local é derivado com PBKDF2-SHA-256, salt aleatório e 210 000 iterações para novos perfis;
 - perfis com um número inferior de iterações são rederivados após autenticação válida;
 - cinco tentativas falhadas consecutivas provocam um bloqueio local temporário de cinco minutos;
 - a sessão é bloqueada após 15 minutos de inatividade;
 - logout/bloqueio removem a sessão e buffers transitórios do `sessionStorage`;
-- a gestão do perfil exige contexto seguro (`HTTPS` ou contexto equivalente de desenvolvimento) e Web Crypto.
+- a gestão do perfil exige contexto seguro (`HTTPS` ou contexto equivalente de desenvolvimento) e Web Crypto;
+- a interface aceita apenas endereços exatamente no domínio `@ilunion.es`.
 
-Estes controlos são de defesa em profundidade para um protótipo local. Um utilizador com controlo do browser/dispositivo pode eliminar armazenamento, modificar JavaScript ou contornar proteções exclusivamente client-side. Por isso, estes mecanismos **não devem ser usados para proteger dados corporativos reais**.
+A restrição `@ilunion.es` é apenas validação client-side e **não comprova que a pessoa controla uma conta empresarial**. Um utilizador com controlo do browser/dispositivo pode eliminar armazenamento, modificar JavaScript ou contornar proteções exclusivamente client-side. Por isso, estes mecanismos **não devem ser usados para proteger dados corporativos reais**.
 
-Nunca reutilizar neste protótipo uma palavra-passe utilizada em Microsoft 365, SAP, e-mail, VPN ou qualquer outro serviço corporativo/pessoal.
+Nunca reutilizar neste protótipo uma palavra-passe utilizada em Microsoft 365, SAP, e-mail, VPN ou qualquer outro serviço corporativo/pessoal. A palavra-passe do perfil local deve ser criada exclusivamente para este protótipo.
 
 ## Backups
 
