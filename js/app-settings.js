@@ -7,6 +7,7 @@
       const eqOptions = selected => this.optionList(this.state.settings.equipmentTypes, selected);
       const symptomOptions = selected => this.optionList(this.state.settings.symptoms, selected);
       const faultOptions = selected => this.optionList(this.state.settings.faultCategories, selected);
+      const demoCount = this.state.records.filter(record => record.demo === true).length;
 
       this.els.viewContainer.innerHTML = `
         <div class="page-head">
@@ -19,6 +20,20 @@
         </div>
 
         <div class="prototype-note"><strong>Regras empresariais:</strong> PT 32 / PT 60 / PT 70, departamentos e e-mails só devem ser preenchidos com dados autorizados. As regras automáticas são aplicadas apenas quando existirem critérios configurados.</div>
+
+        <section class="panel settings-section">
+          <div class="panel-head"><div><h3>Demonstração pública segura</h3><span class="muted">Dados fictícios para validar a interface sem expor informação operacional</span></div></div>
+          <div class="panel-body backup-layout">
+            <div class="stack-md">
+              <p class="muted">Os registos de demonstração são identificados pelo prefixo <strong>DEMO</strong>, usam contactos fictícios e endereços <code>example.invalid</code>. Não representam clientes, equipamentos ou encaminhamentos reais.</p>
+              ${this.detailItem('Registos DEMO carregados', String(demoCount))}
+            </div>
+            <div class="page-actions">
+              <button class="btn btn-secondary" data-action="load-demo" ${demoCount ? 'disabled' : ''}>Carregar dados DEMO</button>
+              <button class="btn btn-danger" data-action="clear-demo" ${demoCount ? '' : 'disabled'}>Remover dados DEMO</button>
+            </div>
+          </div>
+        </section>
 
         <section class="panel settings-section">
           <div class="panel-head"><div><h3>Regras de encaminhamento</h3><span class="muted">Equipamento + sintoma + categoria → PT / setor / e-mail</span></div></div>
