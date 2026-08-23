@@ -2,7 +2,7 @@
   'use strict';
 
   const DB_NAME = 'registoAvariasDB';
-  const DB_VERSION = 2;
+  const DB_VERSION = 3;
   const SNAPSHOT_LIMIT = 5;
   let dbPromise;
 
@@ -25,7 +25,7 @@
           store.createIndex('createdAt', 'createdAt', { unique: false });
         }
         if (!db.objectStoreNames.contains('settings')) db.createObjectStore('settings', { keyPath: 'key' });
-        if (!db.objectStoreNames.contains('profiles')) db.createObjectStore('profiles', { keyPath: 'email' });
+        if (db.objectStoreNames.contains('profiles')) db.deleteObjectStore('profiles');
         if (!db.objectStoreNames.contains('snapshots')) {
           const store = db.createObjectStore('snapshots', { keyPath: 'id' });
           store.createIndex('createdAt', 'createdAt', { unique: false });
@@ -88,25 +88,25 @@
   }
 
   async function exportAll() {
-    const [records, activities, settings, profiles] = await Promise.all([
-      getAll('records'), getAll('activities'), getAll('settings'), getAll('profiles')
+    const [records, activities, settings] = await Promise.all([
+      getAll('records'), getAll('activities'), getAll('settings')
     ]);
     return {
-      schemaVersion: 2,
-      appVersion: '3.1.0',
+      schemaVersion: 3,
+      appVersion: '3.9.0',
       exportedAt: new Date().toISOString(),
       records,
       activities,
       settings,
-      profiles,
     };
   }
 
   function validateBackup(payload) {
-    if (!payload || ![1, 2].includes(Number(payload.schemaVersion))) throw new Error('Formato de backup incompatível.');
-    for (const key of ['records', 'activities', 'settings', 'profiles']) {
+    if (!payload || ![1, 2, 3].includes(Number(payload.schemaVersion))) throw new Error('Formato de backup incompatível.');
+    for (const key of ['records', 'activities', 'settings']) {
       if (payload[key] != null && !Array.isArray(payload[key])) throw new Error(`Estrutura inválida: ${key}.`);
     }
+    if (payload.profiles != null && !Array.isArray(payload.profiles)) throw new Error('Estrutura inválida: profiles.');
 
     const ids = new Set();
     const displayIds = new Set();
@@ -125,7 +125,7 @@
   async function importAll(payload) {
     validateBackup(payload);
     const db = await open();
-    const stores = ['records', 'activities', 'settings', 'profiles'];
+    const stores = ['records', 'activities', 'settings'];
     return new Promise((resolve, reject) => {
       const tx = db.transaction(stores, 'readwrite');
       tx.oncomplete = () => resolve(true);
@@ -136,7 +136,6 @@
       for (const record of payload.records || []) tx.objectStore('records').put(record);
       for (const activity of payload.activities || []) tx.objectStore('activities').put(activity);
       for (const setting of payload.settings || []) tx.objectStore('settings').put(setting);
-      for (const profile of payload.profiles || []) tx.objectStore('profiles').put(profile);
     });
   }
 
@@ -168,7 +167,7 @@
   async function ensureDailySnapshot() {
     const snapshots = await getSnapshots();
     const today = new Date().toISOString().slice(0, 10);
-    if (snapshots.some((item) => String(item.createdAt || '').slice(0, 10) === today)) return null;
+    if (snapshots.some(item => String(item.createdAt || '').slice(0, 10) === today)) return null;
     return createSnapshot('Snapshot diário automático');
   }
 
