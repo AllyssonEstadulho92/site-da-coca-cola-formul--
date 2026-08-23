@@ -12,8 +12,8 @@
     localDateInput(date) {
       const d = new Date(date);
       const y = d.getFullYear();
-      const m = String(d.getMonth()+1).padStart(2,'0');
-      const day = String(d.getDate()).padStart(2,'0');
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
       return `${y}-${m}-${day}`;
     },
 
@@ -65,54 +65,39 @@
       return `<div class="detail-item"><span>${this.escape(label)}</span><strong>${this.escape(value || '—')}</strong></div>`;
     },
 
-    empty(title, text='') {
+    empty(title, text = '') {
       return `<div class="empty-state"><strong>${this.escape(title)}</strong>${text ? `<span>${this.escape(text)}</span>` : ''}</div>`;
     },
 
-    field(name, label, type, value, required=false, placeholder='', extra='') {
+    field(name, label, type, value, required = false, placeholder = '', extra = '') {
       const spanClass = /class=["']span-2["']/.test(extra) ? ' span-2' : '';
       const inputExtra = extra.replace(/class=["']span-2["']/, '').trim();
-      return `<label class="field${spanClass}"><span>${this.escape(label)}${required?' *':''}</span><input id="${name}" name="${name}" type="${type}" value="${this.escapeAttr(value || '')}" ${placeholder?`placeholder="${this.escapeAttr(placeholder)}"`:''} ${required?'required':''} ${inputExtra}></label>`;
+      return `<label class="field${spanClass}"><span>${this.escape(label)}${required ? ' *' : ''}</span><input id="${name}" name="${name}" type="${type}" value="${this.escapeAttr(value || '')}" ${placeholder ? `placeholder="${this.escapeAttr(placeholder)}"` : ''} ${required ? 'required' : ''} ${inputExtra}></label>`;
     },
 
-    textareaField(name, label, value, required=false, placeholder='', spanClass='') {
-      return `<label class="field ${spanClass}"><span>${this.escape(label)}${required?' *':''}</span><textarea id="${name}" name="${name}" ${required?'required':''} ${placeholder?`placeholder="${this.escapeAttr(placeholder)}"`:''}>${this.escape(value || '')}</textarea></label>`;
+    textareaField(name, label, value, required = false, placeholder = '', spanClass = '') {
+      return `<label class="field ${spanClass}"><span>${this.escape(label)}${required ? ' *' : ''}</span><textarea id="${name}" name="${name}" ${required ? 'required' : ''} ${placeholder ? `placeholder="${this.escapeAttr(placeholder)}"` : ''}>${this.escape(value || '')}</textarea></label>`;
     },
 
-    selectField(name, label, optionsHtml, required=false) {
-      return `<label class="field"><span>${this.escape(label)}${required?' *':''}</span><select id="${name}" name="${name}" ${required?'required':''}>${optionsHtml}</select></label>`;
+    selectField(name, label, optionsHtml, required = false) {
+      return `<label class="field"><span>${this.escape(label)}${required ? ' *' : ''}</span><select id="${name}" name="${name}" ${required ? 'required' : ''}>${optionsHtml}</select></label>`;
     },
 
-    optionList(values, selected='') {
-      return `<option value="">Selecionar</option>${(values || []).map(value => `<option value="${this.escapeAttr(value)}" ${value===selected?'selected':''}>${this.escape(value)}</option>`).join('')}`;
+    optionList(values, selected = '') {
+      return `<option value="">Selecionar</option>${(values || []).map(value => `<option value="${this.escapeAttr(value)}" ${value === selected ? 'selected' : ''}>${this.escape(value)}</option>`).join('')}`;
     },
 
     statusOptions(selected) {
-      return Object.entries(this.statusLabels).filter(([key]) => key !== 'ARCHIVED').map(([key,label]) => `<option value="${key}" ${key===selected?'selected':''}>${this.escape(label)}</option>`).join('');
+      return Object.entries(this.statusLabels).filter(([key]) => key !== 'ARCHIVED').map(([key, label]) => `<option value="${key}" ${key === selected ? 'selected' : ''}>${this.escape(label)}</option>`).join('');
     },
 
-    setSaveState(text, state='saved') {
+    setSaveState(text, state = 'saved') {
       if (!this.els.saveState) return;
       this.els.saveState.textContent = text;
       this.els.saveState.style.color = state === 'pending' ? 'var(--warning)' : state === 'error' ? 'var(--danger)' : 'var(--success)';
     },
 
-    setConnectionBanner(online) {
-      const title = this.els.systemBannerTitle;
-      const text = this.els.systemBannerText;
-      const dot = document.querySelector('#systemBanner .status-dot');
-      if (online) {
-        title.textContent = 'Sistema local ativo';
-        text.textContent = 'Alterações guardadas automaticamente neste dispositivo.';
-        if (dot) dot.style.background = 'var(--success)';
-      } else {
-        title.textContent = 'Modo offline';
-        text.textContent = 'Pode continuar a trabalhar. Os dados permanecem neste dispositivo até existir backend/sincronização autorizada.';
-        if (dot) dot.style.background = 'var(--warning)';
-      }
-    },
-
-    toast(message, type='') {
+    toast(message, type = '') {
       const node = document.createElement('div');
       node.className = `toast ${type}`.trim();
       node.textContent = message;
@@ -142,8 +127,6 @@
         if (action === 'save-settings') return this.saveSettings();
         if (action === 'install-app') return this.installApp();
         if (action === 'save-profile') return this.saveProfileName();
-        if (action === 'change-password') return this.changeLocalPassword();
-        if (action === 'logout') return this.logout();
         if (action === 'save-draft') {
           await this.saveDraftNow();
           return this.toast(this.state.editingExistingId ? 'Alterações protegidas localmente. Use “Guardar alterações” para confirmar no registo.' : 'Rascunho guardado.', 'success');
