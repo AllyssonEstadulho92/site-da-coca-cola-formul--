@@ -52,11 +52,11 @@
       this.els.changeLoginEmail?.classList.add('is-hidden');
       if (this.els.loginSubmit) this.els.loginSubmit.textContent = 'Continuar';
       if (this.els.loginModeHint) {
-        this.els.loginModeHint.textContent = 'Introduza o seu e-mail ILUNION. O sistema identifica automaticamente se este browser já tem um perfil local.';
+        this.els.loginModeHint.textContent = 'Introduza o seu e-mail e toque em Continuar.';
       }
       if (this.els.authFlowState) {
         this.els.authFlowState.dataset.stage = 'email';
-        this.els.authFlowState.textContent = '1 de 2 · Introduza o e-mail para continuar.';
+        this.els.authFlowState.textContent = 'Introduza o e-mail para continuar.';
       }
       this.clearLoginErrors();
       this.setLoginSecurityMessage('', 'info');
@@ -70,7 +70,7 @@
       if (!this.updateAuthSecurityUI()) return false;
       if (!this.isAllowedProfileEmail?.(email)) {
         this.setFieldError('loginEmail', 'Utilize um endereço de e-mail @ilunion.es.');
-        this.setLoginSecurityMessage('O protótipo aceita apenas perfis locais com endereço @ilunion.es.', 'info');
+        this.setLoginSecurityMessage('Introduza um endereço válido do domínio @ilunion.es.', 'info');
         return false;
       }
 
@@ -87,17 +87,17 @@
 
       if (this.els.loginModeHint) {
         this.els.loginModeHint.textContent = creating
-          ? 'Primeiro acesso neste browser. Crie uma palavra-passe exclusiva deste protótipo — nunca utilize a palavra-passe empresarial.'
-          : 'Perfil local encontrado neste browser. Introduza a palavra-passe que criou especificamente para este protótipo.';
+          ? 'Primeiro acesso neste dispositivo. Defina uma palavra-passe para este protótipo e confirme-a abaixo.'
+          : 'Acesso encontrado neste dispositivo. Introduza a palavra-passe do protótipo para entrar.';
       }
       if (this.els.authFlowState) {
         this.els.authFlowState.dataset.stage = creating ? 'create' : 'login';
         this.els.authFlowState.textContent = creating
-          ? '2 de 2 · Criar acesso local neste dispositivo.'
-          : '2 de 2 · Confirmar acesso local neste dispositivo.';
+          ? 'Primeiro acesso · Definir palavra-passe local.'
+          : 'Acesso existente · Introduzir palavra-passe.';
       }
       if (this.els.loginSubmit) {
-        this.els.loginSubmit.textContent = creating ? 'Criar acesso local e entrar' : 'Entrar';
+        this.els.loginSubmit.textContent = creating ? 'Configurar acesso e entrar' : 'Entrar';
       }
 
       requestAnimationFrame(() => this.els.loginPassword?.focus());
@@ -117,7 +117,7 @@
       const result = originalLogout.call(this, reason);
       this.resetAdaptiveAuthFlow();
       if (reason === 'idle') {
-        this.setLoginSecurityMessage('Sessão bloqueada após 15 minutos de inatividade. Introduza novamente o e-mail e a palavra-passe do protótipo.', 'info');
+        this.setLoginSecurityMessage('Sessão bloqueada por inatividade. Introduza novamente o e-mail e a palavra-passe do protótipo.', 'info');
       }
       return result;
     },

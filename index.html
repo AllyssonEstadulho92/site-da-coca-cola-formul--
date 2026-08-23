@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
   <meta name="referrer" content="no-referrer" />
   <meta name="theme-color" content="#f7f7f8" />
-  <meta name="description" content="Aplicação profissional de produtividade, catálogo visual de equipamentos e registo de avarias — protótipo local V3.6." />
+  <meta name="description" content="Aplicação profissional de produtividade, catálogo visual de equipamentos e registo de avarias — protótipo local V3.7." />
   <title>Sistema de Registo de Avarias</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/styles.css" />
@@ -19,7 +19,7 @@
   <section id="loginView" class="login-view" aria-labelledby="loginTitle">
     <div class="login-card login-card-secure">
       <div class="auth-status-row" aria-label="Estado do ambiente">
-        <span class="auth-environment-badge">Protótipo local</span>
+        <span class="auth-environment-badge">Acesso local</span>
         <span id="connectionSecurityStatus" class="security-status-pill" data-secure="unknown">A verificar ligação…</span>
       </div>
 
@@ -27,47 +27,42 @@
         <div class="brand-mark" aria-hidden="true">RA</div>
         <div>
           <p class="eyebrow">Produtividade profissional</p>
-          <h1 id="loginTitle">Sistema de Registo de Avarias</h1>
+          <h1 id="loginTitle">Entrar na aplicação</h1>
+          <p class="auth-subtitle">Sistema de Registo de Avarias</p>
         </div>
       </div>
 
       <div class="prototype-note prototype-note-compact" role="note">
-        <strong>Acesso local de teste.</strong> Introduza primeiro o seu e-mail <strong>@ilunion.es</strong>. Se este browser ainda não tiver um perfil, a aplicação prepara automaticamente a criação do acesso local. Use sempre uma palavra-passe exclusiva do protótipo — nunca a palavra-passe empresarial. Não utilize dados reais de clientes ou informação SAP neste site público.
+        Utilize o seu e-mail <strong>@ilunion.es</strong>. A palavra-passe usada aqui é exclusiva deste protótipo e não deve ser a palavra-passe da conta empresarial.
       </div>
 
-      <div class="auth-mode-switch is-hidden" role="group" aria-label="Modo interno de acesso" aria-hidden="true">
-        <button id="loginModeLogin" class="auth-mode-button active" type="button" aria-pressed="true" tabindex="-1">Entrar</button>
-        <button id="loginModeCreate" class="auth-mode-button" type="button" aria-pressed="false" tabindex="-1">Criar perfil de teste</button>
-      </div>
-
-      <p id="loginModeHint" class="auth-mode-hint">Introduza o seu e-mail ILUNION. O sistema identifica automaticamente se este browser já tem um perfil local.</p>
+      <p id="loginModeHint" class="auth-mode-hint">Introduza o seu e-mail e toque em <strong>Continuar</strong>.</p>
 
       <form id="loginForm" class="stack-lg" novalidate>
         <label class="field">
           <span>E-mail ILUNION</span>
           <input id="loginEmail" name="email" type="email" autocomplete="username" inputmode="email" placeholder="nome@ilunion.es" pattern="[^@\s]+@ilunion\.es" title="Utilize um endereço @ilunion.es" required />
-          <small class="field-hint">Aceita apenas o domínio @ilunion.es.</small>
           <small class="field-error" data-error-for="loginEmail"></small>
         </label>
 
-        <div id="authFlowState" class="auth-flow-state" data-stage="email" role="status" aria-live="polite">1 de 2 · Introduza o e-mail para continuar.</div>
+        <div id="authFlowState" class="auth-flow-state" data-stage="email" role="status" aria-live="polite">Introduza o e-mail para continuar.</div>
 
         <div id="authPasswordStage" class="auth-password-stage is-hidden">
           <label class="field">
-            <span>Palavra-passe exclusiva do protótipo</span>
+            <span>Palavra-passe do acesso local</span>
             <div class="password-wrap">
               <input id="loginPassword" name="password" type="password" autocomplete="current-password" minlength="8" placeholder="••••••••••••" />
               <button id="togglePassword" class="icon-button" type="button" aria-label="Mostrar palavra-passe">
                 <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.8"/></svg>
               </button>
             </div>
-            <small class="field-hint"><strong>Não utilize a palavra-passe da conta empresarial.</strong> Esta palavra-passe serve apenas para o perfil local deste protótipo.</small>
+            <small class="field-hint">Não utilize a palavra-passe da conta empresarial.</small>
             <small class="field-error" data-error-for="loginPassword"></small>
           </label>
 
           <div id="createProfileFields" class="create-profile-fields is-hidden">
             <label class="field">
-              <span>Confirmar palavra-passe do protótipo</span>
+              <span>Confirmar palavra-passe</span>
               <input id="loginConfirmPassword" name="confirmPassword" type="password" autocomplete="new-password" minlength="12" placeholder="Repita a palavra-passe" />
               <small class="field-error" data-error-for="loginConfirmPassword"></small>
             </label>
@@ -81,14 +76,12 @@
         <div id="loginSecurityMessage" class="login-security-message" role="status" aria-live="polite"></div>
 
         <button id="loginSubmit" class="btn btn-primary btn-block" type="submit">Continuar</button>
-        <button id="changeLoginEmail" class="btn btn-ghost btn-block is-hidden" type="button">Alterar e-mail</button>
+        <button id="changeLoginEmail" class="btn btn-ghost btn-block is-hidden" type="button">Usar outro e-mail</button>
       </form>
 
-      <div class="login-security-footer" aria-label="Informação de segurança do protótipo">
+      <div class="login-security-footer" aria-label="Informação de segurança">
         <span>HTTPS / Web Crypto</span>
-        <span>Perfil local @ilunion.es</span>
-        <span>Sem SSO corporativo</span>
-        <span>Bloqueio após 15 min de inatividade</span>
+        <span>Bloqueio automático após 15 min</span>
       </div>
     </div>
   </section>
@@ -110,7 +103,7 @@
           <span class="status-dot" aria-hidden="true"></span>
           <span>Dados locais · protótipo</span>
         </div>
-        <span class="build-label">V3.6 · Acesso adaptativo</span>
+        <span class="build-label">V3.7 · Acesso simplificado</span>
       </div>
     </aside>
 
@@ -161,6 +154,11 @@
 
   <input id="restoreInput" type="file" accept="application/json" hidden />
 
+  <div class="is-hidden" aria-hidden="true">
+    <button id="loginModeLogin" type="button" tabindex="-1">Entrar</button>
+    <button id="loginModeCreate" type="button" tabindex="-1">Criar acesso</button>
+  </div>
+
   <script src="js/core.js"></script>
   <script src="js/db.js"></script>
   <script src="js/app-base.js"></script>
@@ -168,6 +166,7 @@
   <script src="js/app-shell.js"></script>
   <script src="js/app-auth-domain.js"></script>
   <script src="js/app-auth-adaptive.js"></script>
+  <script src="js/app-sw-refresh.js"></script>
   <script src="js/app-dashboard.js"></script>
   <script src="js/app-form-view.js"></script>
   <script src="js/app-form-logic.js"></script>
