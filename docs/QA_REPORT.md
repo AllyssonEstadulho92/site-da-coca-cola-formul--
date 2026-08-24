@@ -1,4 +1,4 @@
-# QA Report — V5.2.0
+# QA Report — V6.0.0
 
 ## Âmbito
 
@@ -10,85 +10,62 @@ Este relatório descreve a cobertura automática e os testes manuais ainda neces
 
 - sintaxe JavaScript;
 - regras puras do core;
-- catálogo com exatamente 53 equipamentos e slugs únicos;
-- matriz original com 7 códigos de Vandalismo, 19 de Dispensing, 7 de Vending e 14 de Funcionamento Geral;
-- chaves internas contextuais para códigos repetidos entre grupos;
-- associação funcional atual por categoria: 18 códigos para Vitrines/Monster, 25 para Vending e 32 para Postmix/Freestyle/módulos auxiliares;
-- exclusão de sintomas de saída/seleção de produto em vitrines;
-- existência de descrição operacional/técnica para os 53 equipamentos;
-- pesquisa por equipamento e por sintomas operacionais;
-- renderização dos 53 cartões e ficha de equipamento;
-- política de fotografias reais: registo `VERIFIED_REAL`, fotografia local e estado `Fotografia pendente`;
-- ausência do sprite de referência gerado no runtime/build;
-- associação da fotografia local ao ID, slug, nome e modelo do equipamento;
-- contrato de layout mobile: largura controlada, `min-width: 0`, colunas proporcionais e ações sem overflow;
-- fotografias locais, IndexedDB e backup;
-- recuperação visível quando o runtime está incompleto e degradação isolada quando uma fotografia falha;
+- existência e integração do Designer de Formulário;
+- ordem configurável das cinco secções;
+- proteção dos campos obrigatórios;
+- visibilidade configurável de campos opcionais;
+- preservação de valores quando um campo opcional está oculto;
+- densidade, largura, destaque e resumo lateral;
+- remoção da rota e runtime Equipamentos;
+- ausência de `js/equipment`, `assets/equipment` e `equipment-v5.css`;
+- migração IndexedDB schema 5 sem `equipmentImages`;
 - ausência de autenticação;
-- PWA/cache V5.2.0 e atualização do Service Worker;
-- integridade de referências;
-- segurança do conteúdo DEMO;
+- PWA/cache V6.0.0;
+- integridade e segurança do conteúdo DEMO;
 - limpeza estrutural do repositório;
 - build estático de `dist/`.
 
 ## Casos manuais obrigatórios
 
+### Designer
+
+- reordenar todas as secções e confirmar a nova ordem no formulário real;
+- alterar títulos das secções;
+- ocultar e reativar cada campo opcional;
+- confirmar que campos obrigatórios não podem ser ocultados;
+- testar densidade confortável/compacta;
+- testar largura padrão/ampla;
+- testar destaques vermelho/azul/grafite;
+- mostrar e ocultar resumo lateral;
+- guardar, recarregar e confirmar persistência;
+- repor padrão.
+
 ### Formulário e registos
 
+- criar registo com design padrão;
+- criar registo com campos opcionais ocultos;
+- editar registo com valor pré-existente num campo posteriormente oculto e confirmar que o valor não é apagado;
 - campos obrigatórios e caracteres portugueses;
-- REF sem zero artificial;
+- normalização da REF;
 - recuperação de rascunho após refresh;
-- edição existente só persiste após Guardar alterações;
+- edição existente só persiste após `Guardar alterações`;
 - pesquisa, filtros, arquivo, reabertura e timeline.
-
-### Equipamentos
-
-- pesquisa por nome, modelo, código, fabricante e sintoma;
-- navegação por categorias;
-- cartões de duas secções em todos os 53 equipamentos;
-- descrição legível e coerente com o tipo/subcategoria;
-- abertura e fecho da ficha;
-- grupos/códigos de sintomas coerentes com a categoria;
-- criação de registo a partir do equipamento;
-- fotografia local: adicionar, substituir, remover e restaurar por backup;
-- confirmar que uma fotografia real corresponde ao equipamento antes de a adicionar/versionar;
-- confirmar que um modelo sem fotografia real apresenta `Fotografia pendente`, sem bloco branco vazio;
-- confirmar que uma imagem com falha de carregamento não deixa a página em branco;
-- confirmar que Ficha técnica, Documentação e “Fonte desta secção” não reaparecem na interface.
 
 ### Responsividade
 
-Validar pelo menos 320, 375/390, 430, 768, 1024 e 1366 px ou superior. Em 320–430 px, a fotografia deve permanecer à esquerda e o conteúdo à direita, sem scroll horizontal, texto cortado fora do viewport ou botões inacessíveis.
+Validar pelo menos 320, 375/390, 430, 768, 1024 e 1366 px ou superior, sem scroll horizontal indevido. Em mobile, o Designer deve passar para uma única coluna e o formulário para uma coluna legível.
 
 ### Safari/iPhone
 
-Executar validação visual real em Safari/iPhone: cartões, área da fotografia, ficha mobile, teclado na pesquisa, upload de fotografia, rotação, PWA instalada e atualização do Service Worker. A suite automática protege o contrato CSS, mas não substitui um teste visual em dispositivo Safari real.
+Executar validação visual real em Safari/iPhone: Designer, formulário, teclado, selects, rotação, PWA instalada e atualização do Service Worker. Esta etapa não é coberta por browser E2E real no repositório.
 
 ### Offline/PWA
 
 - primeiro carregamento online;
 - segundo carregamento offline;
-- matriz de sintomas e restantes recursos estáticos disponíveis;
-- atualização para V5.2.0 quando a rede regressa;
-- recuperação da página após cache antigo/incompleto.
-
-### Acessibilidade
-
-- navegação por teclado;
-- foco visível;
-- labels e diálogo utilizáveis;
-- texto alternativo das fotografias;
-- contraste e interface não dependente apenas de cor.
-
-## GitHub Pages
-
-Depois do deploy, o workflow verifica diretamente a página publicada e confirma:
-
-- identificação V5.2.0;
-- disponibilidade do registo de fotografias;
-- disponibilidade da recuperação de runtime e controlo de falha de imagem;
-- presença do contrato CSS mobile esperado.
+- acesso ao Designer e ao formulário;
+- atualização para a versão mais recente quando a rede regressa.
 
 ## Limitações conhecidas
 
-Não existe backend central, sincronização multi-dispositivo, autenticação, integração SAP nem envio automático autorizado. O repositório não contém atualmente fotografias reais validadas para todos os 53 modelos; por isso, modelos sem fotografia local/validada apresentam `Fotografia pendente`. A matriz operacional classifica sintomas reportados e não fornece diagnóstico técnico nem causa confirmada.
+Não existe backend central, sincronização multi-dispositivo, autenticação, integração SAP nem envio automático autorizado. O Designer V6 personaliza a apresentação do formulário; não é ainda um construtor arbitrário de novos tipos de campo ou regras de negócio.
