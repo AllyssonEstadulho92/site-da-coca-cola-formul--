@@ -73,7 +73,9 @@ for (const token of ['Visão geral','Especificações','Sintomas','Documentaçã
 for (const token of ['Fonte principal','Possíveis causas documentadas — não são diagnóstico','Não validado para este modelo']) assert.ok(componentsJs.includes(token), `UI de evidência V5 sem: ${token}`);
 assert.ok(componentsJs.includes('Nenhum equipamento corresponde aos filtros selecionados.'), 'A V5 deve manter estado vazio explícito para filtros sem resultados.');
 assert.ok(pageJs.includes('Protótipo sem autenticação'), 'Aviso público deve permanecer visível.');
-assert.ok(pageJs.includes('equipmentV5SourceHtml'), 'Cada secção deve receber a sua fonte/estado de validação.');
+assert.ok(pageJs.includes('equipmentV5SourceHtml'), 'As secções técnicas que usam bloco global devem manter identificação de fonte.');
+assert.match(pageJs, /if \(!selected \|\| this\.state\.equipmentV5Tab === 'symptoms'\) return;/, 'A aba Sintomas não deve receber o bloco global Fonte desta secção.');
+assert.equal(/context === 'symptoms'/.test(pageJs), false, 'A geração de fonte global não deve tratar Sintomas como secção com fonte própria.');
 assert.match(pageJs, /event\.key\s*===\s*'Escape'/, 'A ficha lateral deve poder fechar por Escape.');
 assert.ok(localImagesJs.includes('equipmentManualImage'), 'A camada V5 deve fornecer fotografias locais sem depender do módulo legado.');
 assert.ok(actionsJs.includes('startRecordFromCatalog'), 'A camada V5 deve permitir criar um registo a partir do equipamento sem depender do catálogo legado.');
@@ -94,6 +96,6 @@ for (const forbidden of ['equipment-directory-v43.js','app-equipment-catalog-v4.
   assert.equal(index.includes(forbidden), false, `Camada antiga ainda carregada no runtime: ${forbidden}`);
   assert.equal(serviceWorker.includes(forbidden), false, `Camada antiga ainda presente no cache PWA: ${forbidden}`);
 }
-assert.match(serviceWorker, /registo-avarias-v5\.0\.1/, 'A alteração de runtime deve invalidar o cache V5.0.0.');
+assert.match(serviceWorker, /registo-avarias-v5\.0\.1/, 'A alteração de runtime deve manter compatibilidade com o cache V5.0.1 network-first.');
 
 console.log(`Equipment V5 tests: OK (${store.items.length} equipamentos, ${Object.keys(sources).length} fontes externas, ${symptoms.length} relações de sintomas)`);

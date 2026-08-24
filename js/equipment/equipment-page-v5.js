@@ -14,7 +14,6 @@
 
     equipmentV5SourceHtml(item, context='section') {
       const sourceIds = new Set(item.sourceIds || []);
-      if (context === 'symptoms') (item.symptoms || []).forEach(symptom => symptom.sourceId && sourceIds.add(symptom.sourceId));
       if (context === 'photos') {
         const manual = this.equipmentManualImage?.(item.id);
         return `<div class="eq5-section-source"><strong>Fonte desta secção</strong><span>${manual?.dataUrl ? 'Fotografia real adicionada localmente neste dispositivo. ' : ''}${item.referenceImage ? 'A referência visual do catálogo é uma imagem gerada no projeto e não uma fotografia oficial do fabricante.' : 'Sem imagem de referência.'}</span></div>`;
@@ -37,7 +36,7 @@
         actions.before(source);
       });
 
-      if (!selected) return;
+      if (!selected || this.state.equipmentV5Tab === 'symptoms') return;
       const section = document.querySelector('.eq5-drawer-body .eq5-detail-section');
       if (!section || section.querySelector('.eq5-section-source')) return;
       section.insertAdjacentHTML('beforeend', this.equipmentV5SourceHtml(selected, this.state.equipmentV5Tab || 'overview'));
