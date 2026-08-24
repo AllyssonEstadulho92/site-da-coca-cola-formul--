@@ -1,10 +1,11 @@
 {
-  "name": "registo-avarias-v4",
-  "version": "4.6.0",
+  "name": "registo-avarias-v5",
+  "version": "5.0.0",
   "private": true,
-  "description": "PWA profissional para produtividade e catálogo técnico de 53 modelos com referências visuais locais, fotografias manuais e evidência técnica controlada.",
+  "description": "PWA estática para produtividade e catálogo técnico operacional de 53 equipamentos com fontes públicas identificáveis, pesquisa, filtros, fotografias locais e evidência controlada.",
   "scripts": {
-    "test": "node tests/core.test.js && node tests/equipment-catalog.test.js && node tests/equipment-model-names.test.js && node tests/equipment-reference-v46.test.js && node tests/equipment-images.test.js && node tests/equipment-upload-mobile.test.js && node tests/equipment-default-images.test.js && node tests/equipment-directories.test.js && node tests/no-auth.test.js && node tests/pwa-refresh.test.js",
-    "check": "node tests/syntax.test.js && node tests/core.test.js && node tests/equipment-catalog.test.js && node tests/equipment-model-names.test.js && node tests/equipment-reference-v46.test.js && node tests/equipment-images.test.js && node tests/equipment-upload-mobile.test.js && node tests/equipment-default-images.test.js && node tests/equipment-directories.test.js && node tests/no-auth.test.js && node tests/pwa-refresh.test.js && node tests/integrity.test.js && node tests/public-safety.test.js"
+    "build": "node scripts/build-static.js",
+    "test": "node tests/core.test.js && node tests/equipment-v5.test.js && node tests/equipment-images.test.js && node tests/no-auth.test.js && node tests/pwa-refresh.test.js",
+    "check": "node tests/syntax.test.js && node tests/core.test.js && node tests/equipment-v5.test.js && node tests/equipment-images.test.js && node tests/no-auth.test.js && node tests/pwa-refresh.test.js && node tests/integrity.test.js && node tests/public-safety.test.js && node tests/build-static.test.js"
   }
 }
