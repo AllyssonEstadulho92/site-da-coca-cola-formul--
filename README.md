@@ -17,9 +17,11 @@ Não utilizar dados reais de clientes, informação SAP, credenciais, e-mails in
 - Assistente de e-mail iniciado pelo utilizador.
 - Produtividade, CSV, backup JSON, backup encriptado e snapshots locais.
 - PWA com funcionamento offline após primeiro carregamento.
-- Catálogo técnico V5 com 53 equipamentos.
+- Catálogo técnico com 53 equipamentos.
 - Pesquisa por nome, modelo, código, fabricante e tipo.
-- Filtros por categoria, fabricante, fotografia, documentação, sintomas e validação.
+- Navegação simples por categorias.
+- Cartões em duas secções: fotografia à esquerda e conteúdo à direita.
+- Ficha técnica simplificada com especificações, sintomas documentados e documentação associada.
 - 21 fontes técnicas externas registadas e 16 relações documentadas de sintomas.
 - Fotografias reais adicionadas localmente, com prioridade sobre a referência visual gerada.
 
@@ -36,7 +38,7 @@ A área de equipamentos utiliza exclusivamente a camada `js/equipment/`:
 - `equipment-components-v5.js`
 - `equipment-page-v5.js`
 
-Dados técnicos e sintomas só são apresentados como validados quando existe fonte pública identificável e suficientemente específica. Uma possível causa documentada nunca é apresentada como diagnóstico.
+Dados técnicos e sintomas só são apresentados como validados quando existe suporte registado. A nova camada visual não cria diagnósticos nem preenche lacunas técnicas por inferência.
 
 ## Estrutura do projeto
 
@@ -54,7 +56,6 @@ css/
   features.css
   theme.css
   equipment-v5.css
-  equipment-sources-v5.css
 js/
   ...módulos gerais da aplicação...
   equipment/
@@ -63,7 +64,7 @@ tests/
 docs/
 ```
 
-Ficheiros legados de Equipamentos V3/V4/V4.6 e dados técnicos antigos não utilizados foram removidos da árvore ativa. O histórico continua disponível no Git.
+Ficheiros legados e estilos sem utilização são removidos da árvore ativa. O histórico continua disponível no Git.
 
 ## Executar localmente
 
