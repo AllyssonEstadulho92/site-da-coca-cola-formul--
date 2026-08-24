@@ -1,4 +1,4 @@
-# Guia de Utilização — V5.0.1
+# Guia de Utilização — V5.1.0
 
 ## 1. Entrada
 
@@ -34,11 +34,21 @@ A área Registos permite pesquisa e filtros por estado, agente, PT, tratado, e-m
 
 ## 8. Equipamentos
 
-O catálogo V5 permite pesquisa imediata, categorias, fabricante, fotografia, documentação, sintomas, validação e ordenação.
+A área Equipamentos contém 53 modelos. Cada cartão apresenta fotografia à esquerda e conteúdo à direita.
 
-Ao abrir um equipamento existem os separadores **Visão geral**, **Especificações**, **Sintomas**, **Documentação** e **Fotografias**.
+Pode pesquisar por nome, modelo, código, fabricante ou sintoma e filtrar por categoria.
 
-Quando não existe documentação externa suficientemente específica, a aplicação apresenta **Não validado para este modelo** em vez de inferir informação.
+No cartão são mostrados:
+
+- categoria e código do equipamento;
+- nome, modelo e fabricante quando disponível;
+- descrição operacional;
+- alguns sintomas representativos e a indicação dos restantes;
+- `Ver ficha` e `Criar registo`.
+
+Ao abrir **Ver ficha**, a consulta contém apenas **Descrição** e **Sintomas**. As antigas secções Ficha técnica e Documentação deixaram de fazer parte da interface.
+
+Os sintomas aparecem agrupados por categoria operacional e com o respetivo código. A matriz serve para classificar o que foi reportado pelo cliente; não constitui diagnóstico nem indicação de reparação.
 
 Pode adicionar uma fotografia real do equipamento. A imagem é otimizada e guardada apenas no dispositivo, em IndexedDB, e acompanha o backup.
 

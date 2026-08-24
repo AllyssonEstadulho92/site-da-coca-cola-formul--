@@ -6,7 +6,7 @@ Este repositório é público e deve conter apenas código, documentação e dad
 
 Não publicar credenciais, passwords, tokens, chaves API, dados reais de clientes ou colaboradores, NIF, moradas, telefones, referências operacionais, exportações SAP, e-mails internos, matrizes confidenciais, backups da aplicação ou ficheiros `.env` reais.
 
-## V5.0.1 — sem autenticação
+## V5.1.0 — sem autenticação
 
 A aplicação abre diretamente no Dashboard. Não existe formulário de login, validação de domínio, password de acesso, lockout, logout nem autorização de utilizadores.
 
@@ -16,13 +16,15 @@ Qualquer pessoa que consiga abrir o endereço público consegue abrir a aplicaç
 
 ## Dados de demonstração
 
-Os registos DEMO usam prefixo `DEMO`, são marcados com `demo: true` e utilizam o domínio reservado `example.invalid`. Não representam clientes, estabelecimentos, equipamentos ou regras empresariais reais.
+Os registos DEMO usam prefixo `DEMO`, são marcados com `demo: true` e utilizam o domínio reservado `example.invalid`.
 
 ## Equipamentos
 
-A V5 não utiliza o manual interno do projeto como fonte técnica. Dados técnicos, sintomas e possíveis causas só são apresentados quando suportados por fontes públicas registadas. Fotografias reais adicionadas pelo utilizador permanecem no IndexedDB do dispositivo e não são publicadas automaticamente no GitHub.
+A V5.1.0 apresenta descrições operacionais e uma matriz de sintomas por categoria. Os códigos da matriz destinam-se à classificação do sintoma reportado e não constituem diagnóstico técnico.
 
-Não publicar fotografias que exponham números de série, QR codes, etiquetas, dados de cliente ou informação interna.
+Dados técnicos/fontes já registados permanecem preservados no código, mas não são apresentados na interface atual de Equipamentos.
+
+Fotografias reais adicionadas pelo utilizador permanecem no IndexedDB do dispositivo e não são publicadas automaticamente no GitHub. Não publicar fotografias que exponham números de série, QR codes, etiquetas, dados de cliente ou informação interna.
 
 ## Backups
 
@@ -39,5 +41,3 @@ O build de GitHub Pages publica apenas os recursos de runtime declarados no Serv
 ## Produção
 
 Antes de permitir dados reais são necessários identidade corporativa aprovada, backend autorizado, RBAC server-side, base de dados central, logging/auditoria protegida, backups, retenção e revisão formal de segurança e privacidade.
-
-Problemas de segurança que incluam informação sensível devem ser tratados de forma privada e não publicados em issues públicas.

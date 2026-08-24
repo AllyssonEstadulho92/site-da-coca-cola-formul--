@@ -5,16 +5,7 @@
 
   const store = window.EquipmentStoreV5;
   const ui = window.EquipmentComponentsV5;
-  const defaultFilters = () => ({
-    search: '',
-    category: 'ALL',
-    manufacturer: 'ALL',
-    photo: 'ALL',
-    documents: 'ALL',
-    symptoms: 'ALL',
-    validation: 'ALL',
-    sort: 'name-asc'
-  });
+  const defaultFilters = () => ({ search: '', category: 'ALL', sort: 'name-asc' });
 
   Object.assign(window.App, {
     equipmentCatalogItems() { return store.items; },
