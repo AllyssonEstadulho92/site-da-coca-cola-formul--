@@ -40,7 +40,7 @@ jobs:
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
-      - name: Smoke test published Equipamentos
+      - name: Smoke test published Form Designer
         env:
           PAGE_URL: ${{ steps.deployment.outputs.page_url }}
         run: |
@@ -49,14 +49,15 @@ jobs:
           ok=0
           for attempt in $(seq 1 18); do
             if curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/" -o /tmp/pages-index.html \
-              && grep -q 'V5.2.0 · catálogo operacional' /tmp/pages-index.html \
-              && curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/js/equipment/equipment-photo-registry-v5.js" -o /tmp/equipment-photos.js \
-              && grep -q 'EquipmentPhotoRegistryV5' /tmp/equipment-photos.js \
-              && curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/js/equipment/equipment-page-v5.js" -o /tmp/equipment-page.js \
-              && grep -q 'renderEquipmentRuntimeError' /tmp/equipment-page.js \
-              && grep -q 'bindEquipmentPhotoHealth' /tmp/equipment-page.js \
-              && curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/css/equipment-v5.css" -o /tmp/equipment.css \
-              && grep -q 'grid-template-columns:minmax(94px,28vw) minmax(0,1fr)' /tmp/equipment.css; then
+              && grep -q 'V6.0.0 · forms designer' /tmp/pages-index.html \
+              && grep -q 'js/app-form-designer.js' /tmp/pages-index.html \
+              && ! grep -q 'js/equipment/' /tmp/pages-index.html \
+              && curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/js/app-form-designer.js" -o /tmp/form-designer.js \
+              && grep -q 'renderFormDesigner' /tmp/form-designer.js \
+              && grep -q 'saveFormDesigner' /tmp/form-designer.js \
+              && curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/css/form-designer.css" -o /tmp/form-designer.css \
+              && grep -q 'designer-workspace' /tmp/form-designer.css \
+              && grep -q 'form-design' /tmp/form-designer.css; then
               ok=1
               break
             fi
