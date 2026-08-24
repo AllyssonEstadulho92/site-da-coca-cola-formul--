@@ -48,11 +48,11 @@ jobs:
           base="${PAGE_URL%/}"
           ok=0
           for attempt in $(seq 1 18); do
-            if curl --fail --silent --show-error --location --no-cache "${base}/" -o /tmp/pages-index.html \
+            if curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/" -o /tmp/pages-index.html \
               && grep -q 'V5.1.1 · catálogo operacional' /tmp/pages-index.html \
-              && curl --fail --silent --show-error --location --no-cache "${base}/js/equipment/equipment-operational-symptoms-v5.js" -o /tmp/equipment-operational.js \
+              && curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/js/equipment/equipment-operational-symptoms-v5.js" -o /tmp/equipment-operational.js \
               && grep -q 'EquipmentOperationalSymptomsV5' /tmp/equipment-operational.js \
-              && curl --fail --silent --show-error --location --no-cache "${base}/js/equipment/equipment-page-v5.js" -o /tmp/equipment-page.js \
+              && curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/js/equipment/equipment-page-v5.js" -o /tmp/equipment-page.js \
               && grep -q 'renderEquipmentRuntimeError' /tmp/equipment-page.js; then
               ok=1
               break
