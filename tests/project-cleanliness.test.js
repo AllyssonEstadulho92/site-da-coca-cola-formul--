@@ -23,6 +23,7 @@ const forbidden = [
   'css/equipment-models-v43.css',
   'css/equipment-upload-hotfix.css',
   'css/equipment-v46.css',
+  'css/equipment-sources-v5.css',
   'data/equipment',
   'docs/V3.8_ACESSO.md',
   'assets/equipment/catalog-manifest.json',
@@ -42,7 +43,7 @@ for (const item of forbidden) assert.equal(exists(item), false, `Ficheiro/diret√
 
 const cssFiles = fs.readdirSync(path.join(root, 'css')).sort();
 assert.deepEqual(cssFiles, [
-  'base.css','equipment-sources-v5.css','equipment-v5.css','features.css','styles.css','theme.css'
+  'base.css','equipment-v5.css','features.css','styles.css','theme.css'
 ].sort(), 'A pasta css deve conter apenas estilos ativos.');
 
 const rootEquipmentJs = fs.readdirSync(path.join(root, 'js'), { withFileTypes:true })
