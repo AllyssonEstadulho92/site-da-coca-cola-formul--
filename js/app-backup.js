@@ -4,7 +4,7 @@
     async exportBackup() {
       try {
         const payload = await AppDB.exportAll();
-        const filename = `registo-avarias-backup-${this.localDateInput(new Date())}.json`;
+        const filename = `formularios-operacionais-backup-${this.localDateInput(new Date())}.json`;
         this.downloadBlob(new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' }), filename);
         this.toast('Backup JSON exportado.', 'success');
       } catch (error) {
@@ -21,7 +21,7 @@
       try {
         const payload = await AppDB.exportAll();
         const encrypted = await this.encryptBackupPayload(payload, password);
-        const filename = `registo-avarias-backup-encriptado-${this.localDateInput(new Date())}.json`;
+        const filename = `formularios-operacionais-backup-encriptado-${this.localDateInput(new Date())}.json`;
         this.downloadBlob(new Blob([JSON.stringify(encrypted, null, 2)], { type:'application/json' }), filename);
         document.getElementById('backupEncryptionPassword').value = '';
         document.getElementById('backupEncryptionConfirm').value = '';
@@ -154,7 +154,7 @@
         }).join(';'));
       }
       const bom = '\uFEFF';
-      const filename = `registos-avarias-${this.localDateInput(new Date())}.csv`;
+      const filename = `formularios-operacionais-registos-${this.localDateInput(new Date())}.csv`;
       this.downloadBlob(new Blob([bom + rows.join('\r\n')], { type:'text/csv;charset=utf-8' }), filename);
       this.toast(`${records.length} registo(s) exportados para CSV.`, 'success');
     },
