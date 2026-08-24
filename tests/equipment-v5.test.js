@@ -26,11 +26,13 @@ vm.runInContext(symptomsJs, context, { filename: 'equipment-symptoms-v5.js' });
 vm.runInContext(operationalJs, context, { filename: 'equipment-operational-symptoms-v5.js' });
 vm.runInContext(catalogJs, context, { filename: 'equipment-catalog-data-v5.js' });
 vm.runInContext(storeJs, context, { filename: 'equipment-store-v5.js' });
+vm.runInContext(componentsJs, context, { filename: 'equipment-components-v5.js' });
 
 const sources = context.window.EquipmentSourcesV5;
 const symptoms = context.window.EquipmentSymptomsV5;
 const matrix = context.window.EquipmentOperationalSymptomsV5;
 const store = context.window.EquipmentStoreV5;
+const ui = context.window.EquipmentComponentsV5;
 
 assert.equal(store.items.length, 53, 'O catálogo deve manter exatamente 53 equipamentos.');
 assert.equal(new Set(store.items.map(item => item.slug)).size, 53, 'Os slugs devem ser únicos.');
@@ -40,6 +42,15 @@ assert.equal(matrix.groups.VANDALISMO.items.length, 7, 'Vandalismo deve manter o
 assert.equal(matrix.groups.ESPECIFICO_DISPENSING.items.length, 19, 'Dispensing deve manter os 19 códigos fornecidos.');
 assert.equal(matrix.groups.ESPECIFICO_VENDING.items.length, 7, 'Vending deve manter os 7 códigos fornecidos.');
 assert.equal(matrix.groups.FUNCIONAMENTO_GERAL.items.length, 14, 'Funcionamento geral deve manter os 14 códigos fornecidos.');
+
+const operationalEntries = Object.values(matrix.groups).flatMap(group => group.items);
+assert.equal(new Set(operationalEntries.map(entry => entry.key)).size, operationalEntries.length, 'Cada sintoma operacional deve ter uma chave interna única por grupo.');
+for (const entry of operationalEntries) {
+  assert.equal(entry.key, `${entry.groupId}:${entry.code}`, `Chave operacional inválida para ${entry.code}.`);
+}
+const codeCounts = operationalEntries.reduce((map, entry) => map.set(entry.code, (map.get(entry.code) || 0) + 1), new Map());
+assert.ok((codeCounts.get('020') || 0) > 1, 'O teste deve cobrir códigos visuais repetidos entre grupos.');
+assert.ok((codeCounts.get('066') || 0) > 1, 'O teste deve cobrir códigos contextuais repetidos sem colisão interna.');
 
 for (const item of store.items) {
   assert.ok(item.catalogDescription && item.catalogDescription.length > 80, `Descrição operacional insuficiente: ${item.slug}`);
@@ -57,6 +68,22 @@ assert.equal(auxiliary.operationalSymptomCount, 40, 'Módulos auxiliares devem r
 const searchResult = store.query({ search:'não faz frio', category:'Vitrines' }, {});
 assert.ok(searchResult.length > 0, 'A pesquisa deve encontrar equipamentos através dos sintomas operacionais.');
 
+const escape = value => String(value ?? '').replace(/[&<>\"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[ch]));
+const appStub = {
+  escape,
+  escapeAttr(value) { return escape(value).replace(/'/g, '&#39;'); },
+  equipmentManualImage() { return null; }
+};
+const catalogHtml = ui.grid(appStub, store.items);
+assert.equal((catalogHtml.match(/class="eq5-equipment-card"/g) || []).length, 53, 'O renderer deve conseguir gerar os 53 cartões sem erro de runtime.');
+assert.match(catalogHtml, /Sintomas aplicáveis/, 'Os cartões renderizados devem apresentar sintomas.');
+const rax = store.items.find(item => item.slug === '300-rax');
+const drawerHtml = ui.drawer(appStub, store, rax);
+assert.match(drawerHtml, /<h4>Descrição<\/h4>/, 'A ficha deve renderizar a descrição.');
+assert.match(drawerHtml, /<h4>Sintomas<\/h4>/, 'A ficha deve renderizar os sintomas.');
+assert.equal(drawerHtml.includes('Ficha técnica'), false, 'A ficha não deve voltar a apresentar Ficha técnica.');
+assert.equal(drawerHtml.includes('Documentação'), false, 'A ficha não deve voltar a apresentar Documentação.');
+
 for (const token of [
   'eq5-card-grid','eq5-card-media','eq5-card-content','equipmentV5Search','data-eq5-category',
   'Ver ficha','Criar registo','Descrição','Sintomas','Sintomas aplicáveis','códigos operacionais'
@@ -67,6 +94,8 @@ for (const forbidden of ['Ficha técnica','Documentação','Fonte desta secção
 }
 assert.equal(pageJs.includes('equipmentV5Tab'), false, 'A página não deve manter estado de tabs antigas.');
 assert.match(pageJs, /defaultFilters\s*=\s*\(\)\s*=>\s*\(\{\s*search:\s*'',\s*category:\s*'ALL'/, 'A página deve manter apenas pesquisa e categoria no estado visível.');
+assert.match(pageJs, /renderEquipmentRuntimeError/, 'A página deve apresentar recuperação visível em vez de ficar em branco após erro de runtime.');
+assert.match(pageJs, /dependenciesReady/, 'A página deve validar dependências antes de instalar o renderer.');
 assert.match(pageJs, /event\.key\s*===\s*'Escape'/, 'A ficha deve continuar a fechar por Escape.');
 assert.ok(imagesJs.includes('equipmentManualImage') && imagesJs.includes('pickEquipmentImage'), 'Fotografias locais devem continuar funcionais.');
 assert.ok(actionsJs.includes('startRecordFromCatalog'), 'Criar registo a partir do catálogo deve permanecer funcional.');
@@ -81,5 +110,7 @@ for (const file of ['equipment-sources-v5.js','equipment-symptoms-v5.js','equipm
   assert.ok(index.includes(`js/equipment/${file}`), `Runtime sem ${file}`);
   assert.ok(sw.includes(`./js/equipment/${file}`), `PWA sem ${file}`);
 }
+assert.ok(index.indexOf('equipment-operational-symptoms-v5.js') < index.indexOf('equipment-store-v5.js'), 'A matriz operacional deve carregar antes do store.');
+assert.ok(index.indexOf('equipment-components-v5.js') < index.indexOf('equipment-page-v5.js'), 'Os componentes devem carregar antes da página.');
 
-console.log(`Equipment V5.1 tests: OK (${store.items.length} equipamentos, descrição + sintomas operacionais)`);
+console.log(`Equipment V5.1.1 tests: OK (${store.items.length} equipamentos, runtime + códigos contextuais)`);
