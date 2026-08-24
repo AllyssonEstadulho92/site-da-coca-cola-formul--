@@ -65,13 +65,24 @@
     ])
   });
 
-  function groupsForCategory(category) {
+  function groupsForItem(item) {
     const selected = [groups.VANDALISMO];
-    if (category === 'Postmix' || category === 'Freestyle') selected.push(groups.ESPECIFICO_DISPENSING);
-    if (category === 'Vending') selected.push(groups.ESPECIFICO_VENDING);
+    if (item?.category === 'Postmix' || item?.category === 'Freestyle' || item?.category === 'Outros') {
+      selected.push(groups.ESPECIFICO_DISPENSING);
+    }
+    if (item?.category === 'Vending') selected.push(groups.ESPECIFICO_VENDING);
     selected.push(groups.FUNCIONAMENTO_GERAL);
     return Object.freeze(selected);
   }
 
-  window.EquipmentOperationalSymptomsV5 = Object.freeze({ groups, groupsForCategory });
+  function groupsForCategory(category) {
+    return groupsForItem({ category });
+  }
+
+  window.EquipmentOperationalSymptomsV5 = Object.freeze({
+    groups,
+    groupsForItem,
+    groupsForCategory,
+    origin: 'Matriz operacional fornecida ao projeto'
+  });
 })();
