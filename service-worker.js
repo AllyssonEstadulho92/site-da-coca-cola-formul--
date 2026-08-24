@@ -1,10 +1,9 @@
-const CACHE = 'registo-avarias-v5.1.1';
+const CACHE = 'registo-avarias-v5.2.0';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './assets/app-icon.svg',
-  './assets/equipment/reference-sprite-v46.jpg',
   './css/styles.css',
   './css/base.css',
   './css/features.css',
@@ -28,6 +27,7 @@ const ASSETS = [
   './js/equipment/equipment-symptoms-v5.js',
   './js/equipment/equipment-operational-symptoms-v5.js',
   './js/equipment/equipment-catalog-data-v5.js',
+  './js/equipment/equipment-photo-registry-v5.js',
   './js/equipment/equipment-store-v5.js',
   './js/equipment/equipment-local-images-v5.js',
   './js/equipment/equipment-actions-v5.js',
