@@ -7,6 +7,10 @@ const root = path.resolve(__dirname, '..');
 const exists = value => fs.existsSync(path.join(root, value));
 
 const forbidden = [
+  'js/equipment',
+  'assets/equipment',
+  'css/equipment-v5.css',
+  'docs/CATALOGO_EQUIPAMENTOS.md',
   'js/app-equipment-catalog-v4.js',
   'js/app-equipment-catalog.js',
   'js/app-equipment-default-images.js',
@@ -25,53 +29,28 @@ const forbidden = [
   'css/equipment-v46.css',
   'css/equipment-sources-v5.css',
   'data/equipment',
-  'docs/V3.8_ACESSO.md',
-  'assets/equipment/reference-sprite-v46.jpg',
-  'assets/equipment/catalog-manifest.json',
-  'assets/equipment/DIRECTORY_POLICY.md',
-  'assets/equipment/STRUCTURE_VERSION',
-  'assets/equipment/.directory-structure-ready',
+  'tests/equipment-images.test.js',
+  'tests/equipment-mobile-layout.test.js',
+  'tests/equipment-v5.test.js',
   'tests/equipment-catalog.test.js',
   'tests/equipment-default-images.test.js',
   'tests/equipment-directories.test.js',
   'tests/equipment-model-names.test.js',
   'tests/equipment-reference-v46.test.js',
   'tests/equipment-upload-mobile.test.js',
-  'tests/equipment-v5-ui.test.js',
-  'tests/pages-build.test.js'
+  'tests/equipment-v5-ui.test.js'
 ];
-for (const item of forbidden) assert.equal(exists(item), false, `Ficheiro/diretório legado ainda presente: ${item}`);
+for (const item of forbidden) assert.equal(exists(item), false, `Resíduo da área Equipamentos ainda presente: ${item}`);
 
 const cssFiles = fs.readdirSync(path.join(root, 'css')).sort();
 assert.deepEqual(cssFiles, [
-  'base.css','equipment-v5.css','features.css','styles.css','theme.css'
-].sort(), 'A pasta css deve conter apenas estilos ativos.');
-
-const rootEquipmentJs = fs.readdirSync(path.join(root, 'js'), { withFileTypes:true })
-  .filter(entry => entry.isFile() && /equipment/i.test(entry.name))
-  .map(entry => entry.name);
-assert.deepEqual(rootEquipmentJs, [], 'Módulos de Equipamentos devem existir apenas em js/equipment/.');
-
-const equipmentAssetsDir = path.join(root, 'assets/equipment');
-const equipmentAssets = fs.readdirSync(equipmentAssetsDir, { withFileTypes:true }).map(entry => entry.name).sort();
-assert.equal(equipmentAssets.includes('README.md'), true, 'assets/equipment deve manter a política de fotografias.');
-for (const entry of equipmentAssets) {
-  assert.ok(['README.md','photos'].includes(entry), `Recurso não previsto em assets/equipment: ${entry}`);
-}
-const photosDir = path.join(equipmentAssetsDir, 'photos');
-if (fs.existsSync(photosDir)) {
-  for (const entry of fs.readdirSync(photosDir, { withFileTypes:true })) {
-    assert.equal(entry.isFile(), true, `Subdiretório inesperado em photos: ${entry.name}`);
-    assert.match(entry.name, /^[a-z0-9-]+\.(?:png|jpe?g|webp)$/i, `Nome/formato de fotografia inválido: ${entry.name}`);
-  }
-}
+  'base.css','features.css','form-designer.css','styles.css','theme.css'
+].sort(), 'A pasta css deve conter apenas estilos ativos da aplicação V6.');
 
 const expectedTests = [
   'build-static.test.js',
   'core.test.js',
-  'equipment-images.test.js',
-  'equipment-mobile-layout.test.js',
-  'equipment-v5.test.js',
+  'form-designer.test.js',
   'integrity.test.js',
   'no-auth.test.js',
   'project-cleanliness.test.js',
@@ -80,7 +59,7 @@ const expectedTests = [
   'syntax.test.js'
 ].sort();
 const actualTests = fs.readdirSync(path.join(root, 'tests')).filter(name => name.endsWith('.test.js')).sort();
-assert.deepEqual(actualTests, expectedTests, 'A pasta tests deve conter apenas a suite ativa declarada para V5.2.0.');
+assert.deepEqual(actualTests, expectedTests, 'A pasta tests deve conter apenas a suite ativa declarada para V6.0.0.');
 
 const clutterPatterns = [
   /^\.DS_Store$/,
@@ -98,4 +77,4 @@ function scan(directory) {
 }
 scan(root);
 
-console.log('Project cleanliness tests V5.2.0: OK');
+console.log('Project cleanliness tests V6.0.0: OK');

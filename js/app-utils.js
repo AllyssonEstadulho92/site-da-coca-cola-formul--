@@ -142,7 +142,7 @@
         new: '<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
         records: '<path d="M6 3h9l3 3v15H6z"/><path d="M9 10h6M9 14h6M9 18h4"/>',
         clients: '<circle cx="12" cy="8" r="3"/><path d="M6 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/>',
-        equipment: '<path d="M9 6h6v12H9z"/><path d="M6 9h3M15 9h3M6 15h3M15 15h3"/>',
+        designer: '<path d="M4 4h16v16H4z"/><path d="M8 4v16M8 9h12M12 13h5M12 17h3"/>',
         routing: '<path d="M5 19 19 5"/><path d="M10 5h9v9"/><path d="M5 5h3M5 5v3"/>',
         activity: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
         productivity: '<path d="M4 19V9M10 19V5M16 19v-8M22 19H2"/>',

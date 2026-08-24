@@ -6,11 +6,11 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
   <meta name="referrer" content="no-referrer" />
   <meta name="theme-color" content="#f7f7f8" />
-  <meta name="description" content="Aplicação de produtividade e catálogo operacional de 53 equipamentos com fotografias reais validadas, descrições e matriz de sintomas — protótipo público sem autenticação V5.2.0." />
-  <title>Sistema de Registo de Avarias</title>
+  <meta name="description" content="Aplicação mobile-first de formulários operacionais personalizáveis, registos e produtividade — protótipo público V6.0.0." />
+  <title>Formulários Operacionais</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/styles.css" />
-  <link rel="stylesheet" href="css/equipment-v5.css" />
+  <link rel="stylesheet" href="css/form-designer.css" />
 </head>
 <body>
   <noscript>Esta aplicação necessita de JavaScript ativo.</noscript>
@@ -18,13 +18,13 @@
   <div id="appShell" class="app-shell is-hidden">
     <aside class="sidebar" aria-label="Navegação principal">
       <div class="sidebar-brand">
-        <div class="brand-mark small" aria-hidden="true">RA</div>
-        <div class="sidebar-brand-copy"><strong>Sistema de Registo</strong><span>Avarias · Produtividade</span></div>
+        <div class="brand-mark small" aria-hidden="true">FO</div>
+        <div class="sidebar-brand-copy"><strong>Formulários Operacionais</strong><span>Registos · produtividade</span></div>
       </div>
       <nav id="desktopNav" class="nav-list"></nav>
       <div class="sidebar-footer">
         <div class="sync-pill" id="sidebarSyncStatus" data-status="synced"><span class="status-dot" aria-hidden="true"></span><span>Dados locais · protótipo</span></div>
-        <span class="build-label">V5.2.0 · catálogo operacional</span>
+        <span class="build-label">V6.0.0 · forms designer</span>
       </div>
     </aside>
 
@@ -56,24 +56,13 @@
   <script src="js/app-sw-refresh.js"></script>
   <script src="js/app-dashboard.js"></script>
   <script src="js/app-form-view.js"></script>
+  <script src="js/app-form-designer.js"></script>
   <script src="js/app-form-logic.js"></script>
   <script src="js/app-form-save.js"></script>
   <script src="js/app-records.js"></script>
   <script src="js/app-record-detail.js"></script>
   <script src="js/app-record-archive.js"></script>
   <script src="js/app-directories.js"></script>
-
-  <script src="js/equipment/equipment-sources-v5.js"></script>
-  <script src="js/equipment/equipment-symptoms-v5.js"></script>
-  <script src="js/equipment/equipment-operational-symptoms-v5.js"></script>
-  <script src="js/equipment/equipment-catalog-data-v5.js"></script>
-  <script src="js/equipment/equipment-photo-registry-v5.js"></script>
-  <script src="js/equipment/equipment-store-v5.js"></script>
-  <script src="js/equipment/equipment-local-images-v5.js"></script>
-  <script src="js/equipment/equipment-actions-v5.js"></script>
-  <script src="js/equipment/equipment-components-v5.js"></script>
-  <script src="js/equipment/equipment-page-v5.js"></script>
-
   <script src="js/app-routing-views.js"></script>
   <script src="js/app-activity-productivity.js"></script>
   <script src="js/app-settings.js"></script>

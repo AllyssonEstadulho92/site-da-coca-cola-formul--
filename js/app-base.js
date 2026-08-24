@@ -14,6 +14,7 @@
       snapshots: [],
       deferredInstallPrompt: null,
       editingExistingId: null,
+      formDesignerDraft: null,
     },
 
     navItems: [
@@ -21,7 +22,7 @@
       { id: 'new', label: 'Novo', desktop: 'Novo Registo', icon: '＋' },
       { id: 'records', label: 'Registos', desktop: 'Registos', icon: '▤' },
       { id: 'clients', label: 'Clientes', desktop: 'Clientes', icon: '♙' },
-      { id: 'equipment', label: 'Equip.', desktop: 'Equipamentos', icon: '◇' },
+      { id: 'designer', label: 'Designer', desktop: 'Designer de Formulário', icon: '▧' },
       { id: 'routing', label: 'PT/E-mail', desktop: 'Encaminhamento', icon: '↗' },
       { id: 'activity', label: 'Atividade', desktop: 'Atividade', icon: '◷' },
       { id: 'productivity', label: 'Produt.', desktop: 'Produtividade', icon: '▥' },
@@ -61,6 +62,21 @@
         { code: 'PT 60', label: 'Por definir', email: '', department: '', equipmentType: '', symptom: '', faultCategory: '', active: true },
         { code: 'PT 70', label: 'Por definir', email: '', department: '', equipmentType: '', symptom: '', faultCategory: '', active: true },
       ],
+      formDesign: {
+        density: 'comfortable',
+        width: 'standard',
+        accent: 'red',
+        showSummary: true,
+        sectionOrder: ['identity', 'location', 'incident', 'routing', 'status'],
+        sectionTitles: {
+          identity: 'Identificação',
+          location: 'Estabelecimento',
+          incident: 'Ocorrência e avaria',
+          routing: 'Encaminhamento',
+          status: 'Estado e observações'
+        },
+        hiddenOptionalFields: []
+      },
       emailSubjectTemplate: '[{{id}}] {{client}} — {{equipment}}',
       emailBodyTemplate: 'Registo: {{id}}\nData: {{date}}\nCliente: {{client}}\nEstabelecimento: {{establishment}}\nREF equipamento: {{equipment}}\nTipo: {{equipmentType}}\nAvaria: {{fault}}\nSintoma: {{symptom}}\nPT: {{pt}}\nNº Nota: {{note}}\n\nObservações:\n{{observations}}',
       duplicateWindowDays: 14,

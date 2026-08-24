@@ -1,61 +1,58 @@
-# Guia de Utilização — V5.1.0
+# Guia de Utilização — V6.0.0
 
-## 1. Entrada
+## 1. Abrir a aplicação
 
-A aplicação abre diretamente no Dashboard. Não existe login nem palavra-passe.
+A aplicação abre diretamente no Dashboard. Não existe login. A identificação local é opcional e serve apenas para identificar ações neste browser.
 
-Pode definir uma **Identificação Local** opcional para o nome usado em novos registos e atividades. Esta identificação não controla acesso.
+## 2. Personalizar o formulário
 
-Use apenas dados fictícios neste protótipo público.
+Abra **Designer de Formulário**.
 
-## 2. Novo registo
+Pode:
 
-Preencha os campos necessários ao contexto da ocorrência. Enquanto cria um registo, o rascunho é guardado localmente. Ao editar um registo existente, utilize **Guardar alterações** para confirmar a edição.
+- alterar a ordem das cinco secções com ↑ e ↓;
+- editar o título de cada secção;
+- ocultar ou mostrar campos opcionais;
+- escolher densidade confortável ou compacta;
+- escolher largura padrão ou ampla;
+- escolher destaque vermelho, azul ou grafite;
+- mostrar ou ocultar o resumo lateral;
+- ver uma pré-visualização imediata.
 
-## 3. Duplicados
+Clique em **Guardar design** para aplicar a configuração ao formulário real.
 
-Ao introduzir uma REF Equipamento, o sistema procura ocorrências abertas recentes dessa referência. O aviso é informativo e não substitui validação humana.
+Campos obrigatórios aparecem identificados e não podem ser ocultados.
 
-## 4. Encaminhamento PT
+## 3. Repor o modelo inicial
 
-PT 32, 60 e 70 são configuráveis. A aplicação não inventa regras oficiais. Uma sugestão só é apresentada quando existe correspondência inequívoca e deve ser confirmada pelo utilizador.
+No Designer, use **Repor padrão**. A ação repõe apenas a configuração visual. Registos já guardados não são alterados.
 
-## 5. E-mail
+## 4. Criar um registo
 
-O assistente gera destinatário, assunto e corpo a partir do modelo configurado. O envio continua a ser iniciado pelo utilizador.
+Abra **Novo Registo**. O formulário usa o design guardado.
 
-## 6. Estados
+Preencha os campos principais e clique em **Criar registo**. Pode guardar um rascunho antes de concluir.
 
-Fluxo principal: Registado → Em andamento → Enviado → Em tratamento → Aguarda resposta → Encerrado. Arquivado preserva o registo fora da lista ativa.
+## 5. Campos ocultos
 
-## 7. Pesquisa e filtros
+Ocultar um campo opcional muda apenas a interface. Se editar um registo antigo que já possua valor nesse campo, o valor é preservado enquanto o campo estiver oculto.
 
-A área Registos permite pesquisa e filtros por estado, agente, PT, tratado, e-mail e intervalo de datas.
+## 6. Registos e pesquisa
 
-## 8. Equipamentos
+A área **Registos** permite pesquisa e filtros por estado, agente, PT, tratamento, e-mail e datas. A pesquisa global encaminha para esta área.
 
-A área Equipamentos contém 53 modelos. Cada cartão apresenta fotografia à esquerda e conteúdo à direita.
+## 7. Clientes
 
-Pode pesquisar por nome, modelo, código, fabricante ou sintoma e filtrar por categoria.
+A área **Clientes** consolida informação dos registos por cliente. Referências utilizadas nas ocorrências aparecem no contexto do cliente, mas não existe um catálogo/diretório separado de Equipamentos na V6.
 
-No cartão são mostrados:
+## 8. Encaminhamento e e-mail
 
-- categoria e código do equipamento;
-- nome, modelo e fabricante quando disponível;
-- descrição operacional;
-- alguns sintomas representativos e a indicação dos restantes;
-- `Ver ficha` e `Criar registo`.
+PT 32 / PT 60 / PT 70, departamentos e e-mails só devem ser configurados com dados autorizados. O assistente de e-mail não envia automaticamente.
 
-Ao abrir **Ver ficha**, a consulta contém apenas **Descrição** e **Sintomas**. As antigas secções Ficha técnica e Documentação deixaram de fazer parte da interface.
+## 9. Backup e recuperação
 
-Os sintomas aparecem agrupados por categoria operacional e com o respetivo código. A matriz serve para classificar o que foi reportado pelo cliente; não constitui diagnóstico nem indicação de reparação.
+Em Configurações pode criar snapshots, exportar backup JSON ou backup encriptado e restaurar dados compatíveis.
 
-Pode adicionar uma fotografia real do equipamento. A imagem é otimizada e guardada apenas no dispositivo, em IndexedDB, e acompanha o backup.
+## 10. Limitação do protótipo
 
-## 9. Backup e restauro
-
-Use snapshots locais para recuperação rápida e backup JSON/encriptado para cópia externa. O restauro substitui os dados atuais e cria previamente uma cópia local de segurança.
-
-## 10. Produção
-
-Antes de uso corporativo real devem ser validadas regras PT, destinatários, taxonomias, permissões, identidade, backend, retenção, segurança e integrações SAP/Microsoft 365.
+O site público não tem autenticação nem backend corporativo. Use apenas dados fictícios. O Designer V6 personaliza um formulário operacional existente; ainda não cria tipos de campo arbitrários, fórmulas ou workflows empresariais novos.

@@ -11,6 +11,10 @@ dist/
 .idea/
 
 # Dados locais e exportações da aplicação
+formularios-operacionais-backup-*.json
+formularios-operacionais-backup-encriptado-*.json
+formularios-operacionais-registos-*.csv
+# Compatibilidade com exportações de versões anteriores
 registo-avarias-backup-*.json
 registo-avarias-backup-encriptado-*.json
 registos-avarias-*.csv

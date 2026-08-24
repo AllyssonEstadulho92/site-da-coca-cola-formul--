@@ -34,8 +34,10 @@
       const data = new FormData(form);
       const previousRoutingCode = record.routingCode;
       const fields = ['occurrenceDate','agentName','taxpayerNumber','clientName','contactName','customerContact','establishmentName','locality','address','openingHours','equipmentReference','equipmentType','faultCategory','symptom','faultDescription','priority','routingCode','department','emailDestination','emailSent','noteNumber','status','observations'];
-      fields.forEach(key => record[key] = String(data.get(key) ?? '').trim());
-      record.treated = data.get('treated') === 'true';
+      fields.forEach(key => {
+        if (data.has(key)) record[key] = String(data.get(key) ?? '').trim();
+      });
+      if (data.has('treated')) record.treated = data.get('treated') === 'true';
       record.updatedAt = new Date().toISOString();
       record.updatedBy = this.state.user.email;
       if (record.emailSent === 'YES' && !record.emailSentAt) record.emailSentAt = new Date().toISOString();
@@ -83,7 +85,6 @@
       }
       const first = duplicates[0];
       box.classList.remove('is-hidden');
-      box.classList.remove('info');
       box.innerHTML = `<div><strong>Possível registo duplicado</strong><span>Existe ${duplicates.length === 1 ? 'uma ocorrência aberta' : `${duplicates.length} ocorrências abertas`} para a REF ${this.escape(record.equipmentReference)} nos últimos ${Number(this.state.settings.duplicateWindowDays || 14)} dias.</span></div><button class="btn btn-secondary btn-small" type="button" data-open-duplicate="${first.id}">Ver ${this.escape(first.displayId || 'registo')}</button>`;
       box.querySelector('[data-open-duplicate]')?.addEventListener('click', e => this.openRecordDetail(e.currentTarget.dataset.openDuplicate));
     },
@@ -109,6 +110,5 @@
       box.innerHTML = `<div><strong>Sugestão: ${this.escape(rule.code)} — ${this.escape(rule.label || 'Regra configurada')}</strong><span>${this.escape(detail || 'Sem departamento/e-mail configurado.')}</span></div><button class="btn btn-secondary btn-small" type="button" data-apply-routing="${this.escapeAttr(rule.code)}">Aplicar sugestão</button>`;
       box.querySelector('[data-apply-routing]')?.addEventListener('click', e => this.applySuggestedRouting(e.currentTarget.dataset.applyRouting, record));
     },
-
   });
 })();

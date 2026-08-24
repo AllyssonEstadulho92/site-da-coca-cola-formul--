@@ -53,21 +53,22 @@
     renderHelp() {
       const steps = [
         ['Abrir a aplicação','A aplicação abre diretamente no Dashboard, sem login ou palavra-passe. A identificação local é opcional e não funciona como controlo de acesso.'],
-        ['Criar registo','Abra “Novo Registo”, preencha os campos principais e confirme cliente, estabelecimento, REF do equipamento e descrição da avaria.'],
+        ['Personalizar o formulário','Abra “Designer de Formulário” para alterar ordem e títulos das secções, ocultar campos opcionais, escolher densidade, largura, cor de destaque e mostrar ou esconder o resumo lateral. Campos obrigatórios permanecem protegidos.'],
+        ['Criar registo','Abra “Novo Registo”, preencha os campos principais e confirme cliente, estabelecimento, REF e descrição da ocorrência. O formulário usa imediatamente o design guardado.'],
         ['Rascunhos e autosave','Enquanto escreve, a aplicação guarda automaticamente o rascunho. Em edição de registos existentes, as alterações ficam protegidas em buffer até confirmar “Guardar alterações”.'],
-        ['Evitar duplicados','Ao introduzir a REF do equipamento, a aplicação verifica ocorrências abertas recentes e avisa se encontrar uma possível duplicação.'],
-        ['Encaminhamento','Configure PT 32 / 60 / 70 apenas com regras autorizadas. O sistema pode sugerir um PT quando equipamento, sintoma e/ou categoria coincidirem com uma regra.'],
+        ['Evitar duplicados','Ao introduzir a REF, a aplicação verifica ocorrências abertas recentes e avisa se encontrar uma possível duplicação.'],
+        ['Encaminhamento','Configure PT 32 / 60 / 70 apenas com regras autorizadas. O sistema pode sugerir um PT quando tipo, sintoma e/ou categoria coincidirem com uma regra.'],
         ['E-mail','O assistente prepara destinatário, assunto e corpo. O envio não é automático; só marque “enviado” depois de efetuar a comunicação.'],
         ['Estados','Use Registado, Em andamento, Enviado, Em tratamento, Aguarda resposta e Encerrado para manter o acompanhamento. Arquivar preserva o histórico.'],
         ['Pesquisa','Na área Registos pode filtrar por texto, estado, agente, PT, Tratado, e-mail e intervalo de datas.'],
-        ['Clientes e equipamentos','Use os diretórios para consultar histórico consolidado por cliente e por REF de equipamento.'],
+        ['Clientes e referências','Use Clientes e a pesquisa de Registos para recuperar histórico consolidado por cliente, REF, nota ou descrição.'],
         ['Backup','Exporte backups JSON ou encriptados e mantenha cópias fora do dispositivo. Os snapshots locais são uma camada adicional, não um backup corporativo completo.'],
         ['Restauro','Antes de restaurar, a aplicação cria um snapshot de segurança. Confirme sempre que o ficheiro corresponde ao ambiente correto.'],
         ['Proteção de dados','Este protótipo público não tem autenticação. Não introduza dados reais, credenciais, informação SAP ou dados pessoais. Para produção são necessários identidade corporativa, permissões e backend seguro.']
       ];
       this.els.viewContainer.innerHTML = `
         <div class="page-head"><div><p class="eyebrow">Apoio operacional</p><h3>Guia de Utilização</h3></div></div>
-        <div class="prototype-note"><strong>Objetivo:</strong> reduzir perdas de informação, tornar o registo consistente e permitir recuperar rapidamente o contexto de cada ocorrência.</div>
+        <div class="prototype-note"><strong>Objetivo:</strong> permitir criar e adaptar formulários operacionais sem editar código, mantendo os registos consistentes e recuperáveis.</div>
         <div class="guide-grid">${steps.map(([title, text], i) => `<article class="guide-card"><span class="guide-number">${i + 1}</span><div><h4>${this.escape(title)}</h4><p>${this.escape(text)}</p></div></article>`).join('')}</div>`;
     },
   });
