@@ -70,13 +70,37 @@
     ])
   });
 
+  const generalCodesByCategory = Object.freeze({
+    Vitrines: Object.freeze(['020','029','030','031','032','033','041','042','043','044','047']),
+    Monster: Object.freeze(['020','029','030','031','032','033','041','042','043','044','047']),
+    Vending: Object.freeze(['020','029','030','031','032','033','041','042','043','044','051']),
+    Postmix: Object.freeze(['030','031','032','033','041','051']),
+    Freestyle: Object.freeze(['030','031','032','033','041','051']),
+    Outros: Object.freeze(['030','031','032','033','041','051'])
+  });
+
+  function selectCodes(group, codes) {
+    const allowed = new Set(codes || []);
+    return Object.freeze({
+      id: group.id,
+      title: group.title,
+      items: Object.freeze(group.items.filter(item => allowed.has(item.code)))
+    });
+  }
+
   function groupsForItem(item) {
+    const category = item?.category || '';
     const selected = [groups.VANDALISMO];
-    if (item?.category === 'Postmix' || item?.category === 'Freestyle' || item?.category === 'Outros') {
+
+    if (category === 'Postmix' || category === 'Freestyle' || category === 'Outros') {
       selected.push(groups.ESPECIFICO_DISPENSING);
     }
-    if (item?.category === 'Vending') selected.push(groups.ESPECIFICO_VENDING);
-    selected.push(groups.FUNCIONAMENTO_GERAL);
+    if (category === 'Vending') selected.push(groups.ESPECIFICO_VENDING);
+
+    const generalCodes = generalCodesByCategory[category] || generalCodesByCategory.Vitrines;
+    const general = selectCodes(groups.FUNCIONAMENTO_GERAL, generalCodes);
+    if (general.items.length) selected.push(general);
+
     return Object.freeze(selected);
   }
 
@@ -86,8 +110,9 @@
 
   window.EquipmentOperationalSymptomsV5 = Object.freeze({
     groups,
+    generalCodesByCategory,
     groupsForItem,
     groupsForCategory,
-    origin: 'Matriz operacional fornecida ao projeto'
+    origin: 'Matriz operacional fornecida ao projeto; associação por capacidade funcional da categoria'
   });
 })();
