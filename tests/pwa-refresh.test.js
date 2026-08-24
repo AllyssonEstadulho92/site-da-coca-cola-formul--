@@ -7,7 +7,7 @@ const root = path.resolve(__dirname, '..');
 const sw = fs.readFileSync(path.join(root, 'service-worker.js'), 'utf8');
 const refresh = fs.readFileSync(path.join(root, 'js/app-sw-refresh.js'), 'utf8');
 
-assert.match(sw, /registo-avarias-v5\.1\.0/, 'O cache deve estar na V5.1.0.');
+assert.match(sw, /registo-avarias-v5\.1\.1/, 'O cache deve estar na V5.1.1.');
 assert.match(sw, /async function networkFirst/, 'Deve existir estratégia network-first reutilizável.');
 assert.match(sw, /event\.request\.destination === 'script'/, 'Scripts devem procurar primeiro a rede quando online.');
 assert.match(sw, /event\.request\.destination === 'style'/, 'CSS deve procurar primeiro a rede quando online.');
@@ -18,6 +18,6 @@ for (const file of ['equipment-sources-v5','equipment-symptoms-v5','equipment-op
 }
 assert.match(sw, /\.\/css\/equipment-v5\.css/, 'Os estilos V5 devem estar no cache local.');
 assert.match(refresh, /updateViaCache:\s*'none'/, 'O registo do Service Worker deve forçar verificação sem cache.');
-assert.match(refresh, /registoAvariasSwReloadedV510/, 'A recarga automática deve estar alinhada com V5.1.0.');
+assert.match(refresh, /registoAvariasSwReloadedV511/, 'A recarga automática deve estar alinhada com V5.1.1.');
 
-console.log('PWA refresh tests V5.1.0: OK');
+console.log('PWA refresh tests V5.1.1: OK');
