@@ -1,17 +1,11 @@
-# Diretório de equipamentos
+# Ativos de Equipamentos
 
-Estrutura reservada às imagens e documentos específicos de cada modelo do catálogo de equipamentos.
+A V5 mantém neste diretório apenas recursos versionados necessários ao catálogo público.
 
-Cada modelo tem a sua própria pasta. Quando existirem ficheiros autorizados, usar preferencialmente:
+Atualmente o runtime utiliza `reference-sprite-v46.jpg` como referência visual gerada. Esta imagem não é fotografia oficial do fabricante.
 
-- `front.jpg` — fotografia frontal;
-- `side.jpg` — fotografia lateral;
-- `plate.jpg` — placa técnica/modelo;
-- `technical-sheet.json` — dados técnicos normalizados;
-- `symptoms.json` — sintomas de triagem;
-- `consequences.json` — possíveis consequências;
-- `documents/` — documentação autorizada.
+Fotografias reais adicionadas na aplicação são guardadas localmente em IndexedDB e não devem ser copiadas automaticamente para o repositório.
 
-Não adicionar dados de clientes, informação SAP, credenciais ou documentos internos/confidenciais a este repositório público.
+Não adicionar dados de clientes, números de série, QR codes, etiquetas reais, informação SAP, documentos internos/confidenciais ou imagens sem autorização.
 
-A lista canónica de modelos está em `catalog-manifest.json`.
+A lista canónica de equipamentos, fontes e sintomas está em `js/equipment/`.

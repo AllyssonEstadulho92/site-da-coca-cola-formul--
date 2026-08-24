@@ -1,114 +1,79 @@
-# QA Report — V3
+# QA Report — V5.0.1
 
 ## Âmbito
 
-Este relatório define as verificações automáticas e manuais esperadas para a V3. Não deve ser interpretado como certificação de ausência de bugs.
+Este relatório descreve a cobertura automática e os testes manuais ainda necessários. Não constitui certificação de ausência de bugs.
 
-## Verificações automáticas no repositório
+## Verificação automática
 
-O comando `npm run check` executa:
+`npm run check` valida:
 
-- `node --check` em todos os ficheiros JavaScript da aplicação e Service Worker;
-- testes unitários do `core.js`.
+- sintaxe JavaScript;
+- regras puras do core;
+- catálogo Equipamentos V5;
+- 53 equipamentos e unicidade dos slugs;
+- fontes técnicas externas e relações de sintomas;
+- pesquisa, filtros e estados de validação;
+- fotografias locais, IndexedDB e backup;
+- ausência de autenticação;
+- PWA/cache e atualização do Service Worker;
+- integridade de referências;
+- segurança do conteúdo DEMO;
+- limpeza estrutural do repositório;
+- build estático de `dist/`.
 
-Os testes do core cobrem:
+O teste de limpeza impede a reintrodução das camadas antigas de Equipamentos e da árvore de dados técnicos obsoleta.
 
-- normalização de REF;
-- cálculo de completude;
-- deteção de possíveis duplicados;
-- seleção de regra PT mais específica;
-- deteção de ambiguidade entre regras PT;
-- auditoria/diff de campos;
-- templates de e-mail;
-- escaping CSV.
+## Casos manuais obrigatórios
 
-O workflow GitHub Actions executa estas verificações em Pull Requests para `main`.
+### Formulário e registos
 
-## Casos manuais obrigatórios antes de merge para produção
-
-### Autenticação local
-
-- primeiro acesso cria perfil;
-- password incorreta é rejeitada;
-- alteração de password exige a password atual;
-- logout remove a sessão ativa.
-
-### Formulário
-
-- campos obrigatórios vazios;
-- REF normalizada sem prefixar `0` artificial;
-- rascunho recuperado após refresh;
+- campos obrigatórios e caracteres portugueses;
+- REF sem zero artificial;
+- recuperação de rascunho após refresh;
 - edição existente só persiste após Guardar alterações;
-- descrição e observações longas;
-- caracteres portugueses.
+- pesquisa, filtros, arquivo, reabertura e timeline.
 
-### Duplicados
-
-- mesma REF aberta dentro da janela gera aviso;
-- REF diferente não gera aviso;
-- registo encerrado não bloqueia;
-- próprio registo em edição não é considerado duplicado.
-
-### Encaminhamento
+### Encaminhamento e e-mail
 
 - regra sem critérios não sugere PT;
 - regra específica vence regra genérica;
-- duas regras diferentes com mesma especificidade geram ambiguidade;
-- e-mail/departamento configurados são aplicados apenas após confirmação do utilizador.
+- ambiguidade não é resolvida silenciosamente;
+- e-mail só é marcado como enviado após ação real.
 
-### Registos
+### Equipamentos
 
-- pesquisa por ID, cliente, REF, nota e contacto;
-- filtros de estado, agente, PT, tratado, e-mail e datas;
-- arquivo e reabertura;
-- timeline mantém ações anteriores.
-
-### Backup
-
-- JSON exporta e restaura;
-- backup encriptado restaura com password correta;
-- password errada não desencripta;
-- ficheiro inválido é rejeitado;
-- snapshot de segurança é criado antes de restauro;
-- IDs duplicados no backup são rejeitados.
+- pesquisa por nome, modelo, código, fabricante e tipo;
+- todos os filtros e ordenações;
+- abertura/fecho da ficha e separadores;
+- criação de registo a partir de equipamento;
+- fotografia local: adicionar, substituir, remover e restaurar por backup;
+- fonte visível em cada secção;
+- modelos sem fonte específica mostram estado não validado;
+- possíveis causas nunca aparecem como diagnóstico.
 
 ### Responsividade
 
-Validar pelo menos:
+Validar pelo menos 320, 375/390, 430, 768, 1024 e 1366 px ou superior, sem scroll horizontal indevido.
 
-- 320 px;
-- 375/390 px;
-- 430 px;
-- 768 px;
-- 1024 px;
-- 1366 px ou superior.
+### Safari/iPhone
 
-Sem scroll horizontal indevido no layout principal.
+Executar validação visual real em Safari/iPhone: grelha, drawer mobile, teclado na pesquisa, upload de fotografia, rotação, PWA instalada e atualização do Service Worker. Esta etapa não é coberta pela automação atual.
 
 ### Offline/PWA
 
 - primeiro carregamento online;
 - segundo carregamento offline;
 - recursos estáticos disponíveis;
-- rascunhos continuam a ser gravados localmente;
-- banner indica modo offline.
+- atualização para a versão mais recente quando a rede regressa.
 
 ### Acessibilidade
 
 - navegação por teclado;
 - foco visível;
-- labels dos campos;
-- dialog utilizável por teclado;
-- contraste suficiente;
-- interface não depende apenas da cor;
-- `prefers-reduced-motion` respeitado.
+- labels e dialogs utilizáveis;
+- contraste e interface não dependente apenas de cor.
 
-## Limitações conhecidas do protótipo
+## Limitações conhecidas
 
-- não existe backend central;
-- não existe sincronização multi-dispositivo;
-- login local não substitui SSO;
-- integração SAP não implementada;
-- envio real de e-mail não automatizado;
-- regras PT oficiais ainda dependem de validação empresarial;
-- testes E2E de browser devem ser executados antes de produção.
+Não existe backend central, sincronização multi-dispositivo, autenticação, integração SAP nem envio automático autorizado. Regras empresariais continuam dependentes de validação formal.

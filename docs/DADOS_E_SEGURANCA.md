@@ -1,74 +1,33 @@
-# Dados e Segurança
+# Dados e Segurança — V5.0.1
 
 ## Classificação atual
 
-A V3 é um protótipo funcional local. Não deve ser confundida com uma solução corporativa já aprovada para tratamento de dados reais.
+Este projeto é um protótipo público sem autenticação. Serve para validação funcional e demonstração com dados fictícios; não está aprovado para tratamento corporativo de dados reais.
 
-## Dados potencialmente pessoais
+## Dados que a interface consegue recolher
 
-Podem existir campos como:
+Existem campos para cliente/contacto, telefone, morada/local, e-mail, agente e histórico de ações. O facto de o formulário aceitar estes campos não significa que devam ser preenchidos com informação real no site público.
 
-- nome de cliente/contacto;
-- telefone;
-- morada/local;
-- e-mail;
-- nome e e-mail do colaborador;
-- histórico de ações.
+## Acesso
 
-Em produção devem ser aplicados minimização, finalidade definida, controlo de acesso, política de retenção e procedimentos adequados ao RGPD e às regras internas da organização.
+Não existe password de acesso, perfil autenticado ou autorização. Qualquer pessoa com o endereço consegue abrir a aplicação.
 
-## Password local
+A identificação local opcional serve apenas para preencher o nome do operador em novos registos e atividades.
 
-A palavra-passe do perfil de protótipo:
+## Persistência local
 
-- não é guardada em texto simples;
-- é derivada com PBKDF2-SHA256 e salt aleatório;
-- serve apenas para este browser/dispositivo.
-
-Isto não equivale a autenticação corporativa. Em produção deve ser substituída por Microsoft Entra ID/SSO ou outro serviço aprovado.
+IndexedDB guarda registos, atividades, configurações, snapshots e fotografias de equipamentos. Os dados permanecem no dispositivo/browser até serem eliminados, restaurados ou limpos pelo utilizador.
 
 ## Backups
 
-Existem três mecanismos locais:
+Existem snapshots locais, backup JSON e backup encriptado AES-GCM. A palavra-passe do backup encriptado protege apenas o ficheiro exportado e não autentica o acesso à aplicação.
 
-1. snapshots IndexedDB;
-2. backup JSON legível;
-3. backup encriptado AES-GCM-256 com chave derivada por PBKDF2-SHA256.
+Backups podem conter dados introduzidos pelo utilizador e nunca devem ser publicados no GitHub.
 
-O backup JSON pode conter informação sensível e deve ser protegido externamente. O backup encriptado não pode ser recuperado se a palavra-passe for perdida.
+## Equipamentos
 
-## Restauro
-
-O restauro:
-
-- valida a estrutura;
-- rejeita IDs técnicos ou IDs apresentados duplicados;
-- cria snapshot de segurança antes da operação;
-- executa substituição dos stores principais numa transação IndexedDB atómica.
-
-## Repositório público
-
-Nunca publicar no GitHub:
-
-- dados reais de clientes;
-- exports SAP;
-- tokens e chaves;
-- passwords;
-- matrizes internas confidenciais;
-- endereços internos que não devam ser públicos;
-- backups da aplicação.
+A V5 removeu da árvore ativa dados técnicos antigos não utilizados e mantém apenas informação suportada pelo inventário normalizado e pelas fontes públicas registadas. Modelos sem evidência suficiente ficam explicitamente por validar.
 
 ## Produção
 
-Antes de produção são necessários, no mínimo:
-
-- identidade corporativa;
-- autorização por função no servidor;
-- backend/API com validação server-side;
-- logs de auditoria protegidos;
-- backups externos e testes de recuperação;
-- HTTPS e headers de segurança;
-- revisão de CSP;
-- política de retenção;
-- avaliação de privacidade e conformidade;
-- revisão OWASP e testes de segurança.
+Antes de produção são necessários minimização e classificação de dados, identidade corporativa, RBAC server-side, backend/API autorizado, base de dados central, logs protegidos, backups externos, retenção, revisão RGPD/privacidade e testes de segurança.

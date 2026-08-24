@@ -1,66 +1,73 @@
-# Sistema de Registo de Avarias — V3.9
+# Sistema de Registo de Avarias — V5.0.1
 
-Aplicação web **mobile-first/PWA** para produtividade profissional, registo de ocorrências, catálogo de equipamentos, encaminhamentos e histórico operacional.
+PWA estática e mobile-first para produtividade profissional, registo de ocorrências e catálogo técnico operacional de equipamentos.
 
-## Estado do projeto
+## Estado atual
 
-**Protótipo funcional público sem autenticação.** A aplicação abre diretamente no Dashboard. Deve ser usada apenas para validação de UX, estrutura, regras e fluxos com dados fictícios.
+**Protótipo público sem autenticação.** A aplicação abre diretamente no Dashboard e destina-se apenas a validação funcional, UX e demonstração com dados fictícios.
 
-Não utilizar como sistema corporativo de produção enquanto não existir backend autorizado, identidade corporativa, controlo de acesso no servidor, política formal de retenção e validação das regras internas.
+Não utilizar dados reais de clientes, informação SAP, credenciais, e-mails internos, referências operacionais ou outra informação interna/confidencial.
 
-## Alteração principal da V3.9
+## Funcionalidades
 
-A autenticação local foi removida integralmente:
+- Dashboard e fluxo de estados operacional.
+- Novo registo, edição, autosave e histórico local em IndexedDB.
+- Pesquisa, filtros, arquivo, reabertura e timeline de atividade.
+- PT 32 / 60 / 70 configuráveis, sem regras empresariais inventadas.
+- Assistente de e-mail iniciado pelo utilizador.
+- Produtividade, CSV, backup JSON, backup encriptado e snapshots locais.
+- PWA com funcionamento offline após primeiro carregamento.
+- Catálogo técnico V5 com 53 equipamentos.
+- Pesquisa por nome, modelo, código, fabricante e tipo.
+- Filtros por categoria, fabricante, fotografia, documentação, sintomas e validação.
+- 21 fontes técnicas externas registadas e 16 relações documentadas de sintomas.
+- Fotografias reais adicionadas localmente, com prioridade sobre a referência visual gerada.
 
-- não existe ecrã de login;
-- não é solicitado e-mail ou palavra-passe;
-- não existe criação/verificação de password;
-- módulos de autenticação foram removidos;
-- a store IndexedDB `profiles` é eliminada na migração da base local;
-- backups novos deixam de incluir perfis de autenticação;
-- a aplicação entra diretamente no Dashboard.
+## Equipamentos V5
 
-Existe apenas uma **Identificação Local** opcional para definir o nome usado em novos registos e atividades. Essa identificação não controla acesso.
+A área de equipamentos utiliza exclusivamente a camada `js/equipment/`:
 
-## Funcionalidades principais
+- `equipment-sources-v5.js`
+- `equipment-symptoms-v5.js`
+- `equipment-catalog-data-v5.js`
+- `equipment-store-v5.js`
+- `equipment-local-images-v5.js`
+- `equipment-actions-v5.js`
+- `equipment-components-v5.js`
+- `equipment-page-v5.js`
 
-- Dashboard com indicadores diários, estados e atividade recente.
-- Fluxo: Registado → Em andamento → Enviado → Em tratamento → Aguarda resposta → Encerrado.
-- Novo registo, edição e autosave com IndexedDB.
-- Deteção de possíveis duplicados por REF.
-- PT 32 / PT 60 / PT 70 configuráveis, sem inventar regras empresariais.
-- Assistente de e-mail manual.
-- Pesquisa e filtros combinados.
-- Diretórios de clientes e equipamentos com histórico.
-- Catálogo visual de vitrines, vending, postmix, Freestyle e outros equipamentos.
-- Timeline/auditoria das ações e alterações.
-- Arquivo e reabertura.
-- Produtividade.
-- Exportação CSV compatível com Excel.
-- Backup JSON e backup encriptado AES-GCM.
-- Snapshots locais automáticos e pré-restauro.
-- PWA e modo offline.
-- Design responsivo para telemóvel, tablet e desktop.
-- Content Security Policy e política `no-referrer`.
-- Modo de demonstração pública com dados fictícios.
+Dados técnicos e sintomas só são apresentados como validados quando existe fonte pública identificável e suficientemente específica. Uma possível causa documentada nunca é apresentada como diagnóstico.
 
-## Demonstração pública segura
+## Estrutura do projeto
 
-Na área **Configurações → Demonstração pública segura** podem ser carregados registos fictícios para testar a aplicação.
+```text
+index.html
+service-worker.js
+manifest.json
+assets/
+  app-icon.svg
+  equipment/
+    reference-sprite-v46.jpg
+css/
+  styles.css
+  base.css
+  features.css
+  theme.css
+  equipment-v5.css
+  equipment-sources-v5.css
+js/
+  ...módulos gerais da aplicação...
+  equipment/
+scripts/
+tests/
+docs/
+```
 
-Os dados DEMO usam prefixo `DEMO`, são marcados com `demo: true` e utilizam e-mails no domínio reservado `example.invalid`.
-
-## Segurança
-
-O repositório e a aplicação publicada são públicos. Como não existe autenticação, qualquer pessoa com acesso ao endereço pode abrir a interface.
-
-**Não inserir dados reais de clientes, credenciais, NIF, contactos, moradas, referências operacionais, informação SAP, e-mails internos ou regras confidenciais.**
-
-HTTPS protege a comunicação com o site, mas não substitui autenticação ou autorização.
+Ficheiros legados de Equipamentos V3/V4/V4.6 e dados técnicos antigos não utilizados foram removidos da árvore ativa. O histórico continua disponível no Git.
 
 ## Executar localmente
 
-O Service Worker requer HTTP/HTTPS. Exemplo:
+O Service Worker requer HTTP/HTTPS:
 
 ```bash
 python -m http.server 8000
@@ -72,27 +79,15 @@ Depois abrir `http://localhost:8000/`.
 
 ```bash
 npm run check
+npm run build
 ```
 
-A validação inclui sintaxe JavaScript, lógica central, catálogo de equipamentos, remoção de autenticação, atualização PWA, integridade de referências e segurança do repositório público.
+O build é determinístico: publica em `dist/` apenas os recursos declarados no Service Worker, em vez de copiar integralmente as pastas de desenvolvimento.
 
 ## Produção
 
-Antes de permitir dados reais devem ser adicionados, conforme autorização da organização:
-
-- Microsoft Entra ID/SSO ou outro IdP aprovado;
-- backend/API autorizada;
-- base de dados central;
-- controlo de acesso por função no servidor;
-- logs de auditoria protegidos;
-- backups independentes do dispositivo;
-- política de retenção e eliminação;
-- integrações Microsoft/SAP apenas através de mecanismos oficiais e autorizados.
-
-## Regras empresariais por confirmar
-
-Continuam por confirmar o significado e critérios oficiais de PT 32/60/70, destinatários autorizados, catálogo oficial de equipamentos, sintomas/categorias, formato do Nº Nota, campos obrigatórios, retenção e permissões.
+Antes de permitir dados reais são necessários, conforme aprovação da organização: identidade corporativa, backend/API autorizado, base de dados central, RBAC server-side, auditoria protegida, backups independentes do dispositivo, retenção formal e integrações oficiais.
 
 ## Princípio de desenvolvimento
 
-Nenhuma regra empresarial é inventada no código. O projeto distingue funcionalidades técnicas implementadas de regras corporativas ainda por validar.
+O projeto distingue funcionalidades técnicas implementadas de regras empresariais ainda por confirmar. Não são inventados dados técnicos, sintomas, diagnósticos ou regras corporativas para preencher lacunas.
