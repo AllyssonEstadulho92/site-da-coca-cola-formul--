@@ -75,6 +75,14 @@
         const found = sourceRules.find(rule => rule.code === template.code) || {};
         return { ...template, ...found };
       });
+      const design = value.formDesign || {};
+      merged.formDesign = {
+        ...base.formDesign,
+        ...design,
+        sectionOrder: Array.isArray(design.sectionOrder) ? design.sectionOrder : base.formDesign.sectionOrder,
+        sectionTitles: { ...base.formDesign.sectionTitles, ...(design.sectionTitles || {}) },
+        hiddenOptionalFields: Array.isArray(design.hiddenOptionalFields) ? design.hiddenOptionalFields : []
+      };
       this.state.settings = merged;
       await AppDB.put('settings', { key: 'appSettings', value: merged });
     },
@@ -101,7 +109,7 @@
       text.textContent = online
         ? 'Acesso direto neste dispositivo. Não utilize dados reais ou informação SAP neste site público.'
         : 'Pode continuar offline com dados locais fictícios. Não utilize dados reais neste protótipo público.';
-      if (dot) dot.style.background = online ? 'var(--warning)' : 'var(--warning)';
+      if (dot) dot.style.background = 'var(--warning)';
     },
 
     renderNavigation() {
@@ -155,7 +163,7 @@
         new: 'Novo Registo',
         records: 'Registos',
         clients: 'Clientes',
-        equipment: 'Equipamentos',
+        designer: 'Designer de Formulário',
         routing: 'Encaminhamento',
         activity: 'Atividade',
         productivity: 'Produtividade',
@@ -167,8 +175,8 @@
         more: 'Mais',
         edit: 'Editar Registo',
       };
-      this.els.pageTitle.textContent = titles[route] || 'Registo de Avarias';
-      this.els.topbarEyebrow.textContent = route === 'new' || route === 'edit' ? 'Ocorrência' : 'Área de trabalho';
+      this.els.pageTitle.textContent = titles[route] || 'Formulários Operacionais';
+      this.els.topbarEyebrow.textContent = route === 'new' || route === 'edit' ? 'Formulário' : 'Área de trabalho';
       this.els.viewContainer.innerHTML = '<div class="empty-state">A carregar…</div>';
       await this.loadData();
       const renderers = {
@@ -176,7 +184,7 @@
         new: () => this.renderRecordForm(),
         records: () => this.renderRecords(),
         clients: () => this.renderClients(),
-        equipment: () => this.renderEquipment(),
+        designer: () => this.renderFormDesigner(),
         routing: () => this.renderRouting(),
         activity: () => this.renderActivity(),
         productivity: () => this.renderProductivity(),
