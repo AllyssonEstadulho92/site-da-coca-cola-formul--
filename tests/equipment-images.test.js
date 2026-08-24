@@ -14,7 +14,7 @@ assert.match(db, /createObjectStore\('equipmentImages',\s*\{\s*keyPath:\s*'equip
 assert.match(db, /getAll\('equipmentImages'\)/, 'O backup deve exportar imagens manuais.');
 assert.match(db, /objectStore\('equipmentImages'\)\.put/, 'O restauro deve recuperar imagens manuais.');
 assert.match(db, /schemaVersion:\s*4/, 'O schema de backup deve estar na versão 4.');
-assert.match(db, /appVersion:\s*'4\.5\.0'/, 'O backup deve indicar a V4.5.0.');
+assert.match(db, /appVersion:\s*'4\.6\.0'/, 'O backup deve indicar a V4.6.0.');
 
 for (const token of [
   "AppDB.getAll('equipmentImages')",

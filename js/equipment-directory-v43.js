@@ -4,14 +4,10 @@
   const base = Array.isArray(window.EquipmentCatalogData) ? window.EquipmentCatalogData : [];
   const manualSource = 'Manual do Equipamento Coca-Cola — fornecido ao projeto';
   const manualNote = 'Dados estruturados a partir do manual fornecido ao projeto. Confirmar sempre a placa técnica e a variante instalada antes de qualquer intervenção.';
-  const coolerSymptoms = ['Não refrigera adequadamente.','Temperatura instável.'];
-  const postmixSymptoms = ['Não dispensa bebida.','Bebida sem gás ou sem sabor.'];
-  const auxSymptoms = ['Equipamento não responde.','Funcionamento intermitente.'];
-  const coolerImpacts = ['Produto pode ficar fora da temperatura de serviço.','Pode ocorrer condensação, gelo excessivo ou água no piso.'];
-  const postmixImpacts = ['A bebida pode ficar fora do padrão esperado de sabor, temperatura ou carbonatação.','Pode existir desperdício de água, xarope, CO₂ ou gelo.'];
-  const auxImpacts = ['O serviço associado pode ficar parcial ou totalmente indisponível.','Uma falha persistente pode afetar o fluxo de atendimento.'];
+  const notDocumentedSymptoms = 'A fonte disponível no projeto não documenta sintomas específicos deste modelo. Registe apenas o sintoma relatado pelo cliente e valide-o na documentação técnica autorizada.';
+  const notDocumentedConsequences = 'A fonte disponível no projeto não documenta consequências específicas deste modelo. Não inferir danos sem diagnóstico técnico ou documentação autorizada.';
 
-  // slug | nome | modelo | categoria app | visual | categoria no manual | potência | facto 2 | valor 2 | peso
+  // slug | nome | modelo | categoria app | visual | categoria na fonte | potência | facto 2 | valor 2 | peso
   const rows = `
 plus-450|PLUS 450|PLUS 450|Vitrines|single-cooler|Vitrine vertical|350 W|Volume|398 L|75 kg
 retro|RETRO|RETRO|Vitrines|chest|Vitrine de tampa (horizontal)|260 W|Volume|233 L|75 kg
@@ -59,7 +55,6 @@ modulo-m-5p-pm|MÓDULO M 5P PM|MÓDULO M 5P PM|Outros|postmix|Módulo refrigerad
 activator-500|ACTIVATOR 500|ACTIVATOR 500|Outros|postmix|Equipamento auxiliar não refrigerado|—|Função|Dispensação automática de copos|—
 `.trim().split('\n').map(line => line.split('|'));
 
-  const descriptionFor = (name, manualCategory) => `${name} — ${manualCategory}. Modelo identificado no Manual do Equipamento Coca-Cola fornecido ao projeto.`;
   const codeFor = (category, model) => {
     const prefix = category === 'Postmix' ? 'PM' : category === 'Outros' ? 'AUX' : 'VIT';
     return `${prefix}-${model.toUpperCase().replace(/[^A-Z0-9]+/g, '-').replace(/^-|-$/g, '')}`.slice(0, 28);
@@ -77,18 +72,19 @@ activator-500|ACTIVATOR 500|ACTIVATOR 500|Outros|postmix|Equipamento auxiliar n�
     model,
     manufacturer: 'Por confirmar na placa técnica',
     aliases: [name.toLowerCase(), model.toLowerCase(), slug.replace(/-/g,' ')],
-    description: descriptionFor(name, manualCategory),
-    technicalFacts: [['Categoria no manual',manualCategory],['Potência',power],[factLabel,factValue],['Peso',weight]],
-    symptoms: category === 'Postmix' ? postmixSymptoms : category === 'Outros' ? auxSymptoms : coolerSymptoms,
+    description: `${name}. Classificação na fonte do projeto: ${manualCategory}.`,
+    technicalFacts: [['Categoria na fonte',manualCategory],['Potência',power],[factLabel,factValue],['Peso',weight]],
+    symptoms: [],
     causes: [],
-    consequences: category === 'Postmix' ? postmixImpacts : category === 'Outros' ? auxImpacts : coolerImpacts,
+    consequences: [],
     documents: [],
     sourceLabel: manualSource,
     sourceUrl: '',
     verification: 'PROJECT_MANUAL',
     regionalNote: manualNote,
-    symptomsNote: 'Triagem inicial. Consultar a entrada específica do manual e confirmar a situação relatada pelo cliente.',
-    consequencesNote: 'Impactos operacionais de triagem; não constituem uma lista formal do manual.',
+    symptomsNote: notDocumentedSymptoms,
+    consequencesNote: notDocumentedConsequences,
+    evidenceStatus: 'SOURCE_LIMITED',
     manualReference: name,
   }));
 
@@ -99,22 +95,32 @@ activator-500|ACTIVATOR 500|ACTIVATOR 500|Outros|postmix|Equipamento auxiliar n�
     'vending-stack-79':['79" Stack Vending Machine','stack-79'],
     'vending-glassfront-small':['Small Glass Front Vender','glass-front-small'],
     'vending-glassfront-large':['Large Glass Front Vender','glass-front-large'],
-    'vending-dn5800':['DN-5800 Vending','dn-5800'],
+    'vending-dn5800':['DN 5800 Vending','dn-5800'],
     'freestyle-7100':['Coca-Cola Freestyle 7100','freestyle-7100'],
     'freestyle-8100':['Coca-Cola Freestyle 8100','freestyle-8100'],
     'freestyle-9100':['Coca-Cola Freestyle 9100','freestyle-9100'],
-    'cooler-g10-monster':['G-10 Monster Cooler','g-10-monster'],
+    'cooler-g10-monster':['G-10 Monster Cooler','g-10'],
   };
 
-  const publicItems = base.filter(item => publicNames[item.id]).map(item => ({
-    ...item,
-    name: publicNames[item.id][0],
-    officialName: publicNames[item.id][0],
-    directorySlug: publicNames[item.id][1],
-    imageStatus: 'MANUAL_UPLOAD',
-    photo: '',
-    photoSourceUrl: '',
-  }));
+  const publicItems = base.filter(item => publicNames[item.id]).map(item => {
+    const [name, directorySlug] = publicNames[item.id];
+    return {
+      ...item,
+      name,
+      officialName: name,
+      directorySlug,
+      description: `${name}. Modelo/família identificado no catálogo do projeto; confirme a documentação técnica específica antes de orientar uma intervenção.`,
+      symptoms: [],
+      causes: [],
+      consequences: [],
+      symptomsNote: notDocumentedSymptoms,
+      consequencesNote: notDocumentedConsequences,
+      evidenceStatus: 'SOURCE_LIMITED',
+      imageStatus: 'REFERENCE_AND_MANUAL',
+      photo: '',
+      photoSourceUrl: '',
+    };
+  });
 
   window.EquipmentCatalogData = [...manualItems, ...publicItems];
 })();
