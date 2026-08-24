@@ -10,7 +10,6 @@ const ASSETS = [
   './css/features.css',
   './css/theme.css',
   './css/equipment-v5.css',
-  './css/equipment-sources-v5.css',
   './js/core.js',
   './js/db.js',
   './js/app-base.js',
