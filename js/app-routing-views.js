@@ -2,83 +2,22 @@
   'use strict';
   Object.assign(window.App, {
     renderRouting() {
-      const rules = this.state.settings.routingRules || [];
-      const pending = this.state.records
-        .filter(r => !r.archived && r.status !== 'DRAFT' && r.emailDestination && r.emailSent !== 'YES' && r.emailSent !== 'NA')
-        .sort((a,b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-      const configured = rules.filter(r => r.active && r.email && AppCore.routingSpecificity(r) > 0).length;
-      this.els.viewContainer.innerHTML = `
-        <div class="page-head">
-          <div><p class="eyebrow">PT e comunicação</p><h3>Encaminhamento</h3></div>
-          <div class="page-actions"><button class="btn btn-secondary" data-route-jump="settings">Configurar regras</button></div>
-        </div>
-        <div class="metric-grid">
-          ${this.metricCard('Regras ativas', rules.filter(r=>r.active).length, `${configured} com critérios e e-mail`)}
-          ${this.metricCard('Por enviar', pending.length, 'Registos com destino definido')}
-          ${this.metricCard('E-mails marcados enviados', this.state.records.filter(r=>r.emailSent==='YES').length, 'Histórico local')}
-          ${this.metricCard('Sem PT definido', this.state.records.filter(r=>!r.archived && r.status!=='DRAFT' && !r.routingCode).length, 'Necessitam revisão')}
-        </div>
-        <div class="content-grid">
-          <section class="panel">
-            <div class="panel-head"><h3>Fila de comunicação</h3><span class="muted">O envio não é automático</span></div>
-            <div class="panel-body">
-              ${pending.length ? `<div class="routing-queue">${pending.map(r => `<article class="queue-row"><div><strong>${this.escape(r.displayId)} · ${this.escape(r.clientName || 'Sem cliente')}</strong><span>${this.escape(r.routingCode || 'PT por definir')} · ${this.escape(r.emailDestination)}</span><small>${this.escape(r.equipmentReference || 'Sem REF')} · atualizado ${this.formatDateTimeCompact(r.updatedAt)}</small></div><div class="queue-actions"><button class="btn btn-secondary btn-small" data-routing-view="${r.id}">Ver</button><button class="btn btn-primary btn-small" data-routing-email="${r.id}">Preparar e-mail</button></div></article>`).join('')}</div>` : this.empty('Não existem comunicações pendentes.','Registos com e-mail de destino e ainda não marcados como enviados aparecerão aqui.')}
-            </div>
-          </section>
-          <aside class="panel">
-            <div class="panel-head"><h3>Regras PT</h3></div>
-            <div class="panel-body stack-md">
-              ${rules.map(rule => {
-                const criteria = [rule.equipmentType && `Equip.: ${rule.equipmentType}`, rule.symptom && `Sintoma: ${rule.symptom}`, rule.faultCategory && `Avaria: ${rule.faultCategory}`].filter(Boolean);
-                const state = rule.email && criteria.length ? 'Configurada' : 'Incompleta';
-                return `<div class="routing-rule-card"><div class="record-card-top"><strong>${this.escape(rule.code)}</strong><span class="mini-state ${state==='Configurada'?'ok':'warn'}">${state}</span></div><span>${this.escape(rule.label || 'Por definir')}</span><small>${this.escape(rule.department || 'Setor por definir')}</small><small>${this.escape(rule.email || 'E-mail por definir')}</small><small>${this.escape(criteria.join(' · ') || 'Sem critérios automáticos')}</small></div>`;
-              }).join('')}
-            </div>
-          </aside>
-        </div>`;
-      this.bindViewActions();
-      document.querySelectorAll('[data-routing-view]').forEach(btn => btn.addEventListener('click', () => this.openRecordDetail(btn.dataset.routingView)));
-      document.querySelectorAll('[data-routing-email]').forEach(btn => btn.addEventListener('click', () => this.openEmailAssistant(btn.dataset.routingEmail)));
+      const rules=this.state.settings.routingRules||[];
+      const pending=this.state.records.filter(r=>!r.archived&&r.status!=='DRAFT'&&r.emailDestination&&r.emailSent!=='YES'&&r.emailSent!=='NA').sort((a,b)=>new Date(b.updatedAt)-new Date(a.updatedAt));
+      const configured=rules.filter(r=>r.active&&r.email&&AppCore.routingSpecificity(r)>0).length;
+      this.els.viewContainer.innerHTML=`<div class="page-head"><div><p class="eyebrow">PT e comunicação</p><h3>Encaminhamento</h3></div><div class="page-actions"><button class="btn btn-secondary" data-route-jump="settings">Configurar regras</button></div></div>
+      <div class="metric-grid">${this.metricCard('Regras ativas',rules.filter(r=>r.active).length,`${configured} com critérios e e-mail`)}${this.metricCard('Por enviar',pending.length,'Registos com destino definido')}${this.metricCard('E-mails marcados enviados',this.state.records.filter(r=>r.emailSent==='YES').length,'Histórico local')}${this.metricCard('Sem PT definido',this.state.records.filter(r=>!r.archived&&r.status!=='DRAFT'&&!r.routingCode).length,'Necessitam revisão')}</div>
+      <div class="content-grid"><section class="panel"><div class="panel-head"><h3>Fila de comunicação</h3><span class="muted">O envio não é automático</span></div><div class="panel-body">${pending.length?`<div class="routing-queue">${pending.map(r=>`<article class="queue-row"><div><strong>${this.escape(r.displayId)} · ${this.escape(r.clientName||'Sem cliente')}</strong><span>${this.escape(r.routingCode||'PT por definir')} · ${this.escape(r.emailDestination)}</span><small>${this.escape(r.equipmentReference||'Sem REF')} · atualizado ${this.formatDateTimeCompact(r.updatedAt)}</small></div><div class="queue-actions"><button class="btn btn-secondary btn-small" data-routing-view="${r.id}">Ver</button><button class="btn btn-primary btn-small" data-routing-email="${r.id}">Preparar e-mail</button></div></article>`).join('')}</div>`:this.empty('Não existem comunicações pendentes.','Registos com e-mail de destino e ainda não marcados como enviados aparecerão aqui.')}</div></section>
+      <aside class="panel"><div class="panel-head"><h3>Regras PT</h3></div><div class="panel-body stack-md">${rules.map(rule=>{const criteria=[rule.equipmentType&&`Equip.: ${rule.equipmentType}`,rule.symptom&&`Sintoma: ${rule.symptom}`,rule.faultCategory&&`Avaria: ${rule.faultCategory}`].filter(Boolean);const state=rule.email&&criteria.length?'Configurada':'Incompleta';return `<div class="routing-rule-card"><div class="record-card-top"><strong>${this.escape(rule.code)}</strong><span class="mini-state ${state==='Configurada'?'ok':'warn'}">${state}</span></div><span>${this.escape(rule.label||'Por definir')}</span><small>${this.escape(rule.department||'Setor por definir')}</small><small>${this.escape(rule.email||'E-mail por definir')}</small><small>${this.escape(criteria.join(' · ')||'Sem critérios automáticos')}</small></div>`;}).join('')}</div></aside></div>`;
+      this.bindViewActions();document.querySelectorAll('[data-routing-view]').forEach(btn=>btn.addEventListener('click',()=>this.openRecordDetail(btn.dataset.routingView)));document.querySelectorAll('[data-routing-email]').forEach(btn=>btn.addEventListener('click',()=>this.openEmailAssistant(btn.dataset.routingEmail)));
     },
-
-    renderDrafts() {
-      const previous = structuredClone(this.state.filters);
-      this.state.filters = { search:'', status:'DRAFT', agent:'', routingCode:'', treated:'', emailSent:'', dateFrom:'', dateTo:'' };
-      this.renderRecords();
-      this.els.pageTitle.textContent = 'Rascunhos';
-      const head = this.els.viewContainer.querySelector('.page-head h3');
-      if (head) head.textContent = 'Rascunhos guardados automaticamente';
-      this.state.filters = previous;
-      const status = document.getElementById('filterStatus');
-      if (status) { status.value = 'DRAFT'; status.disabled = true; }
-    },
-
-    renderArchive() {
-      const previous = structuredClone(this.state.filters);
-      this.state.filters = { search:'', status:'ARCHIVED', agent:'', routingCode:'', treated:'', emailSent:'', dateFrom:'', dateTo:'' };
-      this.renderRecords();
-      this.els.pageTitle.textContent = 'Arquivo';
-      const head = this.els.viewContainer.querySelector('.page-head h3');
-      if (head) head.textContent = 'Registos arquivados';
-      this.state.filters = previous;
-      const status = document.getElementById('filterStatus');
-      if (status) { status.value = 'ARCHIVED'; status.disabled = true; }
-    },
-
-    renderMore() {
-      const entries = [
-        ['clients','Clientes','Consulta consolidada por cliente'],
-        ['designer','Designer de Formulário','Personalizar ordem, campos e apresentação do formulário'],
-        ['routing','Encaminhamento','PT, e-mails e comunicações pendentes'],
-        ['productivity','Produtividade','Indicadores e evolução diária'],
-        ['drafts','Rascunhos','Registos ainda não concluídos'],
-        ['archive','Arquivo','Ocorrências preservadas'],
-        ['settings','Configurações','PT, listas, backup e restauro'],
-        ['help','Guia de Utilização','Como usar formulários, registos, PT, backup e recuperação'],
-        ['profile','Identificação','Operador local deste dispositivo']
+    renderDrafts(){const previous=structuredClone(this.state.filters);this.state.filters={search:'',status:'DRAFT',agent:'',routingCode:'',treated:'',emailSent:'',dateFrom:'',dateTo:''};this.renderRecords();this.els.pageTitle.textContent='Rascunhos';const head=this.els.viewContainer.querySelector('.page-head h3');if(head)head.textContent='Rascunhos guardados automaticamente';this.state.filters=previous;const status=document.getElementById('filterStatus');if(status){status.value='DRAFT';status.disabled=true;}},
+    renderArchive(){const previous=structuredClone(this.state.filters);this.state.filters={search:'',status:'ARCHIVED',agent:'',routingCode:'',treated:'',emailSent:'',dateFrom:'',dateTo:''};this.renderRecords();this.els.pageTitle.textContent='Arquivo';const head=this.els.viewContainer.querySelector('.page-head h3');if(head)head.textContent='Registos arquivados';this.state.filters=previous;const status=document.getElementById('filterStatus');if(status){status.value='ARCHIVED';status.disabled=true;}},
+    renderMore(){
+      const entries=[
+        ['clients','Clientes','Consulta consolidada por cliente'],['statistics','Estatísticas','Avarias por estado, categoria, técnico e localidade'],['productivity','Produtividade','Indicadores e evolução diária'],['activity','Atividade','Histórico e rastreabilidade das alterações'],['routing','Encaminhamento','PT, e-mails e comunicações pendentes'],['designer','Designer de Formulário','Personalizar ordem, campos e apresentação'],['drafts','Rascunhos','Registos ainda não concluídos'],['archive','Arquivo','Ocorrências preservadas'],['settings','Configurações','PT, listas, backup e restauro'],['help','Guia de Utilização','Ajuda e procedimentos de utilização'],['profile','Identificação','Operador local deste dispositivo']
       ];
-      this.els.viewContainer.innerHTML = `<div class="page-head"><div><p class="eyebrow">Navegação</p><h3>Mais opções</h3></div></div><section class="panel"><div class="panel-body quick-actions">${entries.map(([route,title,desc]) => `<button class="quick-action" data-route-jump="${route}"><span class="nav-icon">${this.icon(route)}</span><span><strong>${this.escape(title)}</strong><br><small class="muted">${this.escape(desc)}</small></span></button>`).join('')}</div></section>`;
-      this.bindViewActions();
+      this.els.viewContainer.innerHTML=`<div class="page-head"><div><p class="eyebrow">Todas as áreas</p><h3>Mais opções</h3></div></div><section class="panel"><div class="panel-body quick-actions">${entries.map(([route,title,desc])=>`<button class="quick-action" data-route-jump="${route}"><span class="nav-icon">${this.icon(route)}</span><span><strong>${this.escape(title)}</strong><br><small class="muted">${this.escape(desc)}</small></span></button>`).join('')}</div></section>`;this.bindViewActions();
     },
   });
 })();

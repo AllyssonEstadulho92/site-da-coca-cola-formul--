@@ -1,0 +1,15 @@
+'use strict';
+const fs=require('node:fs');const path=require('node:path');const assert=require('node:assert/strict');const root=path.resolve(__dirname,'..');const read=file=>fs.readFileSync(path.join(root,file),'utf8');
+const index=read('index.html');const base=read('js/app-base.js');const shell=read('js/app-shell.js');const dashboard=read('js/app-dashboard.js');const stats=read('js/app-statistics.js');const css=read('css/coca-cola-ui.css');
+assert.match(index,/Coca-Cola · Formulários Operacionais/,'Título deve refletir a identidade operacional.');
+assert.match(index,/V6\.1\.0 · operations UI/,'Shell deve identificar V6.1.0.');
+assert.match(index,/css\/coca-cola-ui\.css/,'Tema Coca-Cola deve ser carregado.');
+assert.match(index,/js\/app-statistics\.js/,'Módulo de estatísticas deve ser carregado.');
+assert.match(base,/id:'statistics'.*desktop:'Estatísticas'/s,'Navegação deve expor Estatísticas.');
+assert.match(shell,/\['dashboard','records','new','statistics','more'\]/,'Mobile deve manter cinco destinos principais ordenados.');
+for(const group of ['Operação','Análise','Configuração'])assert.ok(shell.includes(group),`Grupo de navegação ausente: ${group}`);
+assert.match(dashboard,/Avarias abertas/);assert.match(dashboard,/Taxa de resolução/);assert.match(dashboard,/Avarias por categoria/);assert.match(dashboard,/data-route-jump="statistics"/);
+assert.match(stats,/renderStatistics\(\)/);assert.match(stats,/Por técnico \/ agente/);assert.match(stats,/Por localidade/);assert.match(stats,/Por estado/);assert.match(stats,/faultCategory/);
+assert.match(css,/--primary:#e30613/,'Tema deve usar vermelho operacional.');assert.match(css,/\.ops-metric-grid/);assert.match(css,/\.stats-grid/);assert.match(css,/@media\(max-width:860px\)/);assert.match(css,/grid-template-columns:repeat\(5,1fr\)/,'Navegação mobile deve ter cinco colunas.');
+assert.equal(/js\/equipment\//.test(index),false,'Área Equipamentos não pode regressar.');
+console.log('Operations UI tests V6.1.0: OK');

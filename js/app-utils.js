@@ -1,164 +1,43 @@
 (() => {
   'use strict';
   Object.assign(window.App, {
-    escape(value) {
-      return String(value ?? '').replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
-    },
-
-    escapeAttr(value) {
-      return this.escape(value).replace(/'/g, '&#39;');
-    },
-
-    localDateInput(date) {
-      const d = new Date(date);
-      const y = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      return `${y}-${m}-${day}`;
-    },
-
-    dateKey(date) {
-      const d = new Date(date);
-      return Number.isNaN(d.getTime()) ? '' : this.localDateInput(d);
-    },
-
-    formatDate(value) {
-      if (!value) return '—';
-      const d = /^\d{4}-\d{2}-\d{2}$/.test(String(value)) ? new Date(`${value}T12:00:00`) : new Date(value);
-      if (Number.isNaN(d.getTime())) return String(value);
-      return new Intl.DateTimeFormat('pt-PT', { day:'2-digit', month:'2-digit', year:'numeric' }).format(d);
-    },
-
-    formatTime(value) {
-      const d = new Date(value);
-      if (Number.isNaN(d.getTime())) return '—';
-      return new Intl.DateTimeFormat('pt-PT', { hour:'2-digit', minute:'2-digit' }).format(d);
-    },
-
-    formatDateTime(value) {
-      const d = new Date(value);
-      if (Number.isNaN(d.getTime())) return '—';
-      return new Intl.DateTimeFormat('pt-PT', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }).format(d);
-    },
-
-    formatDateTimeCompact(value) {
-      const d = new Date(value);
-      if (Number.isNaN(d.getTime())) return '—';
-      const today = this.dateKey(new Date());
-      return this.dateKey(d) === today ? this.formatTime(d) : new Intl.DateTimeFormat('pt-PT', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }).format(d);
-    },
-
-    greeting() {
-      const hour = new Date().getHours();
-      if (hour < 12) return 'Bom dia';
-      if (hour < 20) return 'Boa tarde';
-      return 'Boa noite';
-    },
-
-    statusBadge(status) {
-      const label = this.statusLabels[status] || status || 'Por definir';
-      const safeStatus = this.statusLabels[status] ? status : 'REGISTERED';
-      return `<span class="status-badge status-${safeStatus}">${this.escape(label)}</span>`;
-    },
-
-    detailItem(label, value) {
-      return `<div class="detail-item"><span>${this.escape(label)}</span><strong>${this.escape(value || '—')}</strong></div>`;
-    },
-
-    empty(title, text = '') {
-      return `<div class="empty-state"><strong>${this.escape(title)}</strong>${text ? `<span>${this.escape(text)}</span>` : ''}</div>`;
-    },
-
-    field(name, label, type, value, required = false, placeholder = '', extra = '') {
-      const spanClass = /class=["']span-2["']/.test(extra) ? ' span-2' : '';
-      const inputExtra = extra.replace(/class=["']span-2["']/, '').trim();
-      return `<label class="field${spanClass}"><span>${this.escape(label)}${required ? ' *' : ''}</span><input id="${name}" name="${name}" type="${type}" value="${this.escapeAttr(value || '')}" ${placeholder ? `placeholder="${this.escapeAttr(placeholder)}"` : ''} ${required ? 'required' : ''} ${inputExtra}></label>`;
-    },
-
-    textareaField(name, label, value, required = false, placeholder = '', spanClass = '') {
-      return `<label class="field ${spanClass}"><span>${this.escape(label)}${required ? ' *' : ''}</span><textarea id="${name}" name="${name}" ${required ? 'required' : ''} ${placeholder ? `placeholder="${this.escapeAttr(placeholder)}"` : ''}>${this.escape(value || '')}</textarea></label>`;
-    },
-
-    selectField(name, label, optionsHtml, required = false) {
-      return `<label class="field"><span>${this.escape(label)}${required ? ' *' : ''}</span><select id="${name}" name="${name}" ${required ? 'required' : ''}>${optionsHtml}</select></label>`;
-    },
-
-    optionList(values, selected = '') {
-      return `<option value="">Selecionar</option>${(values || []).map(value => `<option value="${this.escapeAttr(value)}" ${value === selected ? 'selected' : ''}>${this.escape(value)}</option>`).join('')}`;
-    },
-
-    statusOptions(selected) {
-      return Object.entries(this.statusLabels).filter(([key]) => key !== 'ARCHIVED').map(([key, label]) => `<option value="${key}" ${key === selected ? 'selected' : ''}>${this.escape(label)}</option>`).join('');
-    },
-
-    setSaveState(text, state = 'saved') {
-      if (!this.els.saveState) return;
-      this.els.saveState.textContent = text;
-      this.els.saveState.style.color = state === 'pending' ? 'var(--warning)' : state === 'error' ? 'var(--danger)' : 'var(--success)';
-    },
-
-    toast(message, type = '') {
-      const node = document.createElement('div');
-      node.className = `toast ${type}`.trim();
-      node.textContent = message;
-      this.els.toastRegion.appendChild(node);
-      setTimeout(() => node.remove(), 3600);
-    },
-
-    confirm(title, text, action) {
-      this.els.confirmTitle.textContent = title;
-      this.els.confirmText.textContent = text;
-      this.state.pendingConfirm = action;
-      this.els.confirmDialog.returnValue = '';
-      this.els.confirmDialog.showModal();
-    },
-
-    bindViewActions() {
-      document.querySelectorAll('[data-route-jump]').forEach(btn => btn.addEventListener('click', () => this.navigate(btn.dataset.routeJump)));
-      document.querySelectorAll('[data-action]').forEach(btn => btn.addEventListener('click', async () => {
-        const action = btn.dataset.action;
-        if (action === 'new-record') return this.navigate('new');
-        if (action === 'backup') return this.exportBackup();
-        if (action === 'backup-encrypted') return this.exportEncryptedBackup();
-        if (action === 'restore') return this.els.restoreInput.click();
-        if (action === 'snapshot') return this.createLocalSnapshot();
-        if (action === 'export-csv') return this.exportCsv();
-        if (action === 'export-filtered-csv') return this.exportCsv(this.filteredRecords());
-        if (action === 'save-settings') return this.saveSettings();
-        if (action === 'install-app') return this.installApp();
-        if (action === 'save-profile') return this.saveProfileName();
-        if (action === 'save-draft') {
-          await this.saveDraftNow();
-          return this.toast(this.state.editingExistingId ? 'Alterações protegidas localmente. Use “Guardar alterações” para confirmar no registo.' : 'Rascunho guardado.', 'success');
-        }
-        if (action === 'discard-edit') return this.discardEditBuffer();
-      }));
-    },
-
-    icon(name) {
-      const common = 'viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
-      const paths = {
-        dashboard: '<path d="M3 11 12 3l9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/>',
-        new: '<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
-        records: '<path d="M6 3h9l3 3v15H6z"/><path d="M9 10h6M9 14h6M9 18h4"/>',
-        clients: '<circle cx="12" cy="8" r="3"/><path d="M6 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/>',
-        designer: '<path d="M4 4h16v16H4z"/><path d="M8 4v16M8 9h12M12 13h5M12 17h3"/>',
-        routing: '<path d="M5 19 19 5"/><path d="M10 5h9v9"/><path d="M5 5h3M5 5v3"/>',
-        activity: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
-        productivity: '<path d="M4 19V9M10 19V5M16 19v-8M22 19H2"/>',
-        drafts: '<path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h6"/>',
-        archive: '<path d="M4 7h16v13H4z"/><path d="M3 4h18v3H3zM9 11h6"/>',
-        settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1V21h-4v-.09a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1-.4H3v-4h.09a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1V3h4v.09a1.7 1.7 0 0 0 1.1 1.5 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.12.37.34.72.6 1 .27.28.62.48 1 .58h.09v4H21a1.7 1.7 0 0 0-1.6.42Z"/>',
-        help: '<circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.4 2.4 0 1 1 3.8 2c-1 .7-1.6 1.1-1.6 2.5M12 17h.01"/>',
-        profile: '<circle cx="12" cy="8" r="3"/><path d="M5 20c.8-4 3.2-6 7-6s6.2 2 7 6"/>',
-        more: '<circle cx="5" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="19" cy="12" r="1" fill="currentColor"/>',
-      };
-      return `<svg ${common} aria-hidden="true">${paths[name] || paths.records}</svg>`;
-    },
-
-    registerServiceWorker() {
-      if (!('serviceWorker' in navigator) || !/^https?:$/.test(location.protocol)) return;
-      navigator.serviceWorker.register('./service-worker.js').catch(error => console.warn('Service Worker:', error));
-    },
+    escape(value){return String(value??'').replace(/[&<>\"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[ch]));},
+    escapeAttr(value){return this.escape(value).replace(/'/g,'&#39;');},
+    localDateInput(date){const d=new Date(date);const y=d.getFullYear();const m=String(d.getMonth()+1).padStart(2,'0');const day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`;},
+    dateKey(date){const d=new Date(date);return Number.isNaN(d.getTime())?'':this.localDateInput(d);},
+    formatDate(value){if(!value)return '—';const d=/^\d{4}-\d{2}-\d{2}$/.test(String(value))?new Date(`${value}T12:00:00`):new Date(value);if(Number.isNaN(d.getTime()))return String(value);return new Intl.DateTimeFormat('pt-PT',{day:'2-digit',month:'2-digit',year:'numeric'}).format(d);},
+    formatTime(value){const d=new Date(value);if(Number.isNaN(d.getTime()))return '—';return new Intl.DateTimeFormat('pt-PT',{hour:'2-digit',minute:'2-digit'}).format(d);},
+    formatDateTime(value){const d=new Date(value);if(Number.isNaN(d.getTime()))return '—';return new Intl.DateTimeFormat('pt-PT',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(d);},
+    formatDateTimeCompact(value){const d=new Date(value);if(Number.isNaN(d.getTime()))return '—';const today=this.dateKey(new Date());return this.dateKey(d)===today?this.formatTime(d):new Intl.DateTimeFormat('pt-PT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(d);},
+    greeting(){const hour=new Date().getHours();if(hour<12)return 'Bom dia';if(hour<20)return 'Boa tarde';return 'Boa noite';},
+    statusBadge(status){const label=this.statusLabels[status]||status||'Por definir';const safeStatus=this.statusLabels[status]?status:'REGISTERED';return `<span class="status-badge status-${safeStatus}">${this.escape(label)}</span>`;},
+    detailItem(label,value){return `<div class="detail-item"><span>${this.escape(label)}</span><strong>${this.escape(value||'—')}</strong></div>`;},
+    empty(title,text=''){return `<div class="empty-state"><strong>${this.escape(title)}</strong>${text?`<span>${this.escape(text)}</span>`:''}</div>`;},
+    field(name,label,type,value,required=false,placeholder='',extra=''){const spanClass=/class=[\"']span-2[\"']/.test(extra)?' span-2':'';const inputExtra=extra.replace(/class=[\"']span-2[\"']/,'').trim();return `<label class="field${spanClass}"><span>${this.escape(label)}${required?' *':''}</span><input id="${name}" name="${name}" type="${type}" value="${this.escapeAttr(value||'')}" ${placeholder?`placeholder="${this.escapeAttr(placeholder)}"`:''} ${required?'required':''} ${inputExtra}></label>`;},
+    textareaField(name,label,value,required=false,placeholder='',spanClass=''){return `<label class="field ${spanClass}"><span>${this.escape(label)}${required?' *':''}</span><textarea id="${name}" name="${name}" ${required?'required':''} ${placeholder?`placeholder="${this.escapeAttr(placeholder)}"`:''}>${this.escape(value||'')}</textarea></label>`;},
+    selectField(name,label,optionsHtml,required=false){return `<label class="field"><span>${this.escape(label)}${required?' *':''}</span><select id="${name}" name="${name}" ${required?'required':''}>${optionsHtml}</select></label>`;},
+    optionList(values,selected=''){return `<option value="">Selecionar</option>${(values||[]).map(value=>`<option value="${this.escapeAttr(value)}" ${value===selected?'selected':''}>${this.escape(value)}</option>`).join('')}`;},
+    statusOptions(selected){return Object.entries(this.statusLabels).filter(([key])=>key!=='ARCHIVED').map(([key,label])=>`<option value="${key}" ${key===selected?'selected':''}>${this.escape(label)}</option>`).join('');},
+    setSaveState(text,state='saved'){if(!this.els.saveState)return;this.els.saveState.textContent=text;this.els.saveState.style.color=state==='pending'?'var(--warning)':state==='error'?'var(--danger)':'var(--success)';},
+    toast(message,type=''){const node=document.createElement('div');node.className=`toast ${type}`.trim();node.textContent=message;this.els.toastRegion.appendChild(node);setTimeout(()=>node.remove(),3600);},
+    confirm(title,text,action){this.els.confirmTitle.textContent=title;this.els.confirmText.textContent=text;this.state.pendingConfirm=action;this.els.confirmDialog.returnValue='';this.els.confirmDialog.showModal();},
+    bindViewActions(){document.querySelectorAll('[data-route-jump]').forEach(btn=>btn.addEventListener('click',()=>this.navigate(btn.dataset.routeJump)));document.querySelectorAll('[data-action]').forEach(btn=>btn.addEventListener('click',async()=>{const action=btn.dataset.action;if(action==='new-record')return this.navigate('new');if(action==='backup')return this.exportBackup();if(action==='backup-encrypted')return this.exportEncryptedBackup();if(action==='restore')return this.els.restoreInput.click();if(action==='snapshot')return this.createLocalSnapshot();if(action==='export-csv')return this.exportCsv();if(action==='export-filtered-csv')return this.exportCsv(this.filteredRecords());if(action==='save-settings')return this.saveSettings();if(action==='install-app')return this.installApp();if(action==='save-profile')return this.saveProfileName();if(action==='save-draft'){await this.saveDraftNow();return this.toast(this.state.editingExistingId?'Alterações protegidas localmente. Use “Guardar alterações” para confirmar no registo.':'Rascunho guardado.','success');}if(action==='discard-edit')return this.discardEditBuffer();}));},
+    icon(name){const common='viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';const paths={
+      dashboard:'<path d="M3 11 12 3l9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/>',
+      new:'<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
+      records:'<path d="M6 3h9l3 3v15H6z"/><path d="M9 10h6M9 14h6M9 18h4"/>',
+      clients:'<circle cx="12" cy="8" r="3"/><path d="M6 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/>',
+      statistics:'<path d="M4 19V11M10 19V5M16 19v-8M22 19H2"/><path d="m4 8 5-4 5 4 6-5"/>',
+      designer:'<path d="M4 4h16v16H4z"/><path d="M8 4v16M8 9h12M12 13h5M12 17h3"/>',
+      routing:'<path d="M5 19 19 5"/><path d="M10 5h9v9"/><path d="M5 5h3M5 5v3"/>',
+      activity:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+      productivity:'<path d="M4 19V9M10 19V5M16 19v-8M22 19H2"/>',
+      drafts:'<path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h6"/>',
+      archive:'<path d="M4 7h16v13H4z"/><path d="M3 4h18v3H3zM9 11h6"/>',
+      settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1V21h-4v-.09a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1-.4H3v-4h.09a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1V3h4v.09a1.7 1.7 0 0 0 1.1 1.5 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.12.37.34.72.6 1 .27.28.62.48 1 .58h.09v4H21a1.7 1.7 0 0 0-1.6.42Z"/>',
+      help:'<circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.4 2.4 0 1 1 3.8 2c-1 .7-1.6 1.1-1.6 2.5M12 17h.01"/>',
+      profile:'<circle cx="12" cy="8" r="3"/><path d="M5 20c.8-4 3.2-6 7-6s6.2 2 7 6"/>',
+      more:'<circle cx="5" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="19" cy="12" r="1" fill="currentColor"/>'};return `<svg ${common} aria-hidden="true">${paths[name]||paths.records}</svg>`;},
+    registerServiceWorker(){if(!('serviceWorker'in navigator)||!/^https?:$/.test(location.protocol))return;navigator.serviceWorker.register('./service-worker.js').catch(error=>console.warn('Service Worker:',error));},
   });
 })();
