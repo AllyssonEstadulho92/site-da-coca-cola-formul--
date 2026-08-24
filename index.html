@@ -10,8 +10,6 @@
   <title>Sistema de Registo de Avarias</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/styles.css" />
-  <link rel="stylesheet" href="css/equipment-catalog.css" />
-  <link rel="stylesheet" href="css/equipment-manual-v42.css" />
   <link rel="stylesheet" href="css/equipment-v5.css" />
   <link rel="stylesheet" href="css/equipment-sources-v5.css" />
 </head>
@@ -27,7 +25,7 @@
       <nav id="desktopNav" class="nav-list"></nav>
       <div class="sidebar-footer">
         <div class="sync-pill" id="sidebarSyncStatus" data-status="synced"><span class="status-dot" aria-hidden="true"></span><span>Dados locais · protótipo</span></div>
-        <span class="build-label">V5.0 · fontes públicas verificáveis</span>
+        <span class="build-label">V5.0 · catálogo técnico operacional</span>
       </div>
     </aside>
 
@@ -40,7 +38,7 @@
           <button id="profileButton" class="avatar-button" type="button" aria-label="Abrir identificação local"><span id="avatarInitials">UL</span></button>
         </div>
       </header>
-      <div id="systemBanner" class="system-banner" role="status"><span class="status-dot" aria-hidden="true"></span><strong id="systemBannerTitle">Protótipo sem autenticação</strong><span id="systemBannerText">Acesso direto neste dispositivo. Não utilize dados reais ou informação SAP neste site público.</span><span class="save-state" id="saveState">Guardado</span></div>
+      <div id="systemBanner" class="system-banner" role="status"><span class="status-dot" aria-hidden="true"></span><strong id="systemBannerTitle">Protótipo sem autenticação</strong><span id="systemBannerText">Acesso direto neste dispositivo. Não utilize dados reais de clientes, informação SAP ou informação interna/confidencial neste site público.</span><span class="save-state" id="saveState">Guardado</span></div>
       <section id="viewContainer" class="view-container" tabindex="-1"></section>
     </main>
     <nav id="mobileNav" class="mobile-nav" aria-label="Navegação mobile"></nav>
@@ -65,15 +63,16 @@
   <script src="js/app-record-detail.js"></script>
   <script src="js/app-record-archive.js"></script>
   <script src="js/app-directories.js"></script>
-  <script src="js/equipment-data.js"></script>
+
   <script src="js/app-equipment-catalog.js"></script>
   <script src="js/app-equipment-manual.js"></script>
-  <script src="js/equipment/equipment-catalog-data-v5.js"></script>
   <script src="js/equipment/equipment-sources-v5.js"></script>
   <script src="js/equipment/equipment-symptoms-v5.js"></script>
+  <script src="js/equipment/equipment-catalog-data-v5.js"></script>
   <script src="js/equipment/equipment-store-v5.js"></script>
   <script src="js/equipment/equipment-components-v5.js"></script>
   <script src="js/equipment/equipment-page-v5.js"></script>
+
   <script src="js/app-routing-views.js"></script>
   <script src="js/app-activity-productivity.js"></script>
   <script src="js/app-settings.js"></script>
