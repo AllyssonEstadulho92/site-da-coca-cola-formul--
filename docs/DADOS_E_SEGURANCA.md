@@ -1,4 +1,4 @@
-# Dados e Segurança — V5.0.1
+# Dados e Segurança — V5.1.0
 
 ## Classificação atual
 
@@ -18,15 +18,19 @@ A identificação local opcional serve apenas para preencher o nome do operador 
 
 IndexedDB guarda registos, atividades, configurações, snapshots e fotografias de equipamentos. Os dados permanecem no dispositivo/browser até serem eliminados, restaurados ou limpos pelo utilizador.
 
+O schema IndexedDB mantém-se na versão 4. Os backups criados pela versão atual identificam `appVersion: 5.1.0`.
+
+## Equipamentos
+
+A V5.1.0 mantém 53 equipamentos. A interface mostra fotografia, descrição operacional e códigos de sintomas aplicáveis por categoria. Ficha técnica e Documentação deixaram de ser apresentadas na página de Equipamentos.
+
+A matriz operacional serve para classificação do sintoma reportado; não é diagnóstico. Dados técnicos e fontes anteriormente registados permanecem preservados na camada de dados para rastreabilidade e futura evolução.
+
 ## Backups
 
 Existem snapshots locais, backup JSON e backup encriptado AES-GCM. A palavra-passe do backup encriptado protege apenas o ficheiro exportado e não autentica o acesso à aplicação.
 
 Backups podem conter dados introduzidos pelo utilizador e nunca devem ser publicados no GitHub.
-
-## Equipamentos
-
-A V5 removeu da árvore ativa dados técnicos antigos não utilizados e mantém apenas informação suportada pelo inventário normalizado e pelas fontes públicas registadas. Modelos sem evidência suficiente ficam explicitamente por validar.
 
 ## Produção
 
