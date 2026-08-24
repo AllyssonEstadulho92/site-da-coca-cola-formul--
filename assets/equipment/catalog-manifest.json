@@ -1,78 +1,79 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "total": 53,
   "categories": [
     {"id":"vitrines-verticais","items":[
-      {"folder":"plus-450","name":"Vitrine Vertical Compacta","model":"PLUS 450"},
-      {"folder":"plus-900","name":"Vitrine Vertical Dupla Porta","model":"PLUS 900"},
-      {"folder":"icool-300","name":"Vitrine Vertical Compacta","model":"ICOOL 300"},
-      {"folder":"icool-450","name":"Vitrine Vertical","model":"ICOOL 450"},
-      {"folder":"icool-900","name":"Vitrine Vertical Grande Capacidade","model":"ICOOL 900"},
-      {"folder":"fv-280","name":"Vitrine Vertical Média/Compacta","model":"FV 280"},
-      {"folder":"fv-1200","name":"Vitrine Vertical Dupla Porta","model":"FV 1200"},
-      {"folder":"bgz-1001p","name":"Vitrine Vertical Profissional","model":"BGZ-1001P"},
-      {"folder":"v-544","name":"Vitrine Vertical Alta Eficiência","model":"V-544"},
-      {"folder":"v-545-8","name":"Vitrine Vertical Profissional/Grande","model":"V 545/8"},
-      {"folder":"ic-300","name":"Vitrine Vertical Compacta","model":"IC 300"},
-      {"folder":"ic-450","name":"Vitrine Vertical Compacta","model":"IC 450"},
-      {"folder":"dn-3061","name":"Vitrine Vertical Refrigerada","model":"DN 3061"},
-      {"folder":"sc410","name":"Vitrine Vertical Profissional","model":"SC410"},
-      {"folder":"easyreach-express","name":"Vitrine de Acesso Rápido","model":"EASYREACH EXPRESS"}
+      {"folder":"plus-450","name":"PLUS 450","model":"PLUS 450"},
+      {"folder":"plus-900","name":"PLUS 900","model":"PLUS 900"},
+      {"folder":"icool-300","name":"ICOOL 300","model":"ICOOL 300"},
+      {"folder":"icool-450","name":"ICOOL 450","model":"ICOOL 450"},
+      {"folder":"icool-900","name":"ICOOL 900","model":"ICOOL 900"},
+      {"folder":"fv-280","name":"FV 280 COCA-COLA","model":"FV 280"},
+      {"folder":"fv-1200","name":"FV 1200","model":"FV 1200"},
+      {"folder":"bgz-1001p","name":"BGZ-1001P","model":"BGZ-1001P"},
+      {"folder":"v-544","name":"V-544","model":"V-544"},
+      {"folder":"v-545-8","name":"V 545/8 COCA-COLA","model":"V 545/8"},
+      {"folder":"ic-300","name":"IC 300","model":"IC 300"},
+      {"folder":"ic-450","name":"IC 450","model":"IC 450"},
+      {"folder":"dn-3061","name":"DN 3061","model":"DN 3061"},
+      {"folder":"sc410","name":"SC410","model":"SC410"},
+      {"folder":"easyreach-express","name":"EASYREACH EXPRESS","model":"EASYREACH EXPRESS"}
     ]},
     {"id":"vitrines-horizontais-arcas","items":[
-      {"folder":"retro","name":"Vitrine Horizontal","model":"RETRO"},
-      {"folder":"300-rax","name":"Vitrine Horizontal","model":"300 RAX"},
-      {"folder":"rvc-400","name":"Vitrine Horizontal de Tampa","model":"RVC 400"},
-      {"folder":"botellero-1m","name":"Arca Refrigerada Horizontal","model":"BOTELLERO 1 M"},
-      {"folder":"loop-xl-horizontal","name":"Vitrine Horizontal Grande Capacidade","model":"LOOP XL"},
-      {"folder":"vr-200-2p","name":"Arca Refrigerada 2 Portas","model":"VR-200 2P"}
+      {"folder":"retro","name":"RETRO","model":"RETRO"},
+      {"folder":"300-rax","name":"300 RAX COCA-COLA","model":"300 RAX"},
+      {"folder":"rvc-400","name":"RVC 400","model":"RVC 400"},
+      {"folder":"botellero-1m","name":"BOTELLERO 1 M","model":"BOTELLERO 1 M"},
+      {"folder":"loop-xl-horizontal","name":"LOOP XL Horizontal","model":"LOOP XL"},
+      {"folder":"vr-200-2p","name":"VR-200 2P","model":"VR-200 2P"}
     ]},
     {"id":"frigorificos-apoio","items":[
-      {"folder":"s-78","name":"Frigorífico Vertical de Apoio","model":"S-78"},
-      {"folder":"bc-80b","name":"Frigorífico de Bebidas/Apoio","model":"BC 80B"},
-      {"folder":"s288","name":"Frigorífico Compacto de Apoio","model":"S288"},
-      {"folder":"g-style-1","name":"Frigorífico Vertical de Apoio Estético","model":"G-STYLE 1"}
+      {"folder":"s-78","name":"S-78 COCA-COLA","model":"S-78"},
+      {"folder":"bc-80b","name":"BC 80B COCA-COLA","model":"BC 80B"},
+      {"folder":"s288","name":"S288","model":"S288"},
+      {"folder":"g-style-1","name":"G-STYLE 1","model":"G-STYLE 1"}
     ]},
     {"id":"postmix","items":[
-      {"folder":"energize-3","name":"Post-Mix 3 Produtos","model":"ENERGIZE 3"},
-      {"folder":"energize-3h","name":"Post-Mix Horizontal 3 Produtos","model":"ENERGIZE 3H"},
-      {"folder":"energize-4","name":"Post-Mix","model":"ENERGIZE 4"},
-      {"folder":"energize-4-8p","name":"Post-Mix 8 Produtos","model":"ENERGIZE 4 8P"},
-      {"folder":"energize-5","name":"Post-Mix Grande Capacidade","model":"ENERGIZE 5"},
-      {"folder":"energize-5-10p","name":"Post-Mix 10 Produtos","model":"ENERGIZE 5 10P"},
-      {"folder":"loop-xl-postmix","name":"Post-Mix","model":"LOOP XL"},
-      {"folder":"3180-h-pm","name":"Post-Mix Horizontal Base","model":"3180 H PM"},
-      {"folder":"3180-h-pm-1-2-6p","name":"Post-Mix Horizontal 6 Produtos","model":"3180 H PM 1/2 6P"},
-      {"folder":"3180h-pm-1-3-6p","name":"Post-Mix Horizontal 6 Produtos","model":"3180H PM 1/3 6P"},
-      {"folder":"3180h-5p-1-3-8p","name":"Post-Mix Horizontal 8 Válvulas","model":"3180H 5P 1/3 8P"},
-      {"folder":"recor-1-4-4p-pm","name":"Post-Mix Compacto","model":"RECOR 1/4 4P PM"},
-      {"folder":"recor-1-3-4p-pm","name":"Post-Mix Horizontal","model":"RECOR 1/3 4P PM"},
-      {"folder":"recor-1-3-5p-pm","name":"Post-Mix Horizontal","model":"RECOR 1/3 5P PM"},
-      {"folder":"nuti-3180h","name":"Post-Mix Horizontal Profissional","model":"NUTI 3180H"},
-      {"folder":"apexx-3h-6p-pm","name":"Post-Mix Horizontal 6 Produtos","model":"APEXX 3H 6P PM"},
-      {"folder":"apexx-6-ac-10p-pm","name":"Post-Mix Digital 10 Produtos","model":"APEXX 6 AC 10P PM"}
+      {"folder":"energize-3","name":"ENERGIZE 3","model":"ENERGIZE 3"},
+      {"folder":"energize-3h","name":"ENERGIZE 3H","model":"ENERGIZE 3H"},
+      {"folder":"energize-4","name":"ENERGIZE 4","model":"ENERGIZE 4"},
+      {"folder":"energize-4-8p","name":"ENERGIZE 4 8P","model":"ENERGIZE 4 8P"},
+      {"folder":"energize-5","name":"ENERGIZE 5","model":"ENERGIZE 5"},
+      {"folder":"energize-5-10p","name":"ENERGIZE 5 10P","model":"ENERGIZE 5 10P"},
+      {"folder":"loop-xl-postmix","name":"LOOP XL Post-Mix","model":"LOOP XL"},
+      {"folder":"3180-h-pm","name":"3180 H PM","model":"3180 H PM"},
+      {"folder":"3180-h-pm-1-2-6p","name":"3180 H PM 1/2 6P","model":"3180 H PM 1/2 6P"},
+      {"folder":"3180h-pm-1-3-6p","name":"3180H PM 1/3 6P","model":"3180H PM 1/3 6P"},
+      {"folder":"3180h-5p-1-3-8p","name":"3180H 5P 1/3 8P","model":"3180H 5P 1/3 8P"},
+      {"folder":"recor-1-4-4p-pm","name":"RECOR 1/4 4P PM","model":"RECOR 1/4 4P PM"},
+      {"folder":"recor-1-3-4p-pm","name":"RECOR 1/3 4P PM","model":"RECOR 1/3 4P PM"},
+      {"folder":"recor-1-3-5p-pm","name":"RECOR 1/3 5P PM","model":"RECOR 1/3 5P PM"},
+      {"folder":"nuti-3180h","name":"NUTI 3180H","model":"NUTI 3180H"},
+      {"folder":"apexx-3h-6p-pm","name":"APEXX 3H 6P PM","model":"APEXX 3H 6P PM"},
+      {"folder":"apexx-6-ac-10p-pm","name":"APEXX 6 AC 10P PM","model":"APEXX 6 AC 10P PM"}
     ]},
     {"id":"modulos-auxiliares","items":[
-      {"folder":"modulo-m-5p-pm","name":"Módulo de Refrigeração Post-Mix","model":"MÓDULO M 5P PM"},
-      {"folder":"activator-500","name":"Dispensador Automático de Copos","model":"ACTIVATOR 500"}
+      {"folder":"modulo-m-5p-pm","name":"MÓDULO M 5P PM","model":"MÓDULO M 5P PM"},
+      {"folder":"activator-500","name":"ACTIVATOR 500","model":"ACTIVATOR 500"}
     ]},
     {"id":"vending","items":[
-      {"folder":"stack-72","name":"Vending Stack","model":"72 inch"},
-      {"folder":"stack-79","name":"Vending Stack","model":"79 inch"},
-      {"folder":"glass-front-small","name":"Vending Glass Front Pequena","model":"Glass Front Small"},
-      {"folder":"glass-front-large","name":"Vending Glass Front Grande","model":"Glass Front Large"},
-      {"folder":"dn-5800","name":"Vending","model":"DN 5800"}
+      {"folder":"stack-72","name":"72 inch Stack Vending Machine","model":"72 inch"},
+      {"folder":"stack-79","name":"79 inch Stack Vending Machine","model":"79 inch"},
+      {"folder":"glass-front-small","name":"Small Glass Front Vender","model":"Glass Front Small"},
+      {"folder":"glass-front-large","name":"Large Glass Front Vender","model":"Glass Front Large"},
+      {"folder":"dn-5800","name":"DN 5800 Vending","model":"DN 5800"}
     ]},
     {"id":"freestyle","items":[
-      {"folder":"freestyle-7100","name":"Coca-Cola Freestyle","model":"7100"},
-      {"folder":"freestyle-8100","name":"Coca-Cola Freestyle","model":"8100"},
-      {"folder":"freestyle-9100","name":"Coca-Cola Freestyle","model":"9100"}
+      {"folder":"freestyle-7100","name":"Coca-Cola Freestyle 7100","model":"7100"},
+      {"folder":"freestyle-8100","name":"Coca-Cola Freestyle 8100","model":"8100"},
+      {"folder":"freestyle-9100","name":"Coca-Cola Freestyle 9100","model":"9100"}
     ]},
     {"id":"monster","items":[
-      {"folder":"g-10","name":"Monster Cooler","model":"G-10"}
+      {"folder":"g-10","name":"G-10 Monster Cooler","model":"G-10"}
     ]}
   ],
   "notes": [
+    "O modelo é o identificador principal apresentado no catálogo; descrições genéricas ficam apenas como categoria/tipo.",
     "LOOP XL permanece em duas famílias porque a documentação de origem é inconsistente; confirmar por placa/fotografia antes de consolidar.",
     "As pastas destinam-se apenas a ativos autorizados e dados técnicos não confidenciais."
   ]
