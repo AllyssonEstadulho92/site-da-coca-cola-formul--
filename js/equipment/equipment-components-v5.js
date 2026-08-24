@@ -1,34 +1,39 @@
 (() => {
   'use strict';
 
-  function referencePosition(reference) {
-    const index = reference?.tile;
-    if (!Number.isInteger(index)) return null;
-    const col = index % 10;
-    const row = Math.floor(index / 10);
-    return { x: `${(col * 100 / 9).toFixed(4)}%`, y: `${(row * 100 / 5).toFixed(4)}%` };
+  function verifiedRepoPhoto(item) {
+    return window.EquipmentPhotoRegistryV5?.getForItem?.(item) || null;
+  }
+
+  function pendingPhotoHtml(app, item, context = 'card') {
+    return `<div class="eq5-image eq5-image-${context} is-pending" data-eq5-photo-state="pending" role="img" aria-label="Fotografia real pendente para ${app.escapeAttr(item.name)}">
+      <div class="eq5-photo-pending-content">
+        <span class="eq5-photo-placeholder-icon" aria-hidden="true">▣</span>
+        <strong>Fotografia pendente</strong>
+        <small>Adicionar fotografia real deste modelo</small>
+      </div>
+      <span class="eq5-photo-label">Pendente</span>
+    </div>`;
   }
 
   function imageHtml(app, item, context = 'card') {
     const manual = app.equipmentManualImage?.(item.id);
     if (manual?.dataUrl) {
-      return `<div class="eq5-image eq5-image-${context} is-user">
-        <img src="${app.escapeAttr(manual.dataUrl)}" alt="Fotografia de ${app.escapeAttr(item.name)}" loading="lazy" />
+      return `<div class="eq5-image eq5-image-${context} is-real is-user" data-eq5-photo-state="real">
+        <img data-eq5-real-photo data-equipment-photo-id="${app.escapeAttr(item.id)}" src="${app.escapeAttr(manual.dataUrl)}" alt="Fotografia real de ${app.escapeAttr(item.name)}" loading="lazy" decoding="async" />
         <span class="eq5-photo-label">Fotografia real</span>
       </div>`;
     }
 
-    const pos = referencePosition(item.referenceImage);
-    if (item.referenceImage && pos) {
-      return `<div class="eq5-image eq5-image-${context} is-reference">
-        <span class="eq5-reference-sprite" role="img" aria-label="Referência visual de ${app.escapeAttr(item.name)}" style="--eq5-x:${pos.x};--eq5-y:${pos.y}"></span>
-        <span class="eq5-photo-label">Referência visual</span>
+    const repoPhoto = verifiedRepoPhoto(item);
+    if (repoPhoto?.src) {
+      return `<div class="eq5-image eq5-image-${context} is-real is-repository" data-eq5-photo-state="real">
+        <img data-eq5-real-photo data-equipment-photo-id="${app.escapeAttr(item.id)}" src="${app.escapeAttr(repoPhoto.src)}" alt="Fotografia real de ${app.escapeAttr(item.name)}" loading="lazy" decoding="async" />
+        <span class="eq5-photo-label">Fotografia real</span>
       </div>`;
     }
 
-    return `<div class="eq5-image eq5-image-${context} is-empty" role="img" aria-label="Sem fotografia para ${app.escapeAttr(item.name)}">
-      <span aria-hidden="true">◇</span><small>Sem fotografia</small>
-    </div>`;
+    return pendingPhotoHtml(app, item, context);
   }
 
   function header(app, counts) {
@@ -36,7 +41,7 @@
       <div>
         <p class="eyebrow">Catálogo operacional</p>
         <h3>Equipamentos</h3>
-        <p>${counts.total} equipamentos com descrição e sintomas de classificação operacional.</p>
+        <p>${counts.total} equipamentos · ${counts.withRealPhoto || 0} com fotografia real validada neste dispositivo ou no catálogo.</p>
       </div>
     </header>`;
   }
@@ -80,17 +85,19 @@
     if (!featured.length) return '';
     const remaining = Math.max(0, Number(item.operationalSymptomCount || 0) - featured.length);
     return `<div class="eq5-symptom-preview">
-      <strong>Sintomas aplicáveis</strong>
+      <strong>Sintomas operacionais</strong>
       <div>${featured.map(entry => `<span><b>${app.escape(entry.code)}</b> ${app.escape(entry.symptom)}</span>`).join('')}${remaining ? `<small>+${remaining} outros</small>` : ''}</div>
     </div>`;
   }
 
   function card(app, item) {
     const manual = app.equipmentManualImage?.(item.id);
-    const manufacturer = item.manufacturer || 'Fabricante por confirmar';
+    const repoPhoto = verifiedRepoPhoto(item);
+    const hasRealPhoto = Boolean(manual?.dataUrl || repoPhoto?.src);
+    const manufacturer = item.manufacturer || 'Fabricante a validar';
     return `<article class="eq5-equipment-card">
       <div class="eq5-card-grid">
-        <button type="button" class="eq5-card-media" data-equipment-image="${app.escapeAttr(item.id)}" aria-label="${manual?.dataUrl ? 'Alterar fotografia de' : 'Adicionar fotografia para'} ${app.escapeAttr(item.name)}">
+        <button type="button" class="eq5-card-media" data-equipment-image="${app.escapeAttr(item.id)}" aria-label="${hasRealPhoto ? 'Alterar fotografia de' : 'Adicionar fotografia real para'} ${app.escapeAttr(item.name)}">
           ${imageHtml(app, item, 'card')}
         </button>
         <div class="eq5-card-content">
@@ -129,7 +136,9 @@
   function drawer(app, store, item) {
     if (!item) return '';
     const manual = app.equipmentManualImage?.(item.id);
-    const manufacturer = item.manufacturer || 'Fabricante por confirmar';
+    const repoPhoto = verifiedRepoPhoto(item);
+    const hasRealPhoto = Boolean(manual?.dataUrl || repoPhoto?.src);
+    const manufacturer = item.manufacturer || 'Fabricante a validar';
     return `<div class="eq5-drawer-overlay" data-eq5-close aria-hidden="true"></div>
       <aside class="eq5-drawer" role="dialog" aria-modal="true" aria-label="Ficha de ${app.escapeAttr(item.name)}">
         <button type="button" class="eq5-drawer-close" data-eq5-close aria-label="Fechar">×</button>
@@ -137,8 +146,8 @@
           <div class="eq5-detail-grid">
             <div class="eq5-detail-media">
               ${imageHtml(app, item, 'detail')}
-              <button type="button" class="btn btn-secondary" data-equipment-image="${app.escapeAttr(item.id)}">${manual?.dataUrl ? 'Alterar fotografia' : 'Adicionar fotografia'}</button>
-              ${manual?.dataUrl ? `<button type="button" class="eq5-remove-photo" data-equipment-image-remove="${app.escapeAttr(item.id)}">Remover fotografia</button>` : ''}
+              <button type="button" class="btn btn-secondary" data-equipment-image="${app.escapeAttr(item.id)}">${hasRealPhoto ? 'Alterar fotografia' : 'Adicionar fotografia real'}</button>
+              ${manual?.dataUrl ? `<button type="button" class="eq5-remove-photo" data-equipment-image-remove="${app.escapeAttr(item.id)}">Remover fotografia local</button>` : ''}
             </div>
             <div class="eq5-detail-main">
               <div class="eq5-detail-kicker"><span>${app.escape(item.category)}</span><code>${app.escape(item.code)}</code></div>
@@ -149,8 +158,8 @@
                 <p class="eq5-detail-description">${app.escape(item.catalogDescription || item.shortDescription || '')}</p>
               </section>
               <section class="eq5-symptoms-section">
-                <div class="eq5-section-heading"><div><h4>Sintomas</h4><p>${item.operationalSymptomCount || 0} códigos operacionais aplicáveis a este tipo de equipamento.</p></div></div>
-                <p class="eq5-operational-note">Os códigos abaixo servem para classificar o sintoma reportado. Não constituem diagnóstico técnico.</p>
+                <div class="eq5-section-heading"><div><h4>Sintomas</h4><p>${item.operationalSymptomCount || 0} códigos operacionais associados à capacidade funcional desta categoria.</p></div></div>
+                <p class="eq5-operational-note">Use estes códigos para classificar o sintoma observado. Uma hipótese técnica não deve ser apresentada como causa confirmada; a causa só deve ser registada após confirmação do técnico em campo.</p>
                 ${operationalSymptoms(app, item)}
               </section>
             </div>
@@ -163,5 +172,5 @@
       </aside>`;
   }
 
-  window.EquipmentComponentsV5 = { header, toolbar, grid, drawer, imageHtml };
+  window.EquipmentComponentsV5 = { header, toolbar, grid, drawer, imageHtml, pendingPhotoHtml };
 })();

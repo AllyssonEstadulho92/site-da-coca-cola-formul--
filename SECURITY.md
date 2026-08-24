@@ -6,7 +6,7 @@ Este repositório é público e deve conter apenas código, documentação e dad
 
 Não publicar credenciais, passwords, tokens, chaves API, dados reais de clientes ou colaboradores, NIF, moradas, telefones, referências operacionais, exportações SAP, e-mails internos, matrizes confidenciais, backups da aplicação ou ficheiros `.env` reais.
 
-## V5.1.0 — sem autenticação
+## V5.2.0 — sem autenticação
 
 A aplicação abre diretamente no Dashboard. Não existe formulário de login, validação de domínio, password de acesso, lockout, logout nem autorização de utilizadores.
 
@@ -20,11 +20,15 @@ Os registos DEMO usam prefixo `DEMO`, são marcados com `demo: true` e utilizam 
 
 ## Equipamentos
 
-A V5.1.0 apresenta descrições operacionais e uma matriz de sintomas por categoria. Os códigos da matriz destinam-se à classificação do sintoma reportado e não constituem diagnóstico técnico.
+A V5.2.0 apresenta descrições operacionais/técnicas e uma matriz de sintomas filtrada pela capacidade funcional da categoria. Os códigos destinam-se à classificação do sintoma observado e não constituem diagnóstico ou causa confirmada.
 
-Dados técnicos/fontes já registados permanecem preservados no código, mas não são apresentados na interface atual de Equipamentos.
+Dados técnicos/fontes já registados permanecem preservados no código, mas não são apresentados como Ficha técnica/Documentação na interface atual.
 
-Fotografias reais adicionadas pelo utilizador permanecem no IndexedDB do dispositivo e não são publicadas automaticamente no GitHub. Não publicar fotografias que exponham números de série, QR codes, etiquetas, dados de cliente ou informação interna.
+A referência visual gerada foi removida. Uma fotografia só recebe a etiqueta `Fotografia real` quando foi adicionada localmente ao equipamento ou quando existe um asset versionado explicitamente marcado `VERIFIED_REAL` no registo de fotografias.
+
+Fotografias versionadas devem corresponder ao slug exato do equipamento, ter autorização de utilização e não expor números de série, QR codes, etiquetas operacionais, dados de cliente, geolocalização sensível ou informação interna. O repositório não deve usar imagens remotas de terceiros diretamente no frontend.
+
+Fotografias adicionadas pelo utilizador permanecem no IndexedDB do dispositivo e não são publicadas automaticamente no GitHub.
 
 ## Backups
 
@@ -36,7 +40,7 @@ O backup encriptado utiliza uma palavra-passe própria do ficheiro. Isto é inde
 
 O `index.html` mantém Content Security Policy e `no-referrer`. O Service Worker usa network-first para HTML, JavaScript e CSS quando existe ligação e fallback offline para recursos previamente armazenados.
 
-O build de GitHub Pages publica apenas os recursos de runtime declarados no Service Worker.
+O build de GitHub Pages publica apenas recursos de runtime e fotografias reais explicitamente declaradas no registo autorizado. O deploy executa verificação pós-publicação dos módulos e do contrato mobile de Equipamentos.
 
 ## Produção
 

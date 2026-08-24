@@ -1,4 +1,4 @@
-# Dados e Segurança — V5.1.0
+# Dados e Segurança — V5.2.0
 
 ## Classificação atual
 
@@ -18,13 +18,15 @@ A identificação local opcional serve apenas para preencher o nome do operador 
 
 IndexedDB guarda registos, atividades, configurações, snapshots e fotografias de equipamentos. Os dados permanecem no dispositivo/browser até serem eliminados, restaurados ou limpos pelo utilizador.
 
-O schema IndexedDB mantém-se na versão 4. Os backups criados pela versão atual identificam `appVersion: 5.1.0`.
+O schema IndexedDB mantém-se na versão 4. Os backups criados pela versão atual identificam `appVersion: 5.2.0`.
 
 ## Equipamentos
 
-A V5.1.0 mantém 53 equipamentos. A interface mostra fotografia, descrição operacional e códigos de sintomas aplicáveis por categoria. Ficha técnica e Documentação deixaram de ser apresentadas na página de Equipamentos.
+A V5.2.0 mantém 53 equipamentos. A interface apresenta fotografia real validada ou `Fotografia pendente`, descrição operacional/técnica e códigos de sintomas coerentes com a capacidade funcional da categoria. Ficha técnica e Documentação não são apresentadas como secções visíveis.
 
-A matriz operacional serve para classificação do sintoma reportado; não é diagnóstico. Dados técnicos e fontes anteriormente registados permanecem preservados na camada de dados para rastreabilidade e futura evolução.
+A matriz operacional classifica o sintoma observado; não é diagnóstico nem causa confirmada. Dados técnicos e fontes anteriormente registados permanecem preservados na camada de dados para rastreabilidade e futura evolução.
+
+Fotografias locais ficam no IndexedDB. Fotografias versionadas só podem ser marcadas `VERIFIED_REAL` depois de confirmar modelo/correspondência e autorização. Não publicar fotografias que revelem números de série, QR codes, etiquetas operacionais, dados de clientes ou informação interna.
 
 ## Backups
 

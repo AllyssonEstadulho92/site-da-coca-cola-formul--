@@ -1,5 +1,20 @@
 # Changelog
 
+## 5.2.0
+
+- Corrigido o layout mobile da página Equipamentos para impedir corte horizontal dos cartões no iPhone/Android.
+- Mantida a composição aprovada imagem à esquerda / conteúdo à direita também em ecrãs estreitos, com colunas proporcionais e `min-width: 0` nos elementos críticos.
+- Removido o sprite visual gerado utilizado como referência; imagens genéricas deixam de ocupar a área de fotografia.
+- Adicionado estado profissional `Fotografia pendente` quando ainda não existe fotografia real validada.
+- Criado `equipment-photo-registry-v5.js` para associar fotografias reais versionadas ao slug exato do equipamento e só aceitar estado `VERIFIED_REAL`.
+- Fotografias locais passam a guardar também slug, nome, modelo e estado da associação ao equipamento.
+- Falha de carregamento de uma fotografia degrada apenas a imagem para estado pendente, sem quebrar o catálogo.
+- Descrições genéricas passaram a respeitar a subcategoria do equipamento em vez de repetir uma descrição ampla de categoria.
+- A matriz operacional continua preservada integralmente, mas a associação de Funcionamento Geral passa a ser filtrada pela capacidade funcional da categoria; vitrines deixam de receber sintomas de saída/seleção de produto próprios de dispensing.
+- Build passa a publicar automaticamente fotografias reais declaradas no registo e rejeita caminhos fora da pasta autorizada.
+- Adicionado contrato automático de layout mobile e reforçado o smoke test pós-deploy do GitHub Pages.
+- Cache PWA, backup e identificação visual alinhados com V5.2.0.
+
 ## 5.1.1
 
 - Corrigida a modelação interna dos códigos operacionais: códigos iguais em grupos diferentes passam a ter chave contextual única (`GRUPO:CÓDIGO`) sem alterar o código apresentado ao utilizador.
@@ -14,12 +29,9 @@
 - Mantidos os 53 equipamentos com layout imagem à esquerda / conteúdo à direita.
 - Adicionada descrição operacional para todos os modelos; descrições públicas específicas existentes são preservadas e complementadas.
 - Integrada a matriz operacional fornecida ao projeto: 7 códigos de Vandalismo, 19 de Dispensing, 7 de Vending e 14 de Funcionamento Geral.
-- Aplicação da matriz por categoria: Vitrines/Monster = 21 códigos; Vending = 28; Postmix/Freestyle/módulos auxiliares = 40.
 - Pesquisa passa a encontrar equipamentos também por código ou texto de sintoma.
 - Removidas da interface as secções Ficha técnica e Documentação.
-- Removidos da apresentação os estados “Por validar” e “Sem sintomas específicos associados”.
 - Fotografias locais e criação de registo continuam funcionais.
-- Service Worker, backup, build e testes alinhados com V5.1.0.
 
 ## 5.0.1
 

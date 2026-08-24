@@ -26,6 +26,7 @@ const forbidden = [
   'css/equipment-sources-v5.css',
   'data/equipment',
   'docs/V3.8_ACESSO.md',
+  'assets/equipment/reference-sprite-v46.jpg',
   'assets/equipment/catalog-manifest.json',
   'assets/equipment/DIRECTORY_POLICY.md',
   'assets/equipment/STRUCTURE_VERSION',
@@ -51,13 +52,25 @@ const rootEquipmentJs = fs.readdirSync(path.join(root, 'js'), { withFileTypes:tr
   .map(entry => entry.name);
 assert.deepEqual(rootEquipmentJs, [], 'Módulos de Equipamentos devem existir apenas em js/equipment/.');
 
-const equipmentAssets = fs.readdirSync(path.join(root, 'assets/equipment')).sort();
-assert.deepEqual(equipmentAssets, ['README.md','reference-sprite-v46.jpg'].sort(), 'assets/equipment deve conter apenas recursos ativos.');
+const equipmentAssetsDir = path.join(root, 'assets/equipment');
+const equipmentAssets = fs.readdirSync(equipmentAssetsDir, { withFileTypes:true }).map(entry => entry.name).sort();
+assert.equal(equipmentAssets.includes('README.md'), true, 'assets/equipment deve manter a política de fotografias.');
+for (const entry of equipmentAssets) {
+  assert.ok(['README.md','photos'].includes(entry), `Recurso não previsto em assets/equipment: ${entry}`);
+}
+const photosDir = path.join(equipmentAssetsDir, 'photos');
+if (fs.existsSync(photosDir)) {
+  for (const entry of fs.readdirSync(photosDir, { withFileTypes:true })) {
+    assert.equal(entry.isFile(), true, `Subdiretório inesperado em photos: ${entry.name}`);
+    assert.match(entry.name, /^[a-z0-9-]+\.(?:png|jpe?g|webp)$/i, `Nome/formato de fotografia inválido: ${entry.name}`);
+  }
+}
 
 const expectedTests = [
   'build-static.test.js',
   'core.test.js',
   'equipment-images.test.js',
+  'equipment-mobile-layout.test.js',
   'equipment-v5.test.js',
   'integrity.test.js',
   'no-auth.test.js',
@@ -67,7 +80,7 @@ const expectedTests = [
   'syntax.test.js'
 ].sort();
 const actualTests = fs.readdirSync(path.join(root, 'tests')).filter(name => name.endsWith('.test.js')).sort();
-assert.deepEqual(actualTests, expectedTests, 'A pasta tests deve conter apenas a suite ativa declarada para V5.1.1.');
+assert.deepEqual(actualTests, expectedTests, 'A pasta tests deve conter apenas a suite ativa declarada para V5.2.0.');
 
 const clutterPatterns = [
   /^\.DS_Store$/,
@@ -85,4 +98,4 @@ function scan(directory) {
 }
 scan(root);
 
-console.log('Project cleanliness tests V5.1.1: OK');
+console.log('Project cleanliness tests V5.2.0: OK');
