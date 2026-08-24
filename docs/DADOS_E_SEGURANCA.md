@@ -1,32 +1,24 @@
-# Dados e Segurança — V5.2.0
+# Dados e Segurança — V6.0.0
 
 ## Classificação atual
 
-Este projeto é um protótipo público sem autenticação. Serve para validação funcional e demonstração com dados fictícios; não está aprovado para tratamento corporativo de dados reais.
+Este projeto é um protótipo público sem autenticação. Serve para validação funcional e UX com dados fictícios; não está aprovado para tratamento corporativo de dados reais.
 
-## Dados que a interface consegue recolher
+## Dados que o formulário consegue recolher
 
-Existem campos para cliente/contacto, telefone, morada/local, e-mail, agente e histórico de ações. O facto de o formulário aceitar estes campos não significa que devam ser preenchidos com informação real no site público.
+Existem campos para cliente/contacto, telefone, morada/local, agente, REF, tipo, avaria, sintoma, encaminhamento, notas e histórico de ações. O facto de o formulário aceitar estes campos não significa que devam ser preenchidos com informação real no site público.
 
-## Acesso
+## Designer de Formulário
 
-Não existe password de acesso, perfil autenticado ou autorização. Qualquer pessoa com o endereço consegue abrir a aplicação.
+O Designer guarda em `settings.formDesign` preferências de apresentação. Não cria utilizadores, permissões ou novos dados pessoais.
 
-A identificação local opcional serve apenas para preencher o nome do operador em novos registos e atividades.
+Campos opcionais podem ser ocultados visualmente; campos obrigatórios permanecem disponíveis. Um campo oculto não apaga automaticamente valores existentes num registo.
 
 ## Persistência local
 
-IndexedDB guarda registos, atividades, configurações, snapshots e fotografias de equipamentos. Os dados permanecem no dispositivo/browser até serem eliminados, restaurados ou limpos pelo utilizador.
+IndexedDB guarda registos, atividades, configurações e snapshots. O schema atual é 5.
 
-O schema IndexedDB mantém-se na versão 4. Os backups criados pela versão atual identificam `appVersion: 5.2.0`.
-
-## Equipamentos
-
-A V5.2.0 mantém 53 equipamentos. A interface apresenta fotografia real validada ou `Fotografia pendente`, descrição operacional/técnica e códigos de sintomas coerentes com a capacidade funcional da categoria. Ficha técnica e Documentação não são apresentadas como secções visíveis.
-
-A matriz operacional classifica o sintoma observado; não é diagnóstico nem causa confirmada. Dados técnicos e fontes anteriormente registados permanecem preservados na camada de dados para rastreabilidade e futura evolução.
-
-Fotografias locais ficam no IndexedDB. Fotografias versionadas só podem ser marcadas `VERIFIED_REAL` depois de confirmar modelo/correspondência e autorização. Não publicar fotografias que revelem números de série, QR codes, etiquetas operacionais, dados de clientes ou informação interna.
+A migração V6 remove a antiga store `equipmentImages`, que pertencia à área Equipamentos eliminada. Backups atuais identificam `appVersion: 6.0.0` e `schemaVersion: 5`.
 
 ## Backups
 
@@ -36,4 +28,4 @@ Backups podem conter dados introduzidos pelo utilizador e nunca devem ser public
 
 ## Produção
 
-Antes de produção são necessários minimização e classificação de dados, identidade corporativa, RBAC server-side, backend/API autorizado, base de dados central, logs protegidos, backups externos, retenção, revisão RGPD/privacidade e testes de segurança.
+Antes de produção são necessários minimização e classificação de dados, identidade corporativa, autenticação, RBAC server-side, backend/API autorizado, base de dados central, logs protegidos, backups externos, retenção, revisão RGPD/privacidade e testes de segurança.
