@@ -10,12 +10,15 @@ const sourcesJs = read('js/equipment/equipment-sources-v5.js');
 const symptomsJs = read('js/equipment/equipment-symptoms-v5.js');
 const catalogJs = read('js/equipment/equipment-catalog-data-v5.js');
 const storeJs = read('js/equipment/equipment-store-v5.js');
+const localImagesJs = read('js/equipment/equipment-local-images-v5.js');
+const actionsJs = read('js/equipment/equipment-actions-v5.js');
 const componentsJs = read('js/equipment/equipment-components-v5.js');
 const pageJs = read('js/equipment/equipment-page-v5.js');
 const css = read('css/equipment-v5.css');
 const index = read('index.html');
+const serviceWorker = read('service-worker.js');
 
-for (const text of [sourcesJs, symptomsJs, catalogJs, storeJs, componentsJs, pageJs, index]) {
+for (const text of [sourcesJs, symptomsJs, catalogJs, storeJs, localImagesJs, actionsJs, componentsJs, pageJs, index]) {
   assert.equal(/Manual do Equipamento Coca-Cola\s*[—-]\s*fornecido ao projeto/i.test(text), false, 'A V5 não pode usar o manual interno como fonte técnica.');
   assert.equal(/project-manual/.test(text), false, 'A V5 não pode referenciar project-manual.');
 }
@@ -69,15 +72,22 @@ for (const token of ['Visão geral','Especificações','Sintomas','Documentaçã
 for (const token of ['Fonte principal','Possíveis causas documentadas — não são diagnóstico','Não validado para este modelo']) assert.ok(componentsJs.includes(token), `UI de evidência V5 sem: ${token}`);
 assert.ok(pageJs.includes('Protótipo sem autenticação'), 'Aviso público deve permanecer visível.');
 assert.ok(pageJs.includes('equipmentV5SourceHtml'), 'Cada secção deve receber a sua fonte/estado de validação.');
+assert.ok(localImagesJs.includes('equipmentManualImage'), 'A camada V5 deve fornecer fotografias locais sem depender do módulo legado.');
+assert.ok(actionsJs.includes('startRecordFromCatalog'), 'A camada V5 deve permitir criar um registo a partir do equipamento sem depender do catálogo legado.');
 
 assert.match(css, /\.eq5-grid\s*\{[^}]*grid-template-columns/s, 'O catálogo deve usar CSS Grid.');
 assert.match(css, /@media\s*\(max-width:\s*680px\)/, 'A V5 deve ter breakpoint específico de smartphone.');
 assert.match(css, /@media\s*\(max-width:\s*680px\)[\s\S]*?\.eq5-grid\{grid-template-columns:1fr/, 'No smartphone a grelha deve ter uma coluna.');
 assert.match(css, /:focus-visible/, 'A V5 deve ter focus visível.');
 assert.match(index, /css\/equipment-v5\.css/, 'Index deve carregar o CSS V5.');
-assert.match(index, /js\/equipment\/equipment-page-v5\.js/, 'Index deve carregar a página V5.');
-for (const forbidden of ['equipment-directory-v43.js','app-equipment-catalog-v4.js','app-equipment-reference-images-v46.js','app-equipment-models-v43.js','app-equipment-ui-v46.js','equipment-v46.css']) {
-  assert.equal(index.includes(forbidden), false, `Camada V4 antiga ainda carregada no runtime: ${forbidden}`);
+for (const required of ['js/equipment/equipment-local-images-v5.js','js/equipment/equipment-actions-v5.js','js/equipment/equipment-page-v5.js']) {
+  assert.ok(index.includes(required), `Index deve carregar a camada V5: ${required}`);
+  assert.ok(serviceWorker.includes(`./${required}`), `Service worker deve precachear a camada V5: ${required}`);
 }
+for (const forbidden of ['equipment-directory-v43.js','app-equipment-catalog-v4.js','app-equipment-reference-images-v46.js','app-equipment-models-v43.js','app-equipment-ui-v46.js','equipment-v46.css','js/app-equipment-catalog.js','js/app-equipment-manual.js']) {
+  assert.equal(index.includes(forbidden), false, `Camada antiga ainda carregada no runtime: ${forbidden}`);
+  assert.equal(serviceWorker.includes(forbidden), false, `Camada antiga ainda presente no cache PWA: ${forbidden}`);
+}
+assert.match(serviceWorker, /registo-avarias-v5\.0\.1/, 'A alteração de runtime deve invalidar o cache V5.0.0.');
 
 console.log(`Equipment V5 tests: OK (${store.items.length} equipamentos, ${Object.keys(sources).length} fontes externas, ${symptoms.length} relações de sintomas)`);
