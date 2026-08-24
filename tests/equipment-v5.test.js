@@ -15,6 +15,7 @@ const actionsJs = read('js/equipment/equipment-actions-v5.js');
 const componentsJs = read('js/equipment/equipment-components-v5.js');
 const pageJs = read('js/equipment/equipment-page-v5.js');
 const css = read('css/equipment-v5.css');
+const sourceCss = read('css/equipment-sources-v5.css');
 const index = read('index.html');
 const serviceWorker = read('service-worker.js');
 
@@ -70,16 +71,21 @@ assert.ok(documented.length > 0 && documented.every(item=>item.documents.some(do
 for (const token of ['equipmentV5Search','equipmentV5Manufacturer','equipmentV5Photo','equipmentV5Documents','equipmentV5Symptoms','equipmentV5Validation','equipmentV5Sort','data-eq5-clear']) assert.ok(componentsJs.includes(token), `Toolbar V5 sem ${token}`);
 for (const token of ['Visão geral','Especificações','Sintomas','Documentação','Fotografias']) assert.ok(componentsJs.includes(token), `Detalhe V5 sem separador ${token}`);
 for (const token of ['Fonte principal','Possíveis causas documentadas — não são diagnóstico','Não validado para este modelo']) assert.ok(componentsJs.includes(token), `UI de evidência V5 sem: ${token}`);
+assert.ok(componentsJs.includes('Nenhum equipamento corresponde aos filtros selecionados.'), 'A V5 deve manter estado vazio explícito para filtros sem resultados.');
 assert.ok(pageJs.includes('Protótipo sem autenticação'), 'Aviso público deve permanecer visível.');
 assert.ok(pageJs.includes('equipmentV5SourceHtml'), 'Cada secção deve receber a sua fonte/estado de validação.');
+assert.match(pageJs, /event\.key\s*===\s*'Escape'/, 'A ficha lateral deve poder fechar por Escape.');
 assert.ok(localImagesJs.includes('equipmentManualImage'), 'A camada V5 deve fornecer fotografias locais sem depender do módulo legado.');
 assert.ok(actionsJs.includes('startRecordFromCatalog'), 'A camada V5 deve permitir criar um registo a partir do equipamento sem depender do catálogo legado.');
 
-assert.match(css, /\.eq5-grid\s*\{[^}]*grid-template-columns/s, 'O catálogo deve usar CSS Grid.');
-assert.match(css, /@media\s*\(max-width:\s*680px\)/, 'A V5 deve ter breakpoint específico de smartphone.');
+assert.match(css, /\.eq5-grid\{display:grid;grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/, 'A grelha desktop deve usar 4 colunas.');
+assert.match(css, /@media\(max-width:1320px\)[\s\S]*?\.eq5-grid\{grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/, 'A grelha de portátil deve usar 3 colunas.');
+assert.match(css, /@media\(max-width:980px\)[\s\S]*?\.eq5-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/, 'A grelha tablet deve usar 2 colunas.');
 assert.match(css, /@media\s*\(max-width:\s*680px\)[\s\S]*?\.eq5-grid\{grid-template-columns:1fr/, 'No smartphone a grelha deve ter uma coluna.');
 assert.match(css, /:focus-visible/, 'A V5 deve ter focus visível.');
+assert.match(sourceCss, /\.eq5-section-source/, 'As fontes por secção devem ter estilo dedicado.');
 assert.match(index, /css\/equipment-v5\.css/, 'Index deve carregar o CSS V5.');
+assert.match(index, /V5\.0\.1 · catálogo técnico operacional/, 'A identificação visível deve corresponder à versão V5.0.1.');
 for (const required of ['js/equipment/equipment-local-images-v5.js','js/equipment/equipment-actions-v5.js','js/equipment/equipment-page-v5.js']) {
   assert.ok(index.includes(required), `Index deve carregar a camada V5: ${required}`);
   assert.ok(serviceWorker.includes(`./${required}`), `Service worker deve precachear a camada V5: ${required}`);
