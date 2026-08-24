@@ -1,4 +1,4 @@
-# Sistema de Registo de Avarias — V5.1.0
+# Sistema de Registo de Avarias — V5.1.1
 
 PWA estática e mobile-first para produtividade profissional, registo de ocorrências e consulta operacional de equipamentos.
 
@@ -23,6 +23,7 @@ Não utilizar dados reais de clientes, informação SAP, credenciais, e-mails in
 - Cartões em duas secções: fotografia à esquerda e conteúdo à direita.
 - Descrição operacional completa para todos os 53 equipamentos; quando existe descrição pública específica ela é preservada e complementada pelo contexto operacional da categoria.
 - Matriz operacional de sintomas fornecida ao projeto, separada em Vandalismo, Funcionamento Geral, Específico Dispensing e Específico Vending.
+- Códigos repetidos entre grupos usam identificadores internos contextuais, evitando colisões sem alterar o código visível.
 - Fotografias reais adicionadas localmente, com prioridade sobre a referência visual gerada.
 
 ## Equipamentos V5.1
@@ -50,6 +51,8 @@ A área utiliza a camada `js/equipment/`:
 - `equipment-page-v5.js`
 
 A matriz operacional serve para **classificação do sintoma reportado**. Não é apresentada como diagnóstico técnico nem como causa da avaria.
+
+A V5.1.1 acrescenta proteção de runtime: se os recursos de Equipamentos estiverem incompletos no navegador, a aplicação mostra uma ação de recuperação em vez de deixar a página em branco. O workflow de GitHub Pages valida também os módulos publicados depois do deploy.
 
 ## Estrutura do projeto
 
@@ -90,7 +93,7 @@ npm run check
 npm run build
 ```
 
-O build publica em `dist/` apenas os recursos declarados no Service Worker.
+O build publica em `dist/` apenas os recursos declarados no Service Worker. O deploy Pages executa ainda um smoke test contra a página pública antes de considerar a publicação concluída.
 
 ## Produção
 

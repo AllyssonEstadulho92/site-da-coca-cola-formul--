@@ -67,7 +67,7 @@ const expectedTests = [
   'syntax.test.js'
 ].sort();
 const actualTests = fs.readdirSync(path.join(root, 'tests')).filter(name => name.endsWith('.test.js')).sort();
-assert.deepEqual(actualTests, expectedTests, 'A pasta tests deve conter apenas a suite ativa declarada para V5.0.1.');
+assert.deepEqual(actualTests, expectedTests, 'A pasta tests deve conter apenas a suite ativa declarada para V5.1.1.');
 
 const clutterPatterns = [
   /^\.DS_Store$/,
@@ -85,4 +85,4 @@ function scan(directory) {
 }
 scan(root);
 
-console.log('Project cleanliness tests: OK');
+console.log('Project cleanliness tests V5.1.1: OK');

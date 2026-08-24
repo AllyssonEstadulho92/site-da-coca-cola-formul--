@@ -40,3 +40,24 @@ jobs:
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Smoke test published Equipamentos
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          set -euo pipefail
+          base="${PAGE_URL%/}"
+          ok=0
+          for attempt in $(seq 1 18); do
+            if curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/" -o /tmp/pages-index.html \
+              && grep -q 'V5.1.1 · catálogo operacional' /tmp/pages-index.html \
+              && curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/js/equipment/equipment-operational-symptoms-v5.js" -o /tmp/equipment-operational.js \
+              && grep -q 'EquipmentOperationalSymptomsV5' /tmp/equipment-operational.js \
+              && curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/js/equipment/equipment-page-v5.js" -o /tmp/equipment-page.js \
+              && grep -q 'renderEquipmentRuntimeError' /tmp/equipment-page.js; then
+              ok=1
+              break
+            fi
+            echo "Página ainda não propagada (tentativa ${attempt}/18)."
+            sleep 5
+          done
+          test "$ok" -eq 1

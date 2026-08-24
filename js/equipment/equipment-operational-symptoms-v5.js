@@ -4,7 +4,12 @@
   const makeGroup = (id, title, items) => Object.freeze({
     id,
     title,
-    items: Object.freeze(items.map(([code, symptom]) => Object.freeze({ code, symptom })))
+    items: Object.freeze(items.map(([code, symptom]) => Object.freeze({
+      key: `${id}:${code}`,
+      groupId: id,
+      code,
+      symptom
+    })))
   });
 
   const groups = Object.freeze({

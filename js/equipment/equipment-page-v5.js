@@ -1,7 +1,35 @@
 (() => {
   'use strict';
 
-  if (!window.App || !window.EquipmentStoreV5 || !window.EquipmentComponentsV5) return;
+  if (!window.App) return;
+
+  const dependenciesReady = Boolean(window.EquipmentStoreV5 && window.EquipmentComponentsV5);
+
+  function runtimeErrorHtml() {
+    return `<div class="eq5-page">
+      <section class="eq5-runtime-error" role="alert">
+        <p class="eyebrow">Equipamentos</p>
+        <h3>Não foi possível carregar o catálogo.</h3>
+        <p>Existe uma versão incompleta dos recursos no navegador. Atualize a aplicação para carregar novamente os módulos de Equipamentos.</p>
+        <button id="equipmentRuntimeReload" type="button" class="btn btn-primary">Atualizar aplicação</button>
+      </section>
+    </div>`;
+  }
+
+  if (!dependenciesReady) {
+    Object.assign(window.App, {
+      equipmentCatalogItems() { return []; },
+      renderEquipment() { return this.renderEquipmentRuntimeError(); },
+      renderEquipmentCatalog() { return this.renderEquipmentRuntimeError(); },
+      renderEquipmentRuntimeError() {
+        if (!this.els?.viewContainer) return;
+        this.els.viewContainer.innerHTML = runtimeErrorHtml();
+        document.getElementById('equipmentRuntimeReload')?.addEventListener('click', () => location.reload());
+      }
+    });
+    console.error('Equipamentos V5.1.1: dependências de runtime incompletas.');
+    return;
+  }
 
   const store = window.EquipmentStoreV5;
   const ui = window.EquipmentComponentsV5;
@@ -12,23 +40,34 @@
     renderEquipment() { return this.renderEquipmentV5(); },
     renderEquipmentCatalog() { return this.renderEquipmentV5(); },
 
+    renderEquipmentRuntimeError(error) {
+      console.error('Equipamentos V5.1.1:', error);
+      if (!this.els?.viewContainer) return;
+      this.els.viewContainer.innerHTML = runtimeErrorHtml();
+      document.getElementById('equipmentRuntimeReload')?.addEventListener('click', () => location.reload());
+    },
+
     renderEquipmentV5() {
-      if (!this.state.equipmentV5Filters) this.state.equipmentV5Filters = defaultFilters();
-      if (!this.state.equipmentImages) this.state.equipmentImages = {};
+      try {
+        if (!this.state.equipmentV5Filters) this.state.equipmentV5Filters = defaultFilters();
+        if (!this.state.equipmentImages) this.state.equipmentImages = {};
 
-      const filters = this.state.equipmentV5Filters;
-      const items = store.query(filters, this.state.equipmentImages);
-      const counts = store.counts(this.state.equipmentImages);
-      const selected = this.state.equipmentV5SelectedId ? store.getById(this.state.equipmentV5SelectedId) : null;
+        const filters = this.state.equipmentV5Filters;
+        const items = store.query(filters, this.state.equipmentImages);
+        const counts = store.counts(this.state.equipmentImages);
+        const selected = this.state.equipmentV5SelectedId ? store.getById(this.state.equipmentV5SelectedId) : null;
 
-      this.els.viewContainer.innerHTML = `<div class="eq5-page">
-        ${ui.header(this, counts)}
-        ${ui.toolbar(this, store, filters, items.length)}
-        ${ui.grid(this, items)}
-        ${ui.drawer(this, store, selected)}
-      </div>`;
+        this.els.viewContainer.innerHTML = `<div class="eq5-page">
+          ${ui.header(this, counts)}
+          ${ui.toolbar(this, store, filters, items.length)}
+          ${ui.grid(this, items)}
+          ${ui.drawer(this, store, selected)}
+        </div>`;
 
-      this.bindEquipmentV5Actions();
+        this.bindEquipmentV5Actions();
+      } catch (error) {
+        this.renderEquipmentRuntimeError(error);
+      }
     },
 
     bindEquipmentV5Actions() {

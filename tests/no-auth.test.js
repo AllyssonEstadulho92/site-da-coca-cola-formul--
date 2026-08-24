@@ -28,13 +28,13 @@ assert.equal(/Alterar palavra-passe|Terminar sessão/i.test(profile), false, 'A 
 assert.match(profile, /Acesso.*Direto.*sem autenticação/is, 'A área de identificação deve explicar o acesso direto.');
 
 assert.match(db, /DB_VERSION\s*=\s*4/, 'A base local deve permanecer na versão 4 para compatibilidade.');
-assert.match(db, /appVersion:\s*'5\.1\.0'/, 'Os backups devem identificar a aplicação V5.1.0.');
+assert.match(db, /appVersion:\s*'5\.1\.1'/, 'Os backups devem identificar a aplicação V5.1.1.');
 assert.match(db, /deleteObjectStore\('profiles'\)/, 'A migração deve continuar a remover a store antiga de perfis.');
 assert.equal(/getAll\('profiles'\)/.test(db), false, 'Backups novos não podem exportar perfis de autenticação.');
 assert.equal(/objectStore\('profiles'\)\.put/.test(db), false, 'Restauros não podem recriar perfis de autenticação.');
 
-assert.match(sw, /registo-avarias-v5\.1\.0/, 'O cache PWA deve corresponder à V5.1.0.');
+assert.match(sw, /registo-avarias-v5\.1\.1/, 'O cache PWA deve corresponder à V5.1.1.');
 assert.equal(/app-auth-(?:domain|adaptive)\.js/.test(sw), false, 'O cache PWA não pode conter módulos de autenticação.');
 assert.equal(/auth-security\.css/.test(sw), false, 'O cache PWA não pode conter CSS de autenticação.');
 
-console.log('No-auth tests V5.1.0: OK');
+console.log('No-auth tests V5.1.1: OK');

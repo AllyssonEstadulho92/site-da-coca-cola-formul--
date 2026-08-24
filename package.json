@@ -1,6 +1,6 @@
 {
   "name": "registo-avarias-v5",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "private": true,
   "description": "PWA estática para produtividade e catálogo operacional de 53 equipamentos com descrições, matriz de sintomas por categoria e fotografias locais.",
   "scripts": {
