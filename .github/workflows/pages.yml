@@ -40,7 +40,7 @@ jobs:
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
-      - name: Smoke test published Form Designer
+      - name: Smoke test published Operations UI
         env:
           PAGE_URL: ${{ steps.deployment.outputs.page_url }}
         run: |
@@ -49,15 +49,15 @@ jobs:
           ok=0
           for attempt in $(seq 1 18); do
             if curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/" -o /tmp/pages-index.html \
-              && grep -q 'V6.0.0 · forms designer' /tmp/pages-index.html \
-              && grep -q 'js/app-form-designer.js' /tmp/pages-index.html \
+              && grep -q 'V6.1.0 · operations UI' /tmp/pages-index.html \
+              && grep -q 'js/app-statistics.js' /tmp/pages-index.html \
+              && grep -q 'css/coca-cola-ui.css' /tmp/pages-index.html \
               && ! grep -q 'js/equipment/' /tmp/pages-index.html \
-              && curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/js/app-form-designer.js" -o /tmp/form-designer.js \
-              && grep -q 'renderFormDesigner' /tmp/form-designer.js \
-              && grep -q 'saveFormDesigner' /tmp/form-designer.js \
-              && curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/css/form-designer.css" -o /tmp/form-designer.css \
-              && grep -q 'designer-workspace' /tmp/form-designer.css \
-              && grep -q 'form-design' /tmp/form-designer.css; then
+              && curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/js/app-statistics.js" -o /tmp/statistics.js \
+              && grep -q 'renderStatistics' /tmp/statistics.js \
+              && curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/css/coca-cola-ui.css" -o /tmp/operations.css \
+              && grep -q 'ops-metric-grid' /tmp/operations.css \
+              && grep -q 'stats-grid' /tmp/operations.css; then
               ok=1
               break
             fi
