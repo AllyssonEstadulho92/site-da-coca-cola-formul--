@@ -1,55 +1,65 @@
-# Catálogo técnico de Equipamentos — V5.0.1
+# Catálogo de Equipamentos — V5.1.0
 
 ## Objetivo
 
-A área **Equipamentos** é um catálogo operacional para identificação rápida durante chamadas, consulta da ficha do modelo, sintomas documentados e acesso à documentação associada.
+A área **Equipamentos** é uma consulta operacional rápida para identificação do modelo, fotografia, descrição e classificação do sintoma reportado durante a chamada.
 
-O catálogo mantém 53 equipamentos. A camada visual foi reconstruída com uma base mais simples: cada equipamento usa um grid interno de duas secções, com fotografia à esquerda e conteúdo à direita.
+O catálogo mantém exatamente **53 equipamentos** e conserva a estrutura visual aprovada: imagem à esquerda e conteúdo à direita.
 
-## Regra de evidência
+## Apresentação atual
 
-A aplicação não inventa dados técnicos, sintomas ou diagnósticos. Quando não existe informação associada ao modelo, a interface apresenta uma indicação curta de ausência de dados em vez de criar conteúdo por inferência.
+A interface deixa de expor as secções **Ficha técnica** e **Documentação**. A ficha apresenta:
 
-## Fontes
+- identificação do equipamento;
+- fotografia real local ou referência visual;
+- descrição operacional;
+- matriz de sintomas aplicável;
+- ação para criar um registo.
 
-As fontes externas continuam registadas em `equipment-sources-v5.js`. A nova interface evita repetir blocos de fonte em cada secção; a documentação associada ao equipamento continua acessível na ficha.
+Os dados técnicos e fontes públicas já registados permanecem na camada de dados para rastreabilidade, mas não fazem parte da apresentação principal.
 
-## Sintomas
+## Descrições
 
-As relações técnicas já registadas permanecem em `equipment-symptoms-v5.js`. Na interface, a secção Sintomas apresenta apenas os sintomas efetivamente associados ao modelo. Modelos sem relação registada mostram uma mensagem simples de ausência de sintomas específicos.
+Todos os equipamentos recebem uma descrição operacional coerente com a respetiva categoria. Quando existe uma descrição pública específica já validada, essa informação é mantida e complementada com o contexto funcional da categoria. Quando não existe informação específica, a aplicação utiliza apenas uma descrição funcional geral, sem inventar especificações de modelo.
 
-## Módulos V5
+## Matriz operacional de sintomas
 
-- `equipment-catalog-data-v5.js` — inventário e dados técnicos.
-- `equipment-sources-v5.js` — fontes externas registadas.
-- `equipment-symptoms-v5.js` — sintomas documentados.
-- `equipment-store-v5.js` — pesquisa e dados derivados.
-- `equipment-local-images-v5.js` — fotografias reais locais.
-- `equipment-actions-v5.js` — criação de registo a partir do catálogo.
-- `equipment-components-v5.js` — componentes reconstruídos do catálogo e da ficha.
-- `equipment-page-v5.js` — composição, pesquisa, categorias e interações.
-- `equipment-v5.css` — único ficheiro de estilos específico da área.
+A matriz fornecida ao projeto está em `equipment-operational-symptoms-v5.js` e contém quatro grupos:
+
+- **Vandalismo** — 7 códigos;
+- **Específico Dispensing** — 19 códigos;
+- **Específico Vending** — 7 códigos;
+- **Funcionamento Geral** — 14 códigos.
+
+Associação aplicada:
+
+- Vitrines e Monster: Vandalismo + Funcionamento Geral = **21 códigos**;
+- Vending: Vandalismo + Específico Vending + Funcionamento Geral = **28 códigos**;
+- Postmix, Freestyle e módulos auxiliares: Vandalismo + Específico Dispensing + Funcionamento Geral = **40 códigos**.
+
+A associação é feita pelo tipo/categoria do equipamento. Estes códigos servem para classificar o **sintoma observado** e não representam diagnóstico, causa provável ou instrução de reparação.
+
+## Pesquisa
+
+A pesquisa encontra equipamentos por nome, modelo, código, fabricante, categoria, descrição e pelos códigos/textos da matriz operacional de sintomas.
 
 ## Fotografias
 
-A fotografia ocupa a secção esquerda de cada cartão. Fotografias reais adicionadas localmente têm prioridade visual. Quando não existe fotografia real, é apresentada a referência visual já versionada no projeto.
+Fotografias reais adicionadas pelo utilizador são guardadas no IndexedDB do dispositivo e têm prioridade sobre a referência visual gerada. A fotografia pode ser substituída ou removida sem alterar os restantes dados do equipamento.
 
-No detalhe, a fotografia pode ser adicionada, substituída ou removida sem alterar os dados técnicos do equipamento.
+## Módulos
 
-## Estrutura visual
-
-### Catálogo
-
-- pesquisa no topo;
-- categorias em chips horizontais;
-- grelha de dois cartões por linha em ecrãs largos;
-- um cartão por linha em portátil/tablet;
-- cada cartão mantém duas secções: imagem à esquerda e conteúdo à direita, inclusive no smartphone com proporção reduzida.
-
-### Ficha
-
-A ficha abre de forma simples e contínua, sem separadores redundantes. O topo repete a mesma lógica de duas áreas e o conteúdo técnico fica organizado em Ficha técnica, Sintomas e Documentação.
+- `equipment-sources-v5.js` — fontes externas preservadas.
+- `equipment-symptoms-v5.js` — relações técnicas documentadas preservadas na camada de dados.
+- `equipment-operational-symptoms-v5.js` — matriz operacional fornecida ao projeto.
+- `equipment-catalog-data-v5.js` — inventário base de 53 equipamentos.
+- `equipment-store-v5.js` — normalização, descrições, associação de sintomas e pesquisa.
+- `equipment-local-images-v5.js` — fotografias reais locais.
+- `equipment-actions-v5.js` — criação de registo.
+- `equipment-components-v5.js` — cartões e ficha.
+- `equipment-page-v5.js` — composição e interações.
+- `equipment-v5.css` — estilos da área.
 
 ## GitHub Pages
 
-O build estático publica em `dist/` apenas os recursos declarados no Service Worker. Ficheiros de desenvolvimento, testes e documentação não entram no artefacto publicado.
+O build estático publica apenas os recursos declarados no Service Worker. A matriz operacional faz parte do runtime e do cache offline da V5.1.0.
