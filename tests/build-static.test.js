@@ -10,7 +10,7 @@ const dist = path.join(root, 'dist');
 
 for (const file of [
   'index.html','404.html','manifest.json','service-worker.js','build-info.json',
-  'css/styles.css','css/base.css','css/features.css','css/theme.css','css/equipment-v5.css','css/equipment-sources-v5.css',
+  'css/styles.css','css/base.css','css/features.css','css/theme.css','css/equipment-v5.css',
   'js/equipment/equipment-sources-v5.js','js/equipment/equipment-symptoms-v5.js','js/equipment/equipment-catalog-data-v5.js','js/equipment/equipment-store-v5.js','js/equipment/equipment-local-images-v5.js','js/equipment/equipment-actions-v5.js','js/equipment/equipment-components-v5.js','js/equipment/equipment-page-v5.js',
   'assets/app-icon.svg','assets/equipment/reference-sprite-v46.jpg'
 ]) assert.equal(fs.existsSync(path.join(dist,file)), true, `Build sem recurso obrigatório: ${file}`);
@@ -18,22 +18,25 @@ for (const file of [
 for (const forbidden of [
   'docs','data','tests','scripts',
   'js/app-equipment-catalog.js','js/app-equipment-manual.js','js/equipment-data.js',
-  'css/equipment-catalog.css','css/equipment-v46.css',
+  'css/equipment-catalog.css','css/equipment-v46.css','css/equipment-sources-v5.css',
   'assets/equipment/README.md'
 ]) assert.equal(fs.existsSync(path.join(dist,forbidden)), false, `Build publicou conteúdo não-runtime: ${forbidden}`);
 
 const index = fs.readFileSync(path.join(dist,'index.html'),'utf8');
 assert.match(index,/V5\.0\.1 · catálogo técnico operacional/,'Build deve identificar a V5.0.1.');
 assert.equal(/localhost|127\.0\.0\.1/.test(index), false, 'O build não pode depender de localhost.');
-assert.match(index,/href="css\/equipment-v5\.css"/,'CSS V5 deve manter caminho relativo compatível com GitHub Pages.');
+assert.match(index,/href="css\/equipment-v5\.css"/,'CSS de Equipamentos deve manter caminho relativo compatível com GitHub Pages.');
+assert.equal(index.includes('equipment-sources-v5.css'), false, 'Build não deve carregar CSS eliminado.');
 assert.match(index,/src="js\/equipment\/equipment-page-v5\.js"/,'JS V5 deve manter caminho relativo compatível com GitHub Pages.');
 
 const sw = fs.readFileSync(path.join(dist,'service-worker.js'),'utf8');
 assert.match(sw,/registo-avarias-v5\.0\.1/,'Service Worker publicado deve corresponder à V5.0.1.');
+assert.equal(sw.includes('equipment-sources-v5.css'), false, 'Service Worker não deve publicar CSS eliminado.');
 
 const info = JSON.parse(fs.readFileSync(path.join(dist,'build-info.json'),'utf8'));
 assert.equal(info.build,'equipment-catalog-v5');
 assert.ok(Array.isArray(info.runtimeFiles) && info.runtimeFiles.includes('js/equipment/equipment-page-v5.js'));
+assert.equal(info.runtimeFiles.includes('css/equipment-sources-v5.css'), false, 'Allowlist não deve conter CSS eliminado.');
 assert.equal(info.runtimeFiles.some(file => /app-equipment-(?:catalog|manual)/.test(file)), false, 'Allowlist do build não pode conter runtime legado.');
 assert.equal(info.runtimeFiles.some(file => /^(?:docs|data|tests|scripts)\//.test(file)), false, 'Allowlist do build não pode publicar conteúdo de desenvolvimento.');
 
