@@ -20,6 +20,24 @@
   const operationalMatrix = window.EquipmentOperationalSymptomsV5 || null;
   const baseItems = Array.isArray(window.EquipmentCatalogV5Base) ? window.EquipmentCatalogV5Base : [];
 
+  const categoryDescriptions = Object.freeze({
+    Vitrines: 'Equipamento refrigerado para conservação e exposição de bebidas embaladas no ponto de venda. Na triagem operacional devem ser observados alimentação elétrica, capacidade de frio, iluminação, ruído, portas ou fechos, fugas e integridade física.',
+    Postmix: 'Sistema de dispensing post-mix para preparação e serviço de bebidas a partir de água, CO2 e concentrado ou xarope. A ocorrência pode envolver alimentação, refrigeração, carbonatação, água, xarope, espuma, fugas, válvulas ou torneiras e saída de produto, conforme a configuração instalada.',
+    Vending: 'Máquina automática de venda de bebidas com seleção, canais de entrega e meios de pagamento. A triagem inclui alimentação, refrigeração, iluminação, canais encravados, rejeição ou retenção de moedas/notas, troco, saída de produto, telemetria e integridade física.',
+    Freestyle: 'Sistema digital de dispensing multibebidas com seleção eletrónica e circuitos de água, CO2 e ingredientes. A triagem deve considerar alimentação, refrigeração, água, xarope, carbonatação, espuma, fugas, seleção e dispensação, além da integridade física do equipamento.',
+    Monster: 'Cooler refrigerado para conservação e exposição de bebidas. A triagem operacional segue as verificações de funcionamento geral de equipamentos de frio e de integridade física.',
+    Outros: 'Módulo auxiliar associado a sistemas de dispensing. A triagem operacional considera alimentação, água, CO2, xarope ou produto, fugas, frio e funcionamento dos componentes associados, de acordo com a instalação.'
+  });
+
+  const genericInventoryDescription = /^Modelo presente no inventário do projeto\./i;
+
+  function catalogDescription(item) {
+    const operational = categoryDescriptions[item.category] || 'Equipamento presente no inventário operacional. A triagem deve ser feita de acordo com a categoria, o sintoma reportado e a identificação física da unidade instalada.';
+    const specific = String(item.shortDescription || '').trim();
+    if (!specific || genericInventoryDescription.test(specific)) return operational;
+    return `${specific} ${operational}`;
+  }
+
   const symptomsFor = item => symptomLibrary.filter(symptom => {
     if (symptom.appliesToModels?.includes(item.slug)) return true;
     if (!symptom.appliesToCategories?.includes(item.category)) return false;
@@ -27,7 +45,7 @@
     return true;
   });
 
-  const operationalGroupsFor = item => operationalMatrix?.groupsForCategory?.(item.category) || [];
+  const operationalGroupsFor = item => operationalMatrix?.groupsForItem?.(item) || operationalMatrix?.groupsForCategory?.(item.category) || [];
 
   const normalizedValidation = (item, symptoms) => {
     if (symptoms.some(value => value.validationLevel === 'MODEL_DOCUMENTED')) return 'MODEL_DOCUMENTED';
@@ -59,12 +77,13 @@
     const operationalSymptomCount = operationalSymptomGroups.reduce((total, group) => total + group.items.length, 0);
     const referenceIndex = TILE_BY_SLUG[item.slug];
     const referenceImage = Number.isInteger(referenceIndex) ? {
-      kind:'REFERENCE_GENERATED', src:'assets/equipment/reference-sprite-v5.jpg', tile:referenceIndex,
+      kind:'REFERENCE_GENERATED', src:'assets/equipment/reference-sprite-v46.jpg', tile:referenceIndex,
       copyrightStatus:'PROJECT_REFERENCE', source:'Imagem de referência gerada no projeto; não é fotografia oficial do fabricante.'
     } : null;
     return Object.freeze({
       ...item,
       aliases:[item.name,item.model,item.slug,item.code,item.manufacturer,item.subcategory].filter(Boolean),
+      catalogDescription:catalogDescription(item),
       referenceImage,
       symptoms,
       operationalSymptomGroups,
@@ -87,37 +106,14 @@
   const query = (filters = {}, userImages = {}) => {
     const search = normalize(filters.search);
     const category = filters.category || 'ALL';
-    const manufacturer = filters.manufacturer || 'ALL';
-    const photo = filters.photo || 'ALL';
-    const documents = filters.documents || 'ALL';
-    const symptoms = filters.symptoms || 'ALL';
-    const validation = filters.validation || 'ALL';
-
     const filtered = items.filter(item => {
       const operationalText = item.operationalSymptomGroups.flatMap(group => group.items.map(entry => `${entry.code} ${entry.symptom}`)).join(' ');
-      const haystack = normalize([item.name,item.model,item.code,item.manufacturer,item.category,item.subcategory,item.type,item.shortDescription,item.slug,...item.aliases,operationalText].join(' '));
+      const haystack = normalize([item.name,item.model,item.code,item.manufacturer,item.category,item.subcategory,item.type,item.catalogDescription,item.slug,...item.aliases,operationalText].join(' '));
       if (search && !haystack.includes(search)) return false;
       if (category !== 'ALL' && item.category !== category) return false;
-      if (manufacturer !== 'ALL' && item.manufacturer !== manufacturer) return false;
-      if (photo === 'USER' && !hasUserImage(item,userImages)) return false;
-      if (photo === 'REFERENCE' && (hasUserImage(item,userImages) || !hasReferenceImage(item))) return false;
-      if (photo === 'MISSING' && (hasUserImage(item,userImages) || hasReferenceImage(item))) return false;
-      if (documents === 'WITH' && !hasDocuments(item)) return false;
-      if (documents === 'WITHOUT' && hasDocuments(item)) return false;
-      if (symptoms === 'DOCUMENTED' && !hasDocumentedSymptoms(item)) return false;
-      if (symptoms === 'UNVALIDATED' && hasDocumentedSymptoms(item)) return false;
-      if (validation !== 'ALL' && item.validationStatus !== validation) return false;
       return true;
     });
-
-    const sort = filters.sort || 'name-asc';
-    return [...filtered].sort((a,b) => {
-      if (sort === 'name-desc') return b.name.localeCompare(a.name,'pt-PT',{numeric:true});
-      if (sort === 'category') return a.category.localeCompare(b.category,'pt-PT') || a.name.localeCompare(b.name,'pt-PT',{numeric:true});
-      if (sort === 'manufacturer') return (a.manufacturer || 'zz').localeCompare(b.manufacturer || 'zz','pt-PT') || a.name.localeCompare(b.name,'pt-PT',{numeric:true});
-      if (sort === 'recent') return String(b.updatedAt).localeCompare(String(a.updatedAt)) || a.name.localeCompare(b.name,'pt-PT',{numeric:true});
-      return a.name.localeCompare(b.name,'pt-PT',{numeric:true});
-    });
+    return [...filtered].sort((a,b) => a.name.localeCompare(b.name,'pt-PT',{numeric:true}));
   };
 
   window.EquipmentStoreV5 = Object.freeze({
@@ -127,7 +123,6 @@
     operationalMatrix,
     query,
     getById(id){return items.find(item=>item.id===id)||null;},
-    manufacturers(){return [...new Set(items.map(item=>item.manufacturer).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-PT'));},
     categories(){return [...new Set(items.map(item=>item.category))];},
     counts(userImages={}){return {total:items.length,categories:new Set(items.map(item=>item.category)).size,withDocuments:items.filter(hasDocuments).length,withUserPhoto:items.filter(item=>hasUserImage(item,userImages)).length,withSymptoms:items.filter(hasDocumentedSymptoms).length};},
     hasUserImage,hasReferenceImage,hasDocuments,hasDocumentedSymptoms
