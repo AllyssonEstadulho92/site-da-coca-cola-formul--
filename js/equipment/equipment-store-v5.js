@@ -35,17 +35,20 @@
     return 'UNVALIDATED';
   };
 
-  const sourceDocuments = item => (item.sourceIds || []).map(sourceId => sources[sourceId]).filter(Boolean).map(source => ({
-    name:source.title,
-    type:source.type || 'Fonte técnica',
-    url:source.url || '',
-    manufacturer:source.organization || '',
-    model:item.model,
-    language:source.language || '—',
-    sourceId,
-    date:source.consultedAt || '',
-    validationLevel:source.validationLevel || '—'
-  }));
+  const sourceDocuments = item => (item.sourceIds || [])
+    .map(sourceId => ({ sourceId, source: sources[sourceId] }))
+    .filter(entry => Boolean(entry.source))
+    .map(({ sourceId, source }) => ({
+      name:source.title,
+      type:source.type || 'Fonte técnica',
+      url:source.url || '',
+      manufacturer:source.organization || '',
+      model:item.model,
+      language:source.language || '—',
+      sourceId,
+      date:source.consultedAt || '',
+      validationLevel:source.validationLevel || '—'
+    }));
 
   const normalizedItems = baseItems.map(item => {
     const symptoms = symptomsFor(item);
