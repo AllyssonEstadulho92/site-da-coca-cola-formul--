@@ -17,6 +17,7 @@
   const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-PT').trim();
   const sources = window.EquipmentSourcesV5 || {};
   const symptomLibrary = Array.isArray(window.EquipmentSymptomsV5) ? window.EquipmentSymptomsV5 : [];
+  const operationalMatrix = window.EquipmentOperationalSymptomsV5 || null;
   const baseItems = Array.isArray(window.EquipmentCatalogV5Base) ? window.EquipmentCatalogV5Base : [];
 
   const symptomsFor = item => symptomLibrary.filter(symptom => {
@@ -25,6 +26,8 @@
     if (symptom.manufacturerIncludes && !String(item.manufacturer || '').toLowerCase().includes(symptom.manufacturerIncludes.toLowerCase())) return false;
     return true;
   });
+
+  const operationalGroupsFor = item => operationalMatrix?.groupsForCategory?.(item.category) || [];
 
   const normalizedValidation = (item, symptoms) => {
     if (symptoms.some(value => value.validationLevel === 'MODEL_DOCUMENTED')) return 'MODEL_DOCUMENTED';
@@ -52,9 +55,11 @@
 
   const normalizedItems = baseItems.map(item => {
     const symptoms = symptomsFor(item);
+    const operationalSymptomGroups = operationalGroupsFor(item);
+    const operationalSymptomCount = operationalSymptomGroups.reduce((total, group) => total + group.items.length, 0);
     const referenceIndex = TILE_BY_SLUG[item.slug];
     const referenceImage = Number.isInteger(referenceIndex) ? {
-      kind:'REFERENCE_GENERATED', src:'assets/equipment/reference-sprite-v46.jpg', tile:referenceIndex,
+      kind:'REFERENCE_GENERATED', src:'assets/equipment/reference-sprite-v5.jpg', tile:referenceIndex,
       copyrightStatus:'PROJECT_REFERENCE', source:'Imagem de referência gerada no projeto; não é fotografia oficial do fabricante.'
     } : null;
     return Object.freeze({
@@ -62,6 +67,8 @@
       aliases:[item.name,item.model,item.slug,item.code,item.manufacturer,item.subcategory].filter(Boolean),
       referenceImage,
       symptoms,
+      operationalSymptomGroups,
+      operationalSymptomCount,
       possibleCauses:symptoms.flatMap(value => value.possibleCauses || []),
       consequences:[],
       documents:sourceDocuments(item),
@@ -87,7 +94,8 @@
     const validation = filters.validation || 'ALL';
 
     const filtered = items.filter(item => {
-      const haystack = normalize([item.name,item.model,item.code,item.manufacturer,item.category,item.subcategory,item.type,item.shortDescription,item.slug,...item.aliases].join(' '));
+      const operationalText = item.operationalSymptomGroups.flatMap(group => group.items.map(entry => `${entry.code} ${entry.symptom}`)).join(' ');
+      const haystack = normalize([item.name,item.model,item.code,item.manufacturer,item.category,item.subcategory,item.type,item.shortDescription,item.slug,...item.aliases,operationalText].join(' '));
       if (search && !haystack.includes(search)) return false;
       if (category !== 'ALL' && item.category !== category) return false;
       if (manufacturer !== 'ALL' && item.manufacturer !== manufacturer) return false;
@@ -116,6 +124,7 @@
     items,
     sources,
     symptoms:symptomLibrary,
+    operationalMatrix,
     query,
     getById(id){return items.find(item=>item.id===id)||null;},
     manufacturers(){return [...new Set(items.map(item=>item.manufacturer).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-PT'));},
