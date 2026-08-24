@@ -16,7 +16,7 @@ assert.match(db, /createObjectStore\('equipmentImages',\s*\{\s*keyPath:\s*'equip
 assert.match(db, /getAll\('equipmentImages'\)/, 'O backup deve exportar imagens manuais.');
 assert.match(db, /objectStore\('equipmentImages'\)\.put/, 'O restauro deve recuperar imagens manuais.');
 assert.match(db, /schemaVersion:\s*4/, 'O schema de backup deve permanecer compatível na versão 4.');
-assert.match(db, /appVersion:\s*'5\.1\.0'/, 'O backup deve indicar a V5.1.0.');
+assert.match(db, /appVersion:\s*'5\.1\.1'/, 'O backup deve indicar a V5.1.1.');
 
 for (const token of ["AppDB.getAll('equipmentImages')","AppDB.put('equipmentImages'","AppDB.remove('equipmentImages'",'equipmentManualImage','pickEquipmentImage','compressEquipmentImage','removeEquipmentImage','MAX_INPUT_BYTES','TARGET_IMAGE_BYTES',"source: 'MANUAL'"]) {
   assert.ok(images.includes(token), `Módulo V5 de fotografias locais sem integração: ${token}`);
@@ -32,4 +32,4 @@ assert.equal(index.includes('js/app-equipment-manual.js'), false, 'O módulo leg
 assert.match(index, /img-src 'self' data:/, 'A CSP deve permitir imagens locais data URL.');
 assert.equal(/img-src[^;]*https?:/i.test(index), false, 'A aplicação não deve carregar imagens remotas diretamente.');
 
-console.log('Equipment local image tests V5.1.0: OK');
+console.log('Equipment local image tests V5.1.1: OK');
