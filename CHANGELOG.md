@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.1.1
+
+- Corrigida a modelação interna dos códigos operacionais: códigos iguais em grupos diferentes passam a ter chave contextual única (`GRUPO:CÓDIGO`) sem alterar o código apresentado ao utilizador.
+- A página Equipamentos deixa de poder falhar silenciosamente: se houver recursos incompletos ou erro de runtime, apresenta recuperação visível com ação para atualizar a aplicação.
+- Cache PWA renovado para forçar a substituição de recursos antigos em dispositivos que já tinham a aplicação aberta/instalada.
+- Testes de Equipamentos passam a executar uma renderização real dos 53 cartões e da ficha do 300 RAX, além de validar a ordem dos módulos.
+- Workflow de GitHub Pages passa a validar a página e os módulos de Equipamentos depois do deploy, evitando considerar concluída uma versão que não esteja efetivamente publicada.
+
 ## 5.1.0
 
 - Reconstruído o conteúdo da página Equipamentos para uma consulta operacional mais simples.
