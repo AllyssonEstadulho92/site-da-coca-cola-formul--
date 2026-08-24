@@ -17,7 +17,14 @@ assert.equal(/@(gmail|outlook|hotmail|yahoo|ilunion|coca-cola|ccep)\./i.test(dem
 assert.ok(/demo:\s*true/.test(demo), 'Os registos de demonstração devem ser explicitamente marcados como demo.');
 
 const gitignore = read('.gitignore');
-for (const expected of ['registo-avarias-backup-*.json', 'registo-avarias-backup-encriptado-*.json', 'registos-avarias-*.csv']) {
+for (const expected of [
+  'formularios-operacionais-backup-*.json',
+  'formularios-operacionais-backup-encriptado-*.json',
+  'formularios-operacionais-registos-*.csv',
+  'registo-avarias-backup-*.json',
+  'registo-avarias-backup-encriptado-*.json',
+  'registos-avarias-*.csv'
+]) {
   assert.ok(gitignore.includes(expected), `.gitignore deve proteger ${expected}.`);
 }
 
