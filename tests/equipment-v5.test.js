@@ -71,7 +71,8 @@ assert.ok(pageJs.includes('Protótipo sem autenticação'), 'Aviso público deve
 assert.ok(pageJs.includes('equipmentV5SourceHtml'), 'Cada secção deve receber a sua fonte/estado de validação.');
 
 assert.match(css, /\.eq5-grid\s*\{[^}]*grid-template-columns/s, 'O catálogo deve usar CSS Grid.');
-assert.match(css, /@media\s*\(max-width:\s*760px\)/, 'A V5 deve ter breakpoint mobile real.');
+assert.match(css, /@media\s*\(max-width:\s*680px\)/, 'A V5 deve ter breakpoint específico de smartphone.');
+assert.match(css, /@media\s*\(max-width:\s*680px\)[\s\S]*?\.eq5-grid\{grid-template-columns:1fr/, 'No smartphone a grelha deve ter uma coluna.');
 assert.match(css, /:focus-visible/, 'A V5 deve ter focus visível.');
 assert.match(index, /css\/equipment-v5\.css/, 'Index deve carregar o CSS V5.');
 assert.match(index, /js\/equipment\/equipment-page-v5\.js/, 'Index deve carregar a página V5.');
