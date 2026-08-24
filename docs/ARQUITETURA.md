@@ -1,8 +1,8 @@
-# Arquitetura — V5.0.1
+# Arquitetura — V5.1.0
 
 ## Objetivo
 
-A aplicação é uma PWA estática, modular e local-first. O protótipo usa IndexedDB para persistência, mas a arquitetura mantém separação suficiente para futura substituição por backend autorizado.
+A aplicação é uma PWA estática, modular e local-first. O protótipo usa IndexedDB para persistência, mantendo separação suficiente para futura substituição por backend autorizado.
 
 ## Camadas
 
@@ -34,32 +34,31 @@ Backend/API corporativa futura
 - `app-profile-help.js` — identificação local e ajuda; não existe autenticação.
 - `app-demo.js` — dados fictícios para demonstração pública.
 
-## Equipamentos V5
+## Equipamentos V5.1
 
 A área Equipamentos está isolada em `js/equipment/`:
 
-1. `equipment-sources-v5.js` — fontes técnicas externas.
-2. `equipment-symptoms-v5.js` — relações documentadas de sintomas.
-3. `equipment-catalog-data-v5.js` — inventário e especificações validadas.
-4. `equipment-store-v5.js` — normalização, pesquisa, filtros e ordenação.
-5. `equipment-local-images-v5.js` — fotografias locais e otimização.
-6. `equipment-actions-v5.js` — ações de integração com o formulário.
-7. `equipment-components-v5.js` — componentes de apresentação.
-8. `equipment-page-v5.js` — composição e eventos da página.
+1. `equipment-sources-v5.js` — fontes técnicas externas preservadas.
+2. `equipment-symptoms-v5.js` — relações técnicas documentadas preservadas.
+3. `equipment-operational-symptoms-v5.js` — matriz operacional de códigos e sintomas fornecida ao projeto.
+4. `equipment-catalog-data-v5.js` — inventário base e informação existente.
+5. `equipment-store-v5.js` — normalização, descrições operacionais, associação da matriz e pesquisa.
+6. `equipment-local-images-v5.js` — fotografias locais e otimização.
+7. `equipment-actions-v5.js` — integração com o formulário.
+8. `equipment-components-v5.js` — cartões e ficha focados em descrição e sintomas.
+9. `equipment-page-v5.js` — composição, pesquisa, categorias e eventos.
 
-As camadas V3/V4/V4.6 de Equipamentos foram removidas da árvore ativa.
+A UI de Equipamentos não apresenta Ficha técnica nem Documentação. Esses dados permanecem preservados na camada de dados quando já existiam, mas estão desacoplados da experiência atual.
 
 ## Persistência
 
 Stores atuais relevantes: `records`, `activities`, `settings`, `snapshots` e `equipmentImages`.
 
-A store antiga `profiles` é eliminada na migração. Não existe autenticação local.
+O schema IndexedDB permanece na versão 4; a versão da aplicação/backup é 5.1.0. A store antiga `profiles` é eliminada na migração.
 
 ## PWA e build
 
-O Service Worker declara explicitamente os recursos necessários ao runtime. O build em `scripts/build-static.js` usa essa lista como allowlist e publica apenas esses recursos em `dist/`.
-
-Isto evita que documentação, testes, ficheiros legados ou materiais auxiliares sejam publicados por acidente.
+O Service Worker declara explicitamente os recursos necessários ao runtime, incluindo a matriz operacional. O build em `scripts/build-static.js` usa essa lista como allowlist e publica apenas esses recursos em `dist/`.
 
 ## Produção
 
