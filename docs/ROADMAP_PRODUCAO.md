@@ -3,8 +3,10 @@
 ## Fase 1 — Validação funcional
 
 - Validar campos obrigatórios com utilizadores reais.
+- Validar o Designer: ordem, títulos, campos opcionais, densidade, largura, destaque e resumo.
+- Definir quais personalizações devem ser permitidas por perfil em produção.
 - Confirmar PT 32 / PT 60 / PT 70 e respetivas exceções.
-- Confirmar tipos de equipamento e sintomas.
+- Confirmar listas configuráveis de tipo, sintomas e categorias.
 - Validar fluxo de estados e responsabilidades.
 - Rever terminologia e mensagens.
 
@@ -13,12 +15,14 @@
 - Integrar Microsoft Entra ID/SSO ou IdP aprovado.
 - Definir perfis Agente, Supervisor e Administrador.
 - Aplicar autorização também no servidor.
+- Definir quem pode alterar o design/modelo do formulário.
 - Definir política de sessão.
 
 ## Fase 3 — Backend e persistência central
 
 - Criar API autorizada ou integração Microsoft Lists/SharePoint.
 - Migrar a fonte oficial de dados de IndexedDB para backend.
+- Versionar os modelos/configurações de formulário no servidor.
 - Implementar controlo de concorrência e resolução de conflitos.
 - Implementar auditoria imutável/administrativamente protegida.
 
