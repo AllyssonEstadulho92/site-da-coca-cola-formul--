@@ -1,97 +1,51 @@
-# Guia de Utilização
+# Guia de Utilização — V5.0.1
 
 ## 1. Entrada
 
-No primeiro acesso, introduza e-mail e uma palavra-passe com pelo menos 8 caracteres. O perfil criado é local ao browser e serve apenas para protótipo.
+A aplicação abre diretamente no Dashboard. Não existe login nem palavra-passe.
+
+Pode definir uma **Identificação Local** opcional para o nome usado em novos registos e atividades. Esta identificação não controla acesso.
+
+Use apenas dados fictícios neste protótipo público.
 
 ## 2. Novo registo
 
-Preencha primeiro:
+Preencha os campos necessários ao contexto da ocorrência. Enquanto cria um registo, o rascunho é guardado localmente. Ao editar um registo existente, utilize **Guardar alterações** para confirmar a edição.
 
-- Data;
-- Agente;
-- Cliente;
-- Estabelecimento;
-- Morada/Local;
-- REF Equipamento;
-- Categoria da avaria;
-- Descrição da avaria.
+## 3. Duplicados
 
-Os restantes campos aumentam a qualidade do registo e do histórico.
+Ao introduzir uma REF Equipamento, o sistema procura ocorrências abertas recentes dessa referência. O aviso é informativo e não substitui validação humana.
 
-## 3. Autosave
+## 4. Encaminhamento PT
 
-Enquanto preenche um registo novo, as alterações são guardadas automaticamente. Se fechar ou mudar de página, o rascunho permanece no IndexedDB.
+PT 32, 60 e 70 são configuráveis. A aplicação não inventa regras oficiais. Uma sugestão só é apresentada quando existe correspondência inequívoca e deve ser confirmada pelo utilizador.
 
-Ao editar um registo já existente, as alterações ficam protegidas num buffer local até selecionar **Guardar alterações**. Isto evita que uma edição incompleta substitua silenciosamente o registo confirmado.
+## 5. E-mail
 
-## 4. Duplicados
+O assistente gera destinatário, assunto e corpo a partir do modelo configurado. O envio continua a ser iniciado pelo utilizador.
 
-Quando introduz uma REF Equipamento, o sistema procura ocorrências abertas recentes dessa referência. O aviso não impede a criação; serve para verificar se deve continuar o registo existente.
+## 6. Estados
 
-## 5. Encaminhamento PT
+Fluxo principal: Registado → Em andamento → Enviado → Em tratamento → Aguarda resposta → Encerrado. Arquivado preserva o registo fora da lista ativa.
 
-A aplicação não contém regras oficiais pré-inventadas. Na área Configurações, pode definir PT 32, PT 60 e PT 70 com:
+## 7. Pesquisa e filtros
 
-- descrição;
-- departamento;
-- e-mail;
-- tipo de equipamento;
-- sintoma;
-- categoria de avaria.
+A área Registos permite pesquisa e filtros por estado, agente, PT, tratado, e-mail e intervalo de datas.
 
-Se existir uma correspondência inequívoca, o formulário apresenta uma sugestão. O utilizador deve confirmá-la.
+## 8. Equipamentos
 
-## 6. E-mail
+O catálogo V5 permite pesquisa imediata, categorias, fabricante, fotografia, documentação, sintomas, validação e ordenação.
 
-O assistente de e-mail usa o modelo configurado para gerar destinatário, assunto e corpo. Pode copiar o texto ou abrir o cliente de e-mail do dispositivo.
+Ao abrir um equipamento existem os separadores **Visão geral**, **Especificações**, **Sintomas**, **Documentação** e **Fotografias**.
 
-Só marque o e-mail como enviado depois de efetuar realmente a comunicação.
+Quando não existe documentação externa suficientemente específica, a aplicação apresenta **Não validado para este modelo** em vez de inferir informação.
 
-## 7. Estados
+Pode adicionar uma fotografia real do equipamento. A imagem é otimizada e guardada apenas no dispositivo, em IndexedDB, e acompanha o backup.
 
-Fluxo principal:
+## 9. Backup e restauro
 
-1. Registado;
-2. Em andamento;
-3. Enviado;
-4. Em tratamento;
-5. Aguarda resposta;
-6. Encerrado.
+Use snapshots locais para recuperação rápida e backup JSON/encriptado para cópia externa. O restauro substitui os dados atuais e cria previamente uma cópia local de segurança.
 
-Rascunho é um estado de preparação. Arquivado preserva o registo fora da lista ativa.
+## 10. Produção
 
-## 8. Pesquisa e filtros
-
-Na área Registos pode pesquisar e filtrar por:
-
-- texto global;
-- estado;
-- agente;
-- PT;
-- Tratado;
-- e-mail;
-- data inicial;
-- data final.
-
-## 9. Clientes e equipamentos
-
-Clientes consolida ocorrências por cliente. Equipamentos consolida por REF e permite ver o histórico técnico cronológico.
-
-## 10. Backup
-
-Use regularmente:
-
-- Snapshot local, para recuperação rápida no mesmo browser;
-- Backup JSON, para cópia externa legível;
-- Backup encriptado, para transporte/arquivo mais protegido.
-
-Não guarde backups com dados reais num repositório público.
-
-## 11. Restauro
-
-Ao restaurar um ficheiro ou snapshot, os dados atuais são substituídos. A aplicação cria uma cópia local de segurança antes de iniciar a operação.
-
-## 12. Produção
-
-Antes de uso corporativo real, validar regras PT, destinatários, taxonomias, permissões, autenticação, backend, retenção de dados e integração SAP/Microsoft 365.
+Antes de uso corporativo real devem ser validadas regras PT, destinatários, taxonomias, permissões, identidade, backend, retenção, segurança e integrações SAP/Microsoft 365.

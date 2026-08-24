@@ -5,7 +5,7 @@
   "description": "PWA estática para produtividade e catálogo técnico operacional de 53 equipamentos com fontes públicas identificáveis, pesquisa, filtros, fotografias locais e evidência controlada.",
   "scripts": {
     "build": "node scripts/build-static.js",
-    "test": "node tests/core.test.js && node tests/equipment-v5.test.js && node tests/equipment-images.test.js && node tests/no-auth.test.js && node tests/pwa-refresh.test.js",
-    "check": "node tests/syntax.test.js && node tests/core.test.js && node tests/equipment-v5.test.js && node tests/equipment-images.test.js && node tests/no-auth.test.js && node tests/pwa-refresh.test.js && node tests/integrity.test.js && node tests/public-safety.test.js && node tests/build-static.test.js"
+    "test": "node tests/core.test.js && node tests/equipment-v5.test.js && node tests/equipment-images.test.js && node tests/no-auth.test.js && node tests/pwa-refresh.test.js && node tests/project-cleanliness.test.js",
+    "check": "node tests/syntax.test.js && node tests/core.test.js && node tests/equipment-v5.test.js && node tests/equipment-images.test.js && node tests/no-auth.test.js && node tests/pwa-refresh.test.js && node tests/integrity.test.js && node tests/public-safety.test.js && node tests/project-cleanliness.test.js && node tests/build-static.test.js"
   }
 }
