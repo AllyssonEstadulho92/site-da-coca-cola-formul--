@@ -10,7 +10,8 @@ const manifest = JSON.parse(read('assets/equipment/catalog-manifest.json'));
 const baseCatalog = require(path.join(root, 'js/equipment-data.js'));
 const directoryJs = read('js/equipment-directory-v43.js');
 const modelsUi = read('js/app-equipment-models-v43.js');
-const css = read('css/equipment-models-v43.css');
+const ui46 = read('js/app-equipment-ui-v46.js');
+const css46 = read('css/equipment-v46.css');
 const index = read('index.html');
 
 assert.equal(manifest.schemaVersion, 2, 'O manifest do diretório deve estar no schema 2.');
@@ -18,14 +19,7 @@ assert.equal(manifest.total, 53, 'O diretório deve declarar 53 modelos específ
 const directoryItems = manifest.categories.flatMap(category => category.items.map(item => ({ ...item, category: category.id })));
 assert.equal(directoryItems.length, 53, 'O manifest deve conter exatamente 53 entradas.');
 
-const genericPrimaryNames = new Set([
-  'Vitrine Vertical Compacta',
-  'Vitrine Vertical',
-  'Post-Mix',
-  'Vending',
-  'Coca-Cola Freestyle',
-  'Monster Cooler',
-]);
+const genericPrimaryNames = new Set(['Vitrine Vertical Compacta','Vitrine Vertical','Post-Mix','Vending','Coca-Cola Freestyle','Monster Cooler']);
 for (const item of directoryItems) {
   assert.ok(item.name && item.model, `Nome/modelo em falta: ${item.category}/${item.folder}`);
   assert.equal(genericPrimaryNames.has(item.name), false, `Nome principal genérico proibido: ${item.name}`);
@@ -39,11 +33,8 @@ for (const requiredName of [
   'NUTI 3180H','APEXX 3H 6P PM','APEXX 6 AC 10P PM','MÓDULO M 5P PM','ACTIVATOR 500',
   '72 inch Stack Vending Machine','79 inch Stack Vending Machine','Small Glass Front Vender','Large Glass Front Vender','DN 5800 Vending',
   'Coca-Cola Freestyle 7100','Coca-Cola Freestyle 8100','Coca-Cola Freestyle 9100','G-10 Monster Cooler'
-]) {
-  assert.ok(directoryItems.some(item => item.name === requiredName), `Modelo específico em falta no diretório: ${requiredName}`);
-}
+]) assert.ok(directoryItems.some(item => item.name === requiredName), `Modelo específico em falta no diretório: ${requiredName}`);
 
-// Executa apenas as camadas de dados/UI que alteram o catálogo; não renderiza DOM.
 const context = {
   window: {
     EquipmentCatalogData: baseCatalog.map(item => ({ ...item })),
@@ -64,13 +55,16 @@ assert.equal(monster.name, 'G-10 Monster Cooler');
 assert.equal(monster.category, 'Monster');
 
 for (const token of ['Manual do Equipamento Coca-Cola','directorySlug','PLUS 450','ENERGIZE 3H','RECOR 1/3 5P PM','EASYREACH EXPRESS']) {
-  assert.ok(directoryJs.includes(token), `Diretório V4.5 sem token obrigatório: ${token}`);
+  assert.ok(directoryJs.includes(token), `Diretório sem token obrigatório: ${token}`);
 }
-for (const token of ['equipment-card-v43','equipment-card-photo-v43','Modelo:','Ver detalhes','Diretório do modelo','Monster','53 diretórios aprovados']) {
-  assert.ok(modelsUi.includes(token), `UI V4.5 sem integração obrigatória: ${token}`);
+for (const token of ['equipment-card-v43','equipment-card-photo-v43','Modelo:','Diretório do modelo','Monster','53 diretórios aprovados']) {
+  assert.ok(modelsUi.includes(token), `UI base de modelos sem integração obrigatória: ${token}`);
 }
-for (const token of ['.equipment-card-v43','.equipment-card-photo-v43','.equipment-detail-button-v43','@media (max-width: 760px)']) {
-  assert.ok(css.includes(token), `CSS V4.5 sem regra obrigatória: ${token}`);
+for (const token of ['equipment-card-split-v46','equipment-card-media-v46','equipment-card-info-v46','Sintomas','Ficha','Ver ficha completa']) {
+  assert.ok(ui46.includes(token), `UI V4.6 sem estrutura de duas secções: ${token}`);
+}
+for (const token of ['.equipment-card-split-v46','.equipment-card-media-v46','.equipment-card-info-v46','grid-template-columns: 148px minmax(0, 1fr)']) {
+  assert.ok(css46.includes(token), `CSS V4.6 sem regra de duas secções: ${token}`);
 }
 
 const dataPos = index.indexOf('js/equipment-data.js');
@@ -78,9 +72,10 @@ const directoryPos = index.indexOf('js/equipment-directory-v43.js');
 const catalogPos = index.indexOf('js/app-equipment-catalog.js');
 const hotfixPos = index.indexOf('js/app-equipment-upload-hotfix.js');
 const modelsPos = index.indexOf('js/app-equipment-models-v43.js');
+const ui46Pos = index.indexOf('js/app-equipment-ui-v46.js');
 assert.ok(dataPos >= 0 && directoryPos > dataPos && catalogPos > directoryPos, 'O diretório específico deve carregar depois dos dados-base e antes do catálogo.');
-assert.ok(hotfixPos >= 0 && modelsPos > hotfixPos, 'A camada visual V4.5 deve carregar depois da lógica de imagens/upload.');
-assert.match(index, /css\/equipment-models-v43\.css/, 'O index deve carregar o CSS V4.5.');
-assert.match(index, /V4\.5 · 53 modelos específicos/, 'O build visível deve identificar a V4.5.');
+assert.ok(hotfixPos >= 0 && modelsPos > hotfixPos && ui46Pos > modelsPos, 'A UI V4.6 deve carregar depois da lógica de imagens e modelos.');
+assert.match(index, /css\/equipment-v46\.css/, 'O index deve carregar o CSS V4.6.');
+assert.match(index, /V4\.6 · 53 modelos \+ referência visual/, 'O build visível deve identificar a V4.6.');
 
-console.log(`Equipment model names: OK (${runtimeCatalog.length} modelos específicos)`);
+console.log(`Equipment model names/UI: OK (${runtimeCatalog.length} modelos específicos)`);
