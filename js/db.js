@@ -136,16 +136,16 @@
     return true;
   }
 
-  async function atomicRestore(payload) {
+  async function importAll(payload) {
     validateBackup(payload);
     const db = await open();
     const stores = ['records', 'activities', 'settings', 'equipmentImages'];
     return new Promise((resolve, reject) => {
       const tx = db.transaction(stores, 'readwrite');
-      const error = () => reject(tx.error || new Error('Falha ao restaurar backup.'));
-      tx.onerror = error;
-      tx.onabort = error;
       tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error || new Error('Falha ao importar o backup.'));
+      tx.onabort = () => reject(tx.error || new Error('O restauro foi cancelado pela base de dados.'));
+
       for (const storeName of stores) tx.objectStore(storeName).clear();
       for (const record of payload.records || []) tx.objectStore('records').put(record);
       for (const activity of payload.activities || []) tx.objectStore('activities').put(activity);
@@ -154,14 +154,51 @@
     });
   }
 
-  async function snapshot(label = 'Snapshot automático') {
-    const data = await exportAll();
-    const item = { id: crypto.randomUUID(), createdAt: new Date().toISOString(), label, data };
-    await put('snapshots', item);
-    const items = (await getAll('snapshots')).sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
-    await Promise.all(items.slice(SNAPSHOT_LIMIT).map(old => remove('snapshots', old.id)));
-    return item;
+  async function createSnapshot(label = 'Snapshot local') {
+    const payload = await exportAll();
+    const snapshot = {
+      id: crypto.randomUUID(),
+      label,
+      createdAt: new Date().toISOString(),
+      payload,
+    };
+    await put('snapshots', snapshot);
+    const snapshots = (await getAll('snapshots')).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    for (const old of snapshots.slice(SNAPSHOT_LIMIT)) await remove('snapshots', old.id);
+    return snapshot;
   }
 
-  window.AppDB = { open, put, get, getAll, remove, clear, exportAll, validateBackup, atomicRestore, snapshot, SNAPSHOT_LIMIT };
+  async function getSnapshots() {
+    return (await getAll('snapshots')).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }
+
+  async function restoreSnapshot(id) {
+    const snapshot = await get('snapshots', id);
+    if (!snapshot?.payload) throw new Error('Snapshot local não encontrado.');
+    await importAll(snapshot.payload);
+    return snapshot;
+  }
+
+  async function ensureDailySnapshot() {
+    const snapshots = await getSnapshots();
+    const today = new Date().toISOString().slice(0, 10);
+    if (snapshots.some(item => String(item.createdAt || '').slice(0, 10) === today)) return null;
+    return createSnapshot('Snapshot diário automático');
+  }
+
+  window.AppDB = {
+    open,
+    put,
+    get,
+    getAll,
+    remove,
+    clear,
+    exportAll,
+    validateBackup,
+    importAll,
+    createSnapshot,
+    getSnapshots,
+    restoreSnapshot,
+    ensureDailySnapshot,
+  };
 })();
