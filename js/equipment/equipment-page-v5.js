@@ -3,17 +3,28 @@
 
   if (!window.App) return;
 
-  const dependenciesReady = Boolean(window.EquipmentStoreV5 && window.EquipmentComponentsV5);
+  const dependenciesReady = Boolean(window.EquipmentStoreV5 && window.EquipmentComponentsV5 && window.EquipmentPhotoRegistryV5);
 
   function runtimeErrorHtml() {
     return `<div class="eq5-page">
       <section class="eq5-runtime-error" role="alert">
         <p class="eyebrow">Equipamentos</p>
         <h3>Não foi possível carregar o catálogo.</h3>
-        <p>Existe uma versão incompleta dos recursos no navegador. Atualize a aplicação para carregar novamente os módulos de Equipamentos.</p>
-        <button id="equipmentRuntimeReload" type="button" class="btn btn-primary">Atualizar aplicação</button>
+        <p>Os recursos desta página ficaram incompletos ou desatualizados no navegador. A recuperação atualiza o Service Worker e volta a carregar a versão publicada.</p>
+        <button id="equipmentRuntimeReload" type="button" class="btn btn-primary">Recuperar página</button>
       </section>
     </div>`;
+  }
+
+  async function recoverRuntime() {
+    try {
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(registrations.map(registration => registration.update().catch(() => undefined)));
+      }
+    } finally {
+      location.reload();
+    }
   }
 
   if (!dependenciesReady) {
@@ -24,10 +35,10 @@
       renderEquipmentRuntimeError() {
         if (!this.els?.viewContainer) return;
         this.els.viewContainer.innerHTML = runtimeErrorHtml();
-        document.getElementById('equipmentRuntimeReload')?.addEventListener('click', () => location.reload());
+        document.getElementById('equipmentRuntimeReload')?.addEventListener('click', recoverRuntime);
       }
     });
-    console.error('Equipamentos V5.1.1: dependências de runtime incompletas.');
+    console.error('Equipamentos V5.2.0: dependências de runtime incompletas.');
     return;
   }
 
@@ -41,10 +52,10 @@
     renderEquipmentCatalog() { return this.renderEquipmentV5(); },
 
     renderEquipmentRuntimeError(error) {
-      console.error('Equipamentos V5.1.1:', error);
+      console.error('Equipamentos V5.2.0:', error);
       if (!this.els?.viewContainer) return;
       this.els.viewContainer.innerHTML = runtimeErrorHtml();
-      document.getElementById('equipmentRuntimeReload')?.addEventListener('click', () => location.reload());
+      document.getElementById('equipmentRuntimeReload')?.addEventListener('click', recoverRuntime);
     },
 
     renderEquipmentV5() {
@@ -65,9 +76,23 @@
         </div>`;
 
         this.bindEquipmentV5Actions();
+        this.bindEquipmentPhotoHealth();
       } catch (error) {
         this.renderEquipmentRuntimeError(error);
       }
+    },
+
+    bindEquipmentPhotoHealth() {
+      document.querySelectorAll('img[data-eq5-real-photo]').forEach(image => {
+        image.addEventListener('error', () => {
+          const item = store.getById(image.dataset.equipmentPhotoId);
+          const frame = image.closest('.eq5-image');
+          if (!item || !frame) return;
+          const context = frame.classList.contains('eq5-image-detail') ? 'detail' : 'card';
+          frame.outerHTML = ui.pendingPhotoHtml(this, item, context);
+          console.warn(`Fotografia indisponível para ${item.slug}; apresentado estado pendente.`);
+        }, { once: true });
+      });
     },
 
     bindEquipmentV5Actions() {
