@@ -28,7 +28,15 @@ const forbidden = [
   'assets/equipment/catalog-manifest.json',
   'assets/equipment/DIRECTORY_POLICY.md',
   'assets/equipment/STRUCTURE_VERSION',
-  'assets/equipment/.directory-structure-ready'
+  'assets/equipment/.directory-structure-ready',
+  'tests/equipment-catalog.test.js',
+  'tests/equipment-default-images.test.js',
+  'tests/equipment-directories.test.js',
+  'tests/equipment-model-names.test.js',
+  'tests/equipment-reference-v46.test.js',
+  'tests/equipment-upload-mobile.test.js',
+  'tests/equipment-v5-ui.test.js',
+  'tests/pages-build.test.js'
 ];
 for (const item of forbidden) assert.equal(exists(item), false, `Ficheiro/diretório legado ainda presente: ${item}`);
 
@@ -44,5 +52,36 @@ assert.deepEqual(rootEquipmentJs, [], 'Módulos de Equipamentos devem existir ap
 
 const equipmentAssets = fs.readdirSync(path.join(root, 'assets/equipment')).sort();
 assert.deepEqual(equipmentAssets, ['README.md','reference-sprite-v46.jpg'].sort(), 'assets/equipment deve conter apenas recursos ativos.');
+
+const expectedTests = [
+  'build-static.test.js',
+  'core.test.js',
+  'equipment-images.test.js',
+  'equipment-v5.test.js',
+  'integrity.test.js',
+  'no-auth.test.js',
+  'project-cleanliness.test.js',
+  'public-safety.test.js',
+  'pwa-refresh.test.js',
+  'syntax.test.js'
+].sort();
+const actualTests = fs.readdirSync(path.join(root, 'tests')).filter(name => name.endsWith('.test.js')).sort();
+assert.deepEqual(actualTests, expectedTests, 'A pasta tests deve conter apenas a suite ativa declarada para V5.0.1.');
+
+const clutterPatterns = [
+  /^\.DS_Store$/,
+  /^Thumbs\.db$/i,
+  /~$/,
+  /\.(?:bak|tmp|old|orig|rej)$/i
+];
+function scan(directory) {
+  for (const entry of fs.readdirSync(directory, { withFileTypes:true })) {
+    if (['.git','node_modules','dist'].includes(entry.name)) continue;
+    const fullPath = path.join(directory, entry.name);
+    if (entry.isDirectory()) scan(fullPath);
+    else for (const pattern of clutterPatterns) assert.equal(pattern.test(entry.name), false, `Ficheiro temporário/residual proibido: ${path.relative(root, fullPath)}`);
+  }
+}
+scan(root);
 
 console.log('Project cleanliness tests: OK');
