@@ -5,22 +5,12 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const dist = path.join(root, 'dist');
 const serviceWorkerPath = path.join(root, 'service-worker.js');
-const photoRegistryPath = path.join(root, 'js/equipment/equipment-photo-registry-v5.js');
 const serviceWorker = fs.readFileSync(serviceWorkerPath, 'utf8');
-const photoRegistry = fs.readFileSync(photoRegistryPath, 'utf8');
 
 const runtimeFiles = new Set(['index.html', 'manifest.json', 'service-worker.js']);
 for (const match of serviceWorker.matchAll(/'\.\/([^']+)'/g)) {
   const relativePath = match[1];
   if (!relativePath || relativePath.endsWith('/')) continue;
-  runtimeFiles.add(relativePath);
-}
-
-for (const match of photoRegistry.matchAll(/src:\s*['"]([^'"]+)['"]/g)) {
-  const relativePath = match[1];
-  if (!/^assets\/equipment\/photos\/[a-z0-9-]+\.(?:png|jpe?g|webp)$/i.test(relativePath)) {
-    throw new Error(`Caminho de fotografia real fora da política: ${relativePath}`);
-  }
   runtimeFiles.add(relativePath);
 }
 
@@ -40,7 +30,7 @@ for (const relativePath of [...runtimeFiles].sort()) {
 fs.copyFileSync(path.join(root, 'index.html'), path.join(dist, '404.html'));
 
 const marker = {
-  build: 'equipment-catalog-v5',
+  build: 'forms-designer-v6',
   generatedAt: new Date().toISOString(),
   totalRuntimeFiles: runtimeFiles.size,
   runtimeFiles: [...runtimeFiles].sort()
