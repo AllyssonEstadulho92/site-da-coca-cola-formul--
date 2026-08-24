@@ -23,7 +23,7 @@ for (const forbidden of [
 ]) assert.equal(fs.existsSync(path.join(dist,forbidden)), false, `Build publicou conteúdo não-runtime: ${forbidden}`);
 
 const index = fs.readFileSync(path.join(dist,'index.html'),'utf8');
-assert.match(index,/V5\.1\.0 · catálogo técnico operacional/,'Build deve identificar a V5.1.0.');
+assert.match(index,/V5\.1\.0 · catálogo operacional/,'Build deve identificar a V5.1.0.');
 assert.equal(/localhost|127\.0\.0\.1/.test(index), false, 'O build não pode depender de localhost.');
 assert.match(index,/href="css\/equipment-v5\.css"/,'CSS de Equipamentos deve manter caminho relativo compatível com GitHub Pages.');
 assert.match(index,/src="js\/equipment\/equipment-operational-symptoms-v5\.js"/,'A matriz operacional deve ser publicada antes do store.');
