@@ -68,18 +68,17 @@
     renderMore() {
       const entries = [
         ['clients','Clientes','Consulta consolidada por cliente'],
-        ['equipment','Equipamentos','Histórico por referência de equipamento'],
+        ['designer','Designer de Formulário','Personalizar ordem, campos e apresentação do formulário'],
         ['routing','Encaminhamento','PT, e-mails e comunicações pendentes'],
         ['productivity','Produtividade','Indicadores e evolução diária'],
         ['drafts','Rascunhos','Registos ainda não concluídos'],
         ['archive','Arquivo','Ocorrências preservadas'],
         ['settings','Configurações','PT, listas, backup e restauro'],
-        ['help','Guia de Utilização','Como usar registos, PT, backup e recuperação'],
-        ['profile','Perfil','Conta e sessão local']
+        ['help','Guia de Utilização','Como usar formulários, registos, PT, backup e recuperação'],
+        ['profile','Identificação','Operador local deste dispositivo']
       ];
       this.els.viewContainer.innerHTML = `<div class="page-head"><div><p class="eyebrow">Navegação</p><h3>Mais opções</h3></div></div><section class="panel"><div class="panel-body quick-actions">${entries.map(([route,title,desc]) => `<button class="quick-action" data-route-jump="${route}"><span class="nav-icon">${this.icon(route)}</span><span><strong>${this.escape(title)}</strong><br><small class="muted">${this.escape(desc)}</small></span></button>`).join('')}</div></section>`;
       this.bindViewActions();
     },
-
   });
 })();
