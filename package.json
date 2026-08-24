@@ -1,8 +1,8 @@
 {
   "name": "registo-avarias-v5",
-  "version": "5.0.1",
+  "version": "5.1.0",
   "private": true,
-  "description": "PWA estática para produtividade e catálogo técnico operacional de 53 equipamentos com fontes públicas identificáveis, pesquisa, filtros, fotografias locais e evidência controlada.",
+  "description": "PWA estática para produtividade e catálogo operacional de 53 equipamentos com descrições, matriz de sintomas por categoria e fotografias locais.",
   "scripts": {
     "build": "node scripts/build-static.js",
     "test": "node tests/core.test.js && node tests/equipment-v5.test.js && node tests/equipment-images.test.js && node tests/no-auth.test.js && node tests/pwa-refresh.test.js && node tests/project-cleanliness.test.js",
