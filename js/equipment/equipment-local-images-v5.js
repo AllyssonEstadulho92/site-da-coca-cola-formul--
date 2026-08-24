@@ -57,7 +57,7 @@
       const input = document.createElement('input');
       input.type = 'file';
       input.accept = 'image/jpeg,image/png,image/webp,image/heic,image/heif,image/*';
-      input.setAttribute('aria-label', `Selecionar imagem de ${item.name}`);
+      input.setAttribute('aria-label', `Selecionar fotografia real de ${item.name}`);
       input.addEventListener('change', async () => {
         const file = input.files?.[0];
         if (!file) return;
@@ -65,30 +65,34 @@
         if (file.size > MAX_INPUT_BYTES) return this.toast('A imagem não pode exceder 10 MB.', 'error');
 
         try {
-          this.setSaveState('A preparar imagem…', 'pending');
+          this.setSaveState('A preparar fotografia…', 'pending');
           const dataUrl = await this.compressEquipmentImage(file);
           const record = {
             equipmentId,
+            equipmentSlug: item.slug,
+            equipmentName: item.name,
+            equipmentModel: item.model,
             dataUrl,
-            fileName: String(file.name || 'imagem-equipamento').slice(0, 120),
+            fileName: String(file.name || 'fotografia-equipamento').slice(0, 120),
             mimeType: 'image/jpeg',
             originalType: String(file.type || ''),
             originalSize: Number(file.size || 0),
             storedSize: dataUrlBytes(dataUrl),
             updatedAt: new Date().toISOString(),
-            source: 'MANUAL'
+            source: 'MANUAL',
+            validationStatus: 'USER_SELECTED_FOR_EQUIPMENT'
           };
 
           await AppDB.put('equipmentImages', record);
           if (!this.state.equipmentImages) this.state.equipmentImages = {};
           this.state.equipmentImages[equipmentId] = record;
-          this.setSaveState('Imagem guardada');
+          this.setSaveState('Fotografia guardada');
           this.renderEquipmentCatalog();
-          this.toast(`Imagem de “${item.name}” guardada neste dispositivo.`, 'success');
+          this.toast(`Fotografia real associada a “${item.name}” neste dispositivo.`, 'success');
         } catch (error) {
-          console.error('Imagem do equipamento:', error);
-          this.setSaveState('Erro ao guardar imagem', 'error');
-          this.toast(error?.message || 'Não foi possível guardar a imagem.', 'error');
+          console.error('Fotografia do equipamento:', error);
+          this.setSaveState('Erro ao guardar fotografia', 'error');
+          this.toast(error?.message || 'Não foi possível guardar a fotografia.', 'error');
         }
       }, { once: true });
       input.click();
@@ -134,11 +138,11 @@
     removeEquipmentImage(equipmentId) {
       const item = findEquipment(this, equipmentId);
       if (!item || !this.equipmentManualImage(equipmentId)) return;
-      this.confirm('Remover imagem?', `A imagem manual de “${item.name}” será eliminada deste dispositivo.`, async () => {
+      this.confirm('Remover fotografia?', `A fotografia local de “${item.name}” será eliminada deste dispositivo.`, async () => {
         await AppDB.remove('equipmentImages', equipmentId);
         delete this.state.equipmentImages[equipmentId];
         this.renderEquipmentCatalog();
-        this.toast('Imagem manual removida.', 'success');
+        this.toast('Fotografia local removida.', 'success');
       });
     }
   });
