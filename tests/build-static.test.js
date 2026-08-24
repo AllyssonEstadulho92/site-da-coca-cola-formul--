@@ -24,9 +24,17 @@ for (const forbidden of [
 
 const index = fs.readFileSync(path.join(dist,'index.html'),'utf8');
 assert.match(index,/V5\.0\.1 · catálogo técnico operacional/,'Build deve identificar a V5.0.1.');
+assert.equal(/localhost|127\.0\.0\.1/.test(index), false, 'O build não pode depender de localhost.');
+assert.match(index,/href="css\/equipment-v5\.css"/,'CSS V5 deve manter caminho relativo compatível com GitHub Pages.');
+assert.match(index,/src="js\/equipment\/equipment-page-v5\.js"/,'JS V5 deve manter caminho relativo compatível com GitHub Pages.');
+
+const sw = fs.readFileSync(path.join(dist,'service-worker.js'),'utf8');
+assert.match(sw,/registo-avarias-v5\.0\.1/,'Service Worker publicado deve corresponder à V5.0.1.');
+
 const info = JSON.parse(fs.readFileSync(path.join(dist,'build-info.json'),'utf8'));
 assert.equal(info.build,'equipment-catalog-v5');
 assert.ok(Array.isArray(info.runtimeFiles) && info.runtimeFiles.includes('js/equipment/equipment-page-v5.js'));
 assert.equal(info.runtimeFiles.some(file => /app-equipment-(?:catalog|manual)/.test(file)), false, 'Allowlist do build não pode conter runtime legado.');
+assert.equal(info.runtimeFiles.some(file => /^(?:docs|data|tests|scripts)\//.test(file)), false, 'Allowlist do build não pode publicar conteúdo de desenvolvimento.');
 
 console.log('Static GitHub Pages build: OK');
