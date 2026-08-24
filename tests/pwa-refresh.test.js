@@ -7,20 +7,18 @@ const root = path.resolve(__dirname, '..');
 const sw = fs.readFileSync(path.join(root, 'service-worker.js'), 'utf8');
 const refresh = fs.readFileSync(path.join(root, 'js/app-sw-refresh.js'), 'utf8');
 
-assert.match(sw, /registo-avarias-v4\.6\.0/, 'O cache deve estar na V4.6.0.');
+assert.match(sw, /registo-avarias-v5\.0\.0/, 'O cache deve estar na V5.0.0.');
 assert.match(sw, /async function networkFirst/, 'Deve existir estratégia network-first reutilizável.');
 assert.match(sw, /event\.request\.destination === 'script'/, 'Scripts devem procurar primeiro a rede quando online.');
 assert.match(sw, /event\.request\.destination === 'style'/, 'CSS deve procurar primeiro a rede quando online.');
 assert.match(sw, /cache:\s*'no-store'/, 'Recursos críticos devem ignorar cache HTTP durante atualização online.');
-assert.match(sw, /\.\/assets\/equipment\/reference-sprite-v46\.jpg/, 'O sprite visual dos equipamentos deve estar no cache local.');
-assert.match(sw, /\.\/js\/app-equipment-manual\.js/, 'O módulo de imagens manuais deve estar no cache local.');
-assert.match(sw, /\.\/js\/app-equipment-reference-images-v46\.js/, 'O módulo de imagens de referência deve estar no cache local.');
-assert.match(sw, /\.\/js\/app-equipment-ui-v46\.js/, 'A UI V4.6 deve estar no cache local.');
-assert.match(sw, /\.\/js\/app-equipment-upload-hotfix\.js/, 'O hotfix de upload direto deve estar no cache local.');
-assert.match(sw, /\.\/js\/equipment-directory-v43\.js/, 'O diretório específico deve estar no cache local.');
-assert.match(sw, /\.\/js\/app-equipment-models-v43\.js/, 'A interface de modelos específicos deve estar no cache local.');
-assert.match(sw, /\.\/css\/equipment-v46\.css/, 'Os estilos V4.6 devem estar no cache local.');
+assert.match(sw, /\.\/assets\/equipment\/reference-sprite-v46\.jpg/, 'A referência visual local deve estar disponível offline.');
+assert.match(sw, /\.\/js\/app-equipment-manual\.js/, 'A gestão de fotografias manuais deve estar no cache local.');
+for (const file of ['equipment-sources-v5','equipment-symptoms-v5','equipment-catalog-data-v5','equipment-store-v5','equipment-components-v5','equipment-page-v5']) {
+  assert.ok(sw.includes(`./js/equipment/${file}.js`), `Módulo V5 ausente do cache: ${file}`);
+}
+assert.match(sw, /\.\/css\/equipment-v5\.css/, 'Os estilos V5 devem estar no cache local.');
 assert.match(refresh, /updateViaCache:\s*'none'/, 'O registo do Service Worker deve forçar verificação sem cache.');
-assert.match(refresh, /registoAvariasSwReloadedV46/, 'A recarga automática deve estar alinhada com V4.6.');
+assert.match(refresh, /registoAvariasSwReloadedV50/, 'A recarga automática deve estar alinhada com V5.0.');
 
-console.log('PWA refresh tests: OK');
+console.log('PWA refresh tests V5: OK');
