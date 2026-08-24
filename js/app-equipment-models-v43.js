@@ -2,6 +2,10 @@
   'use strict';
 
   if (!window.App) return;
+
+  // O catálogo visível deve corresponder exatamente aos 53 diretórios do projeto.
+  window.EquipmentCatalogData = (window.EquipmentCatalogData || []).filter(item => !['cooler-gs15-neon','cooler-countertop'].includes(item.id));
+
   const baseInspectorTabHtml = window.App.equipmentInspectorTabHtml;
 
   Object.assign(window.App, {
