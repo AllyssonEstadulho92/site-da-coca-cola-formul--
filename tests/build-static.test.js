@@ -23,14 +23,16 @@ for (const forbidden of [
 ]) assert.equal(fs.existsSync(path.join(dist,forbidden)), false, `Build publicou conteúdo não-runtime: ${forbidden}`);
 
 const index = fs.readFileSync(path.join(dist,'index.html'),'utf8');
-assert.match(index,/V5\.1\.0 · catálogo operacional/,'Build deve identificar a V5.1.0.');
+assert.match(index,/V5\.1\.1 · catálogo operacional/,'Build deve identificar a V5.1.1.');
 assert.equal(/localhost|127\.0\.0\.1/.test(index), false, 'O build não pode depender de localhost.');
 assert.match(index,/href="css\/equipment-v5\.css"/,'CSS de Equipamentos deve manter caminho relativo compatível com GitHub Pages.');
 assert.match(index,/src="js\/equipment\/equipment-operational-symptoms-v5\.js"/,'A matriz operacional deve ser publicada antes do store.');
 assert.match(index,/src="js\/equipment\/equipment-page-v5\.js"/,'JS V5 deve manter caminho relativo compatível com GitHub Pages.');
+assert.ok(index.indexOf('equipment-operational-symptoms-v5.js') < index.indexOf('equipment-store-v5.js'), 'A matriz operacional deve carregar antes do store no HTML publicado.');
+assert.ok(index.indexOf('equipment-components-v5.js') < index.indexOf('equipment-page-v5.js'), 'Os componentes devem carregar antes da página de Equipamentos.');
 
 const sw = fs.readFileSync(path.join(dist,'service-worker.js'),'utf8');
-assert.match(sw,/registo-avarias-v5\.1\.0/,'Service Worker publicado deve corresponder à V5.1.0.');
+assert.match(sw,/registo-avarias-v5\.1\.1/,'Service Worker publicado deve corresponder à V5.1.1.');
 assert.ok(sw.includes('./js/equipment/equipment-operational-symptoms-v5.js'), 'Service Worker deve publicar a matriz operacional.');
 
 const info = JSON.parse(fs.readFileSync(path.join(dist,'build-info.json'),'utf8'));
@@ -39,4 +41,4 @@ assert.ok(Array.isArray(info.runtimeFiles) && info.runtimeFiles.includes('js/equ
 assert.equal(info.runtimeFiles.some(file => /app-equipment-(?:catalog|manual)/.test(file)), false, 'Allowlist do build não pode conter runtime legado.');
 assert.equal(info.runtimeFiles.some(file => /^(?:docs|data|tests|scripts)\//.test(file)), false, 'Allowlist do build não pode publicar conteúdo de desenvolvimento.');
 
-console.log('Static GitHub Pages build V5.1.0: OK');
+console.log('Static GitHub Pages build V5.1.1: OK');
