@@ -24,31 +24,64 @@
       const referenceCount = items.filter(item => this.equipmentReferenceImage?.(item)).length;
       const manualCount = items.filter(item => this.equipmentManualImage(item)?.dataUrl).length;
       const info = this.els.viewContainer.querySelector('.equipment-manual-info-v45');
-      if (info) info.innerHTML = `<div><strong>Imagens do catálogo</strong><span>${referenceCount} de ${items.length} referências visuais · ${manualCount} fotografias manuais.</span></div>
-        <p>As imagens de referência ajudam a reconhecer o modelo durante a chamada. Uma fotografia real adicionada por si substitui a referência visual e fica guardada apenas neste dispositivo.</p>`;
+      if (info) info.innerHTML = `<div><strong>Catálogo visual dos 53 equipamentos</strong><span>${referenceCount} referências visuais · ${manualCount} fotografias reais adicionadas.</span></div>
+        <p>Cada cartão está dividido em duas áreas: miniatura à esquerda e informação técnica resumida à direita. Fotografias reais adicionadas por si têm prioridade sobre a referência visual.</p>`;
     },
 
     equipmentCatalogCard(item) {
       const selected = item.id === this.state.selectedEquipmentCatalogId;
       const manual = this.equipmentManualImage(item);
       const display = this.equipmentDisplayImage?.(item);
-      const imageLabel = manual?.dataUrl ? 'Fotografia manual' : display?.source === 'REFERENCE' ? 'Referência visual' : 'Sem imagem';
-      return `<article class="equipment-card-v43 equipment-card-v46 ${selected ? 'selected' : ''}" data-equipment-card="${this.escapeAttr(item.id)}">
-        <button class="equipment-card-photo-v43 equipment-card-photo-v46" type="button" data-equipment-image="${this.escapeAttr(item.id)}" aria-label="${manual?.dataUrl ? 'Alterar fotografia real de' : 'Adicionar fotografia real para'} ${this.escapeAttr(item.name)}">
-          ${this.equipmentManualImageHtml(item, 'card')}
-          <span class="equipment-photo-action-v43 equipment-photo-action-v46">${manual?.dataUrl ? 'Alterar fotografia real' : '+ Adicionar fotografia real'}</span>
-        </button>
-        <div class="equipment-card-body-v43 equipment-card-body-v46">
+      const imageLabel = manual?.dataUrl ? 'Fotografia real' : display?.source === 'REFERENCE' ? 'Referência visual' : 'Sem imagem';
+      const symptoms = Array.isArray(item.symptoms) ? item.symptoms : [];
+      const consequences = Array.isArray(item.consequences) ? item.consequences : [];
+      const docs = Array.isArray(item.documents) ? item.documents : [];
+      const facts = (item.technicalFacts || []).filter(([, value]) => value && value !== '—').slice(0, 2);
+      const symptomSummary = symptoms.length ? symptoms.slice(0, 2) : [];
+
+      return `<article class="equipment-card-v43 equipment-card-v46 equipment-card-split-v46 ${selected ? 'selected' : ''}" data-equipment-card="${this.escapeAttr(item.id)}">
+        <section class="equipment-card-media-v46" aria-label="Imagem de ${this.escapeAttr(item.name)}">
+          <button class="equipment-card-photo-v43 equipment-card-photo-v46 equipment-card-thumbnail-v46" type="button" data-equipment-image="${this.escapeAttr(item.id)}" aria-label="${manual?.dataUrl ? 'Alterar fotografia real de' : 'Adicionar fotografia real para'} ${this.escapeAttr(item.name)}">
+            ${this.equipmentManualImageHtml(item, 'card')}
+          </button>
+          <span class="equipment-card-image-label-v46">${this.escape(imageLabel)}</span>
+          <button class="equipment-card-image-link-v46" type="button" data-equipment-image="${this.escapeAttr(item.id)}">${manual?.dataUrl ? 'Alterar foto' : '+ Foto real'}</button>
+        </section>
+
+        <section class="equipment-card-info-v46">
           <div class="equipment-card-meta-v43">
             <span class="equipment-category-pill-v43">${this.escape(item.category)}</span>
             <code>${this.escape(this.equipmentAssetCode(item))}</code>
           </div>
-          <h5>${this.escape(item.name)}</h5>
-          <p class="equipment-model-v43">Modelo: <strong>${this.escape(item.model)}</strong></p>
-          <p class="equipment-description-v43">${this.escape(item.description)}</p>
-          <div class="equipment-card-status-v46"><span>${this.escape(imageLabel)}</span><span>${item.evidenceStatus === 'SOURCE_LIMITED' ? 'Fonte limitada' : 'Fonte técnica'}</span></div>
-          <button class="equipment-detail-button-v43" type="button" data-equipment-detail="${this.escapeAttr(item.id)}">Abrir ficha <span aria-hidden="true">→</span></button>
-        </div>
+          <div class="equipment-card-title-v46">
+            <h5>${this.escape(item.name)}</h5>
+            <p class="equipment-model-v43">Modelo: <strong>${this.escape(item.model)}</strong></p>
+          </div>
+          <p class="equipment-description-v43 equipment-description-v46">${this.escape(item.description)}</p>
+
+          <div class="equipment-card-evidence-v46">
+            <div class="equipment-card-evidence-row-v46">
+              <span class="equipment-card-evidence-key-v46">Sintomas</span>
+              <div class="equipment-card-evidence-value-v46">${symptomSummary.length
+                ? symptomSummary.map(value => `<span>• ${this.escape(value)}</span>`).join('')
+                : '<strong>Não documentados</strong><small>Sem sintomas específicos validados na fonte disponível.</small>'}</div>
+            </div>
+            <div class="equipment-card-evidence-row-v46">
+              <span class="equipment-card-evidence-key-v46">Ficha</span>
+              <div class="equipment-card-facts-inline-v46">${facts.length
+                ? facts.map(([key,value]) => `<span><small>${this.escape(key)}</small><strong>${this.escape(value)}</strong></span>`).join('')
+                : '<span><small>Dados técnicos</small><strong>Por confirmar</strong></span>'}</div>
+            </div>
+          </div>
+
+          <div class="equipment-card-footer-v46">
+            <div class="equipment-card-mini-status-v46">
+              <span>Consequências: <strong>${consequences.length ? `${consequences.length} documentada(s)` : 'não documentadas'}</strong></span>
+              <span>Documentos: <strong>${docs.length}</strong></span>
+            </div>
+            <button class="equipment-detail-button-v43 equipment-detail-button-v46" type="button" data-equipment-detail="${this.escapeAttr(item.id)}">Ver ficha completa <span aria-hidden="true">→</span></button>
+          </div>
+        </section>
       </article>`;
     },
 
@@ -113,7 +146,7 @@
       if (tab === 'consequences') {
         const consequences = Array.isArray(item.consequences) ? item.consequences : [];
         if (!consequences.length) return evidenceEmpty(this, 'Consequências / danos', item.consequencesNote || 'Sem consequências específicas validadas para este modelo.');
-        return `<section class="equipment-inspector-section"><h4>Consequências documentadas</h4><div class="equipment-consequence-box"><ul>${consequences.map(value => `<li>${this.escape(value)}</li>`).join('')}</ul></div><p class="equipment-source-disclaimer-v43">${this.escape(item.consequencesNote || '')}</p></section>`;
+        return `<section class="equipment-inspector-section"><h4>Consequências documentadas</h4><div class="equipment-consequence-box"><ul>${consequences.map(value => `<li>${this.escape(value)}</li>`).join('')}</ul><p class="equipment-source-disclaimer-v43">${this.escape(item.consequencesNote || '')}</p></section>`;
       }
 
       return baseTabHtml.call(this, item, tab);
