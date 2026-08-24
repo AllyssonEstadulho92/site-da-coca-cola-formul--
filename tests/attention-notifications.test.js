@@ -1,0 +1,11 @@
+'use strict';
+const fs=require('node:fs');const path=require('node:path');const assert=require('node:assert/strict');const root=path.resolve(__dirname,'..');const read=file=>fs.readFileSync(path.join(root,file),'utf8');
+const index=read('index.html');const base=read('js/app-base.js');const shell=read('js/app-shell.js');const save=read('js/app-form-save.js');const activity=read('js/app-activity-productivity.js');const notifications=read('js/app-notifications.js');const db=read('js/db.js');const css=read('css/attention.css');
+assert.match(index,/id="notificationButton"/);assert.match(index,/id="notificationBadge"/);assert.match(index,/js\/app-notifications\.js/);assert.match(index,/css\/attention\.css/);
+assert.match(base,/id:'notifications'/);assert.match(base,/attentionFeedback:\{ sound:true, vibration:true, reminders:true, reminderMinutes:15 \}/);assert.match(shell,/notifications:\(\)=>this\.renderNotifications\(\)/);assert.match(shell,/AppDB\.getAll\('notifications'\)/);
+assert.equal(/ensureActivity\(record,'AUTOSAVE'/.test(save),false,'Autosave não pode criar atividade de auditoria.');assert.match(save,/if\(eventType==='AUTOSAVE'\)return/);assert.match(save,/openRecordReview\(record,existing\)/);assert.match(save,/Critério operacional do projeto Coca-Cola/);assert.match(save,/reviewConfirmedAt/);assert.match(save,/persistReviewedRecord/);
+assert.match(activity,/data-delete-activity/);assert.match(activity,/Limpar autosaves antigos/);assert.match(activity,/clearAutomaticActivities/);assert.match(activity,/Autosave protege o rascunho sem criar novas entradas/);
+for(const token of ['renderNotifications','attentionReminders','recordInteractionNotification','markAllNotificationsRead','clearNotifications','navigator.vibrate','AudioContext','attentionReminderMinutes'])assert.ok(notifications.includes(token),`Centro de notificações sem capacidade: ${token}`);
+assert.match(db,/DB_VERSION=6/);assert.match(db,/createObjectStore\('notifications'/);assert.match(db,/schemaVersion:6/);assert.match(db,/appVersion:'6\.2\.0'/);assert.match(db,/notifications/);
+for(const token of ['notification-button','notification-badge','notification-summary','reminder-card','activity-delete','review-gate-note'])assert.ok(css.includes(token),`CSS de atenção sem classe: ${token}`);
+console.log('Attention and notification center tests V6.2.0: OK');
