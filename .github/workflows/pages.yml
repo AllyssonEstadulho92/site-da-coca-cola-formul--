@@ -49,16 +49,24 @@ jobs:
           ok=0
           for attempt in $(seq 1 18); do
             if curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/" -o /tmp/pages-index.html \
-              && grep -q 'V6.2.0 · attention center' /tmp/pages-index.html \
+              && grep -q 'V6.3.0 · attention audio' /tmp/pages-index.html \
               && grep -q 'js/app-notifications.js' /tmp/pages-index.html \
+              && grep -q 'js/app-attention-audio.js' /tmp/pages-index.html \
               && grep -q 'css/attention.css' /tmp/pages-index.html \
+              && grep -q 'css/attention-audio.css' /tmp/pages-index.html \
               && ! grep -q 'js/equipment/' /tmp/pages-index.html \
               && curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/js/app-notifications.js" -o /tmp/notifications.js \
               && grep -q 'renderNotifications' /tmp/notifications.js \
               && grep -q 'attentionReminders' /tmp/notifications.js \
+              && curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/js/app-attention-audio.js" -o /tmp/attention-audio.js \
+              && grep -q 'unlockAttentionAudio' /tmp/attention-audio.js \
+              && grep -q 'recoverAttentionAudio' /tmp/attention-audio.js \
+              && grep -q 'attentionAudioStatus' /tmp/attention-audio.js \
               && curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/css/attention.css" -o /tmp/attention.css \
               && grep -q 'notification-button' /tmp/attention.css \
-              && grep -q 'reminder-card' /tmp/attention.css; then
+              && grep -q 'reminder-card' /tmp/attention.css \
+              && curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}/css/attention-audio.css" -o /tmp/attention-audio.css \
+              && grep -q 'attention-diagnostics' /tmp/attention-audio.css; then
               ok=1
               break
             fi
