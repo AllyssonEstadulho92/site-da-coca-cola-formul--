@@ -1,11 +1,11 @@
 {
   "name": "formularios-operacionais",
-  "version": "6.2.0",
+  "version": "6.3.0",
   "private": true,
   "description": "PWA estática de formulários operacionais personalizáveis, registos, notificações e produtividade.",
   "scripts": {
     "build": "node scripts/build-static.js",
-    "test": "node tests/core.test.js && node tests/form-designer.test.js && node tests/no-auth.test.js && node tests/pwa-refresh.test.js && node tests/operations-ui.test.js && node tests/attention-notifications.test.js && node tests/project-cleanliness.test.js",
-    "check": "node tests/syntax.test.js && node tests/core.test.js && node tests/form-designer.test.js && node tests/no-auth.test.js && node tests/pwa-refresh.test.js && node tests/integrity.test.js && node tests/public-safety.test.js && node tests/operations-ui.test.js && node tests/attention-notifications.test.js && node tests/project-cleanliness.test.js && node tests/build-static.test.js"
+    "test": "node tests/core.test.js && node tests/form-designer.test.js && node tests/no-auth.test.js && node tests/pwa-refresh.test.js && node tests/operations-ui.test.js && node tests/attention-notifications.test.js && node tests/attention-audio.test.js && node tests/project-cleanliness.test.js",
+    "check": "node tests/syntax.test.js && node tests/core.test.js && node tests/form-designer.test.js && node tests/no-auth.test.js && node tests/pwa-refresh.test.js && node tests/integrity.test.js && node tests/public-safety.test.js && node tests/operations-ui.test.js && node tests/attention-notifications.test.js && node tests/attention-audio.test.js && node tests/project-cleanliness.test.js && node tests/build-static.test.js"
   }
 }
