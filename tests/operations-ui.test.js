@@ -1,8 +1,8 @@
 'use strict';
 const fs=require('node:fs');const path=require('node:path');const assert=require('node:assert/strict');const root=path.resolve(__dirname,'..');const read=file=>fs.readFileSync(path.join(root,file),'utf8');
 const index=read('index.html');const base=read('js/app-base.js');const shell=read('js/app-shell.js');const dashboard=read('js/app-dashboard.js');const stats=read('js/app-statistics.js');const css=read('css/coca-cola-ui.css');
-assert.match(index,/Coca-Cola · Formulários Operacionais/);assert.match(index,/V6\.2\.0 · attention center/);assert.match(index,/css\/coca-cola-ui\.css/);assert.match(index,/js\/app-statistics\.js/);
+assert.match(index,/Coca-Cola · Formulários Operacionais/);assert.match(index,/V6\.3\.0 · attention audio/);assert.match(index,/css\/coca-cola-ui\.css/);assert.match(index,/js\/app-statistics\.js/);
 assert.match(base,/id:'statistics'.*desktop:'Estatísticas'/s);assert.match(base,/id:'notifications'.*desktop:'Notificações'/s);assert.match(shell,/\['dashboard','records','new','statistics','more'\]/);for(const group of ['Operação','Análise','Configuração'])assert.ok(shell.includes(group));
 assert.match(dashboard,/Avarias abertas/);assert.match(dashboard,/Taxa de resolução/);assert.match(dashboard,/Avarias por categoria/);assert.match(dashboard,/data-route-jump="statistics"/);assert.match(stats,/renderStatistics\(\)/);assert.match(stats,/Por técnico \/ agente/);assert.match(stats,/Por localidade/);assert.match(stats,/Por estado/);assert.match(stats,/faultCategory/);
 assert.match(css,/--primary:#e30613/);assert.match(css,/\.ops-metric-grid/);assert.match(css,/\.stats-grid/);assert.match(css,/@media\(max-width:860px\)/);assert.match(css,/grid-template-columns:repeat\(5,1fr\)/);assert.equal(/js\/equipment\//.test(index),false);
-console.log('Operations UI tests V6.2.0: OK');
+console.log('Operations UI tests V6.3.0: OK');
